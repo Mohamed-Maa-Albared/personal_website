@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Case Study: {{ project.title }} — Mohamed Maa Albared{% endblock %}
+
+{% block extra_css %}
+<meta property="og:title" content="Case Study: {{ project.title }}">
+<meta property="og:description" content="{{ project.short_description }}">
+<meta property="og:type" content="article">
+{% endblock %}
+
+{% block content %}
+<section class="section case-study-section">
+    <div class="container">
+        <a href="/#projects" class="back-link reveal-up">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back to Projects
+        </a>
+
+        <div class="case-study-header reveal-up">
+            <div class="case-study-label">CASE STUDY</div>
+            {% if project.category %}
+            <span class="detail-category">{{ project.category }}</span>
+            {% endif %}
+            <h1 class="case-study-title">{{ project.title }}</h1>
+            <p class="case-study-subtitle">{{ project.short_description }}</p>
+
+            <div class="case-study-info-bar">
+                {% if project.year %}<div class="info-item"><span class="info-label">Year</span><span
+                        class="info-value">{{ project.year }}</span></div>{% endif %}
+                {% if project.client %}<div class="info-item"><span class="info-label">Client</span><span
+                        class="info-value">{{ project.client }}</span></div>{% endif %}
+                {% if project.technologies %}<div class="info-item"><span class="info-label">Stack</span><span
+                        class="info-value">{{ project.technologies }}</span></div>{% endif %}
+            </div>
+        </div>
+
+        {% if project.metrics %}
+        <div class="case-study-metrics reveal-up">
+            <h2 class="cs-section-title">Key Metrics</h2>
+            <div class="metrics-grid">
+                {% for metric in project.metrics|from_json %}
+                <div class="metric-card">
+                    <div class="metric-value">{{ metric.value }}</div>
+                    <div class="metric-label">{{ metric.label }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if project.challenge %}
+        <div class="case-study-block reveal-up">
+            <h2 class="cs-section-title"><span class="cs-number">01</span> The Challenge</h2>
+            <div class="cs-content">{{ project.challenge|safe }}</div>
+        </div>
+        {% endif %}
+
+        {% if project.approach %}
+        <div class="case-study-block reveal-up">
+            <h2 class="cs-section-title"><span class="cs-number">02</span> The Approach</h2>
+            <div class="cs-content">{{ project.approach|safe }}</div>
+        </div>
+        {% endif %}
+
+        {% if project.results %}
+        <div class="case-study-block reveal-up">
+            <h2 class="cs-section-title"><span class="cs-number">03</span> Results & Impact</h2>
+            <div class="cs-content">{{ project.results|safe }}</div>
+        </div>
+        {% endif %}
+
+        {% if project.case_study %}
+        <div class="case-study-block reveal-up">
+            <div class="cs-content">{{ project.case_study|safe }}</div>
+        </div>
+        {% endif %}
+
+        {% if project.technologies %}
+        <div class="case-study-tech reveal-up">
+            <h2 class="cs-section-title">Technology Stack</h2>
+            <div class="detail-tech-list">
+                {% for tech in project.technologies.split(',') %}
+                <span class="tech-tag">{{ tech.strip() }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="case-study-cta reveal-up">
+            {% if project.demo_url %}
+            <a href="{{ project.demo_url }}" target="_blank" rel="noopener noreferrer" class="btn-glow">View Demo</a>
+            {% endif %}
+            {% if project.github_url %}
+            <a href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer" class="btn-ghost">View on
+                GitHub</a>
+            {% endif %}
+            <a href="/#projects" class="btn-ghost">All Projects</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

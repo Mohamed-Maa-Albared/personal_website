@@ -1,0 +1,91 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Edit' if post else 'New' }} Blog Post{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <h1>{{ 'Edit' if post else 'New' }} Blog Post</h1>
+    <p>{{ 'Update the article below.' if post else 'Write a new article.' }}</p>
+</div>
+
+<div class="form-card">
+    <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="form-group">
+            <label for="title">Title *</label>
+            <input type="text" id="title" name="title" required value="{{ post.title if post else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="slug">Slug</label>
+            <input type="text" id="slug" name="slug" value="{{ post.slug if post else '' }}">
+            <div class="form-hint">URL-friendly name. Auto-generated from title if left empty.</div>
+        </div>
+
+        <div class="form-group">
+            <label for="excerpt">Excerpt</label>
+            <textarea id="excerpt" name="excerpt" rows="2">{{ post.excerpt if post else '' }}</textarea>
+            <div class="form-hint">Short preview text shown on the blog listing (max 500 chars).</div>
+        </div>
+
+        <div class="form-group">
+            <label for="content">Content (HTML) *</label>
+            <textarea id="content" name="content" rows="20" required>{{ post.content if post else '' }}</textarea>
+            <div class="form-hint">Full article content. Supports HTML tags.</div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category">
+                    <option value="">Select...</option>
+                    {% for cat in ['AI', 'Neuroscience', 'Art', 'Technology', 'Career'] %}
+                    <option value="{{ cat }}" {{ 'selected' if post and post.category==cat else '' }}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="read_time">Read Time (min)</label>
+                <input type="number" id="read_time" name="read_time" value="{{ post.read_time if post else 5 }}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="tags">Tags</label>
+            <input type="text" id="tags" name="tags" value="{{ post.tags if post else '' }}">
+            <div class="form-hint">Comma-separated, e.g. "LLM, Agents, Neuroscience"</div>
+        </div>
+
+        <div class="form-group">
+            <label for="cover_image">Cover Image URL</label>
+            <input type="url" id="cover_image" name="cover_image" value="{{ post.cover_image if post else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="sort_order">Sort Order</label>
+            <input type="number" id="sort_order" name="sort_order" value="{{ post.sort_order if post else 0 }}">
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="published" {{ 'checked' if (post and post.published) or not post
+                        else '' }}>
+                    Published
+                </label>
+            </div>
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="featured" {{ 'checked' if post and post.featured else '' }}>
+                    Featured
+                </label>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-save">{{ 'Update' if post else 'Create' }} Post</button>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

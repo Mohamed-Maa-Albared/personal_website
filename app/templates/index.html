@@ -2,21 +2,22 @@
 
 {% block content %}
 <!-- ============ HERO ============ -->
-<section class="hero" id="hero">
+<section class="hero" id="hero" data-parallax="0.3">
     <canvas id="neuralCanvas"></canvas>
     <div class="hero-content">
         <img src="{{ url_for('static', filename='images/logo.png') }}" alt="" class="logo-hero reveal-up">
-        <div class="hero-label reveal-up">DATA SCIENTIST &bull; AI ENGINEER</div>
+        <div class="hero-label reveal-up">{{ cfg.get('hero_label', 'DATA SCIENTIST &bull; AI ENGINEER') | safe }}</div>
         <h1 class="hero-title">
-            <span class="line reveal-up" style="--delay:.1s">MOHAMED</span>
-            <span class="line reveal-up" style="--delay:.25s">MAA ALBARED</span>
+            <span class="line reveal-up" style="--delay:.1s">{{ cfg.get('hero_name_line1', 'MOHAMED') }}</span>
+            <span class="line reveal-up" style="--delay:.25s">{{ cfg.get('hero_name_line2', 'MAA ALBARED') }}</span>
         </h1>
         <div class="hero-tagline reveal-up" style="--delay:.45s">
-            <span class="tagline-word">Architecting</span>
-            <span class="tagline-word accent">Intelligence</span>
+            <span class="tagline-word">{{ cfg.get('hero_tagline_word1', 'Architecting') }}</span>
+            <span class="tagline-word accent">{{ cfg.get('hero_tagline_word2', 'Intelligence') }}</span>
         </div>
         <p class="hero-sub reveal-up" style="--delay:.6s">
-            Where neural networks meet creative intuition — building systems that reason, collaborate, and act.
+            {{ cfg.get('hero_subtitle', 'Where neural networks meet creative intuition — building systems that reason,
+            collaborate, and act.') }}
         </p>
         <div class="hero-cta reveal-up" style="--delay:.75s">
             <a href="#projects" class="btn-glow">Explore My Work</a>
@@ -40,20 +41,19 @@
                     <span class="accent">the machine</span>
                 </h2>
                 <p class="about-bio reveal-up">
-                    Accomplished Data Scientist with over <strong>4 years of experience</strong> specializing in the
-                    development
-                    and deployment of machine learning and generative AI solutions within the <strong>aviation
-                        sector</strong>.
+                    {{ cfg.get('about_bio1', 'Accomplished Data Scientist with over <strong>4 years of
+                        experience</strong> specializing in the development and deployment of machine learning and
+                    generative AI solutions within the <strong>aviation sector</strong>.') | safe }}
                 </p>
                 <p class="about-bio reveal-up">
-                    Proven track record of driving significant business value by architecting
+                    {{ cfg.get('about_bio2', 'Proven track record of driving significant business value by architecting
                     <strong>recommendation systems</strong>, optimizing model performance by up to <strong>20x</strong>,
-                    and pioneering <strong>AB testing frameworks</strong> from the ground up.
+                    and pioneering <strong>AB testing frameworks</strong> from the ground up.') | safe }}
                 </p>
                 <p class="about-bio reveal-up">
-                    Recognized as a subject matter expert in <strong>LLM orchestration</strong> and
-                    <strong>autonomous agent design</strong>, adept at translating complex AI capabilities
-                    into strategic, impactful business outcomes.
+                    {{ cfg.get('about_bio3', 'Recognized as a subject matter expert in <strong>LLM
+                        orchestration</strong> and <strong>autonomous agent design</strong>, adept at translating
+                    complex AI capabilities into strategic, impactful business outcomes.') | safe }}
                 </p>
             </div>
             <div class="about-photo reveal-up">
@@ -67,15 +67,18 @@
                 </div>
                 <div class="about-stats">
                     <div class="stat-item reveal-up">
-                        <span class="stat-number" data-count="4">0</span><span class="stat-suffix">+</span>
+                        <span class="stat-number" data-count="{{ cfg.get('about_years', '4') }}">0</span><span
+                            class="stat-suffix">+</span>
                         <span class="stat-label">Years Experience</span>
                     </div>
                     <div class="stat-item reveal-up">
-                        <span class="stat-number" data-count="12">0</span><span class="stat-suffix">+</span>
+                        <span class="stat-number" data-count="{{ cfg.get('about_projects_count', '12') }}">0</span><span
+                            class="stat-suffix">+</span>
                         <span class="stat-label">AI Projects Delivered</span>
                     </div>
                     <div class="stat-item reveal-up">
-                        <span class="stat-number" data-count="20">0</span><span class="stat-suffix">x</span>
+                        <span class="stat-number" data-count="{{ cfg.get('about_perf_gains', '20') }}">0</span><span
+                            class="stat-suffix">x</span>
                         <span class="stat-label">Performance Gains</span>
                     </div>
                 </div>
@@ -90,23 +93,26 @@
         <div class="impact-grid">
             <div class="impact-card reveal-up">
                 <div class="impact-icon">&#9883;</div>
-                <div class="impact-value"><span data-count="15">0</span>%</div>
-                <div class="impact-desc">Increase in purchases via recommendation systems</div>
+                <div class="impact-value"><span data-count="{{ cfg.get('impact_purchases_pct', '15') }}">0</span>%</div>
+                <div class="impact-desc">{{ cfg.get('impact_purchases_desc', 'Increase in purchases via recommendation
+                    systems') }}</div>
             </div>
             <div class="impact-card reveal-up" style="--delay:.1s">
                 <div class="impact-icon">&#9889;</div>
-                <div class="impact-value"><span data-count="20">0</span>x</div>
-                <div class="impact-desc">API performance optimization achieved</div>
+                <div class="impact-value"><span data-count="{{ cfg.get('impact_api_speedup', '20') }}">0</span>x</div>
+                <div class="impact-desc">{{ cfg.get('impact_api_desc', 'API performance optimization achieved') }}</div>
             </div>
             <div class="impact-card reveal-up" style="--delay:.2s">
                 <div class="impact-icon">&#10047;</div>
-                <div class="impact-value">0.<span data-count="82">0</span></div>
-                <div class="impact-desc">ML model performance metric</div>
+                <div class="impact-value">0.<span data-count="{{ cfg.get('impact_auc_score', '82') }}">0</span></div>
+                <div class="impact-desc">{{ cfg.get('impact_auc_desc', 'ML model performance metric') }}
+                </div>
             </div>
             <div class="impact-card reveal-up" style="--delay:.3s">
                 <div class="impact-icon">&#9733;</div>
-                <div class="impact-value"><span data-count="2">0</span></div>
-                <div class="impact-desc">Consecutive years keynoting Data Community Day</div>
+                <div class="impact-value"><span data-count="{{ cfg.get('impact_keynotes', '2') }}">0</span></div>
+                <div class="impact-desc">{{ cfg.get('impact_keynotes_desc', 'Consecutive years keynoting Data Community
+                    Day') }}</div>
             </div>
         </div>
     </div>
@@ -251,6 +257,7 @@
                     <div class="card-tech">
                         <span>LLM Orchestration</span><span>Voice AI</span><span>Multi-Agent</span><span>RAG</span>
                     </div>
+                    <a href="/case-study/1" class="card-case-study-link">View Case Study →</a>
                 </div>
                 <div class="card-glow"></div>
             </div>
@@ -266,6 +273,7 @@
                     <div class="card-tech">
                         <span>Python</span><span>Azure ML</span><span>API Design</span><span>AB Testing</span>
                     </div>
+                    <a href="/case-study/2" class="card-case-study-link">View Case Study →</a>
                 </div>
                 <div class="card-glow"></div>
             </div>
@@ -511,10 +519,59 @@
     </div>
 </section>
 
+<!-- ============ BLOG PREVIEW ============ -->
+<section class="section blog-preview-section" id="blog">
+    <div class="container">
+        <div class="section-label reveal-up">05 — INSIGHTS</div>
+        <h2 class="section-heading reveal-up">Neural<br><span class="accent">Transmissions</span><span
+                class="accent">.</span></h2>
+        <p class="section-sub reveal-up">Explorations at the intersection of AI, neuroscience, and art.</p>
+
+        <div class="blog-preview-grid">
+            {% for post in latest_posts %}
+            <article class="blog-card reveal-up" style="--delay: {{ loop.index0 * 0.1 }}s">
+                <div class="blog-card-image blog-card-placeholder" data-category="{{ post.category }}">
+                    <div class="placeholder-pattern">
+                        {% if post.category == 'Neuroscience' %}
+                        <span class="placeholder-icon">&#129504;</span>
+                        {% elif post.category == 'AI' %}
+                        <span class="placeholder-icon">&#9883;</span>
+                        {% elif post.category == 'Art' %}
+                        <span class="placeholder-icon">&#127912;</span>
+                        {% else %}
+                        <span class="placeholder-icon">&#9883;</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="blog-card-body">
+                    <div class="blog-card-meta">
+                        <span class="blog-card-category">{{ post.category }}</span>
+                        <span class="blog-card-date">{{ post.created_at.strftime('%b %d, %Y') }}</span>
+                    </div>
+                    <h3 class="blog-card-title">
+                        <a href="{{ url_for('main.blog_detail', slug=post.slug) }}">{{ post.title }}</a>
+                    </h3>
+                    <p class="blog-card-excerpt">{{ post.excerpt[:150] }}...</p>
+                    <div class="blog-card-footer">
+                        <span class="blog-read-time">{{ post.read_time }} min read</span>
+                        <a href="{{ url_for('main.blog_detail', slug=post.slug) }}" class="blog-read-more">Read Article
+                            →</a>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        <div class="blog-preview-cta reveal-up">
+            <a href="{{ url_for('main.blog') }}" class="btn-ghost">View All Articles →</a>
+        </div>
+    </div>
+</section>
+
 <!-- ============ CONTACT ============ -->
 <section class="section contact-section" id="contact">
     <div class="container">
-        <div class="section-label reveal-up">05 — CONTACT</div>
+        <div class="section-label reveal-up">06 — CONTACT</div>
         <h2 class="section-heading reveal-up">Let's Build<br><span class="accent">Something Together</span><span
                 class="accent">.</span></h2>
         <p class="section-sub reveal-up">Have an idea, a question, or just want to say hi? I'd love to hear from you.

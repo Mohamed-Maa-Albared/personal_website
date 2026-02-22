@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} — Mohamed Maa Albared{% endblock %}
+
+{% block extra_css %}
+<meta property="og:title" content="{{ post.title }}">
+<meta property="og:description" content="{{ post.excerpt }}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="{{ url_for('main.blog_detail', slug=post.slug, _external=True) }}">
+{% if post.cover_image %}
+<meta property="og:image" content="{{ post.cover_image }}">
+{% endif %}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ post.title }}">
+<meta name="twitter:description" content="{{ post.excerpt }}">
+<link rel="alternate" type="application/rss+xml" title="Blog RSS" href="{{ url_for('main.rss_feed') }}">
+{% endblock %}
+
+{% block content %}
+<article class="section blog-detail-section">
+    <div class="container">
+        <a href="{{ url_for('main.blog') }}" class="back-link reveal-up">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back to Blog
+        </a>
+
+        <header class="blog-detail-header reveal-up">
+            <div class="blog-detail-meta">
+                <span class="blog-detail-category">{{ post.category }}</span>
+                <span class="blog-detail-date">{{ post.created_at.strftime('%B %d, %Y') }}</span>
+                <span class="blog-detail-readtime">{{ post.read_time }} min read</span>
+            </div>
+            <h1 class="blog-detail-title">{{ post.title }}</h1>
+            {% if post.excerpt %}
+            <p class="blog-detail-excerpt">{{ post.excerpt }}</p>
+            {% endif %}
+            {% if post.tags %}
+            <div class="blog-detail-tags">
+                {% for tag in post.tags.split(',') %}
+                <span class="blog-tag">{{ tag.strip() }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </header>
+
+        {% if post.cover_image %}
+        <div class="blog-detail-cover reveal-up">
+            <img src="{{ post.cover_image }}" alt="{{ post.title }}">
+        </div>
+        {% endif %}
+
+        <!-- Scroll progress bar -->
+        <div class="scroll-progress" id="scrollProgress"></div>
+
+        <div class="blog-detail-content reveal-up">
+            {{ post.content|safe }}
+        </div>
+
+        <!-- Author card -->
+        <div class="author-card reveal-up">
+            <img src="{{ url_for('static', filename='images/profile.png') }}" alt="Mohamed Maa Albared"
+                class="author-photo">
+            <div class="author-info">
+                <h3>Mohamed Maa Albared</h3>
+                <p>Data Scientist at zeroG (Lufthansa Group). Building intelligent systems at the intersection of
+                    neuroscience, art, and artificial intelligence.</p>
+            </div>
+        </div>
+
+        {% if related %}
+        <div class="related-posts reveal-up">
+            <h3 class="related-heading">Related Articles</h3>
+            <div class="related-grid">
+                {% for r in related %}
+                <a href="{{ url_for('main.blog_detail', slug=r.slug) }}" class="related-card">
+                    <span class="related-category">{{ r.category }}</span>
+                    <h4>{{ r.title }}</h4>
+                    <span class="related-date">{{ r.created_at.strftime('%b %d, %Y') }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</article>
+{% endblock %}

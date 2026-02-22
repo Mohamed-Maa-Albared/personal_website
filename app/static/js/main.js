@@ -109,12 +109,13 @@
         createNodes();
         draw();
         window.addEventListener('resize', () => { resize(); createNodes(); });
-        canvas.addEventListener('mousemove', (e) => {
+        const heroSection = canvas.closest('.hero') || canvas.parentElement;
+        heroSection.addEventListener('mousemove', (e) => {
             const rect = canvas.getBoundingClientRect();
             mouse.x = e.clientX - rect.left;
             mouse.y = e.clientY - rect.top;
         });
-        canvas.addEventListener('mouseleave', () => { mouse.x = -999; mouse.y = -999; });
+        heroSection.addEventListener('mouseleave', () => { mouse.x = -999; mouse.y = -999; });
     }
 
     // ─── CUSTOM CURSOR ────────────────────────────
@@ -122,22 +123,12 @@
     const ring = document.querySelector('.cursor-ring');
 
     if (dot && ring && window.innerWidth > 768) {
-        let mx = 0, my = 0, rx = 0, ry = 0;
-
         document.addEventListener('mousemove', (e) => {
-            mx = e.clientX; my = e.clientY;
-            dot.style.left = mx - 3 + 'px';
-            dot.style.top = my - 3 + 'px';
+            dot.style.left = e.clientX - 3 + 'px';
+            dot.style.top = e.clientY - 3 + 'px';
+            ring.style.left = e.clientX + 'px';
+            ring.style.top = e.clientY + 'px';
         });
-
-        function animateCursor() {
-            rx += (mx - rx) * 0.15;
-            ry += (my - ry) * 0.15;
-            ring.style.left = rx + 'px';
-            ring.style.top = ry + 'px';
-            requestAnimationFrame(animateCursor);
-        }
-        animateCursor();
 
         // Hover effect on interactive elements
         document.querySelectorAll('a, button, .project-card, .filter-btn').forEach(el => {
@@ -315,6 +306,86 @@
                 const top = target.getBoundingClientRect().top + window.scrollY - offset;
                 window.scrollTo({ top, behavior: 'smooth' });
             }
+        });
+    });
+
+    // ─── DARK / LIGHT MODE TOGGLE ─────────────────
+    (function initTheme() {
+        const toggle = document.getElementById('themeToggle');
+        const stored = localStorage.getItem('theme');
+        if (stored) {
+            document.documentElement.setAttribute('data-theme', stored);
+        }
+        if (toggle) {
+            toggle.addEventListener('click', () => {
+                const current = document.documentElement.getAttribute('data-theme');
+                const next = current === 'light' ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+            });
+        }
+    })();
+
+    // ─── SCROLL PROGRESS BAR ─────────────────────
+    (function initScrollProgress() {
+        const bar = document.getElementById('scrollProgressBar');
+        if (!bar) return;
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            bar.style.width = pct + '%';
+        }, { passive: true });
+    })();
+
+    // ─── GSAP SCROLL ANIMATIONS ──────────────────
+    (function initGSAP() {
+        if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Parallax hero elements
+        const heroContent = document.querySelector('.hero-content');
+        if (heroContent) {
+            gsap.to(heroContent, {
+                scrollTrigger: {
+                    trigger: '.hero',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: true
+                },
+                y: 150,
+                opacity: 0,
+                ease: 'none'
+            });
+        }
+
+        // Timeline section — animate marker dots
+        gsap.utils.toArray('.marker-dot').forEach(dot => {
+            gsap.from(dot, {
+                scrollTrigger: {
+                    trigger: dot,
+                    start: 'top 85%',
+                    toggleActions: 'play none none none'
+                },
+                scale: 0,
+                duration: .5,
+                ease: 'back.out(2)'
+            });
+        });
+    })();
+
+    // ─── BUTTON RIPPLE EFFECT ─────────────────────
+    document.querySelectorAll('.btn-glow, .btn-ghost').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            const circle = document.createElement('span');
+            circle.classList.add('ripple-effect');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            circle.style.width = circle.style.height = size + 'px';
+            circle.style.left = (e.clientX - rect.left - size / 2) + 'px';
+            circle.style.top = (e.clientY - rect.top - size / 2) + 'px';
+            this.appendChild(circle);
+            circle.addEventListener('animationend', () => circle.remove());
         });
     });
 

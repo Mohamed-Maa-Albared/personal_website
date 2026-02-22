@@ -510,6 +510,126 @@
             .stats-row {
                 grid-template-columns: 1fr 1fr;
             }
+
+            .admin-tabs {
+                flex-wrap: wrap;
+            }
+        }
+
+        /* ═══════ TAB NAVIGATION ═══════ */
+        .admin-tabs {
+            display: flex;
+            gap: .5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: .5rem;
+            overflow-x: auto;
+        }
+
+        .admin-tab {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: .85rem;
+            font-family: 'Space Grotesk', sans-serif;
+            padding: .6rem 1.2rem;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all .2s ease;
+            white-space: nowrap;
+        }
+
+        .admin-tab:hover {
+            color: var(--text-primary);
+            background: rgba(124, 92, 252, .08);
+        }
+
+        .admin-tab.active {
+            color: var(--accent);
+            background: rgba(124, 92, 252, .15);
+            font-weight: 600;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* ═══════ CONFIG FIELDS ═══════ */
+        .config-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            padding: 1rem 1.2rem;
+        }
+
+        @media (max-width: 600px) {
+            .config-fields {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .config-fields .form-group {
+            margin-bottom: 0;
+        }
+
+        .config-fields textarea {
+            width: 100%;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: .6rem .8rem;
+            font-family: 'Inter', sans-serif;
+            font-size: .85rem;
+            resize: vertical;
+        }
+
+        .config-fields textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* ═══════ MISC ═══════ */
+        .empty-state {
+            color: var(--text-secondary);
+            font-size: .9rem;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .form-actions {
+            text-align: right;
+            padding: 1rem 0;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, var(--accent), var(--accent-cyan));
+            color: #fff;
+            border: none;
+            padding: .7rem 2rem;
+            border-radius: 8px;
+            font-size: .9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity .2s;
+        }
+
+        .btn-save:hover {
+            opacity: .85;
+        }
+
+        .unread-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            margin-right: 6px;
+            vertical-align: middle;
         }
     </style>
 </head>
@@ -540,6 +660,7 @@
 
         {% block content %}{% endblock %}
     </div>
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 </body>
 
 </html>

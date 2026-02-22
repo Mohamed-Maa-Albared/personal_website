@@ -1,172 +1,220 @@
-# Personal Website Project
+# Personal Portfolio Website
 
-A modern, Flask-based personal portfolio website with backend support for projects, contact messages, and portfolio management.
+Modern, immersive portfolio for **Mohamed Maa Albared** — Data Scientist at zeroG (Lufthansa Group). Built with Flask, styled with a dark neural/neuroscience aesthetic (deep navy + electric purple/cyan).
+
+**Live:** <https://mohamed-maa-albared-portfolio.onrender.com/>
+
+---
 
 ## Features
 
-- **Home Page**: Hero section with featured projects
-- **Projects Portfolio**: Grid layout with pagination for all projects
-- **Project Details**: Individual project pages with technologies and links
-- **About Page**: Bio, profile image, and skills showcase
-- **Contact Form**: Backend contact form with message storage
-- **Responsive Design**: Mobile-friendly layout
-- **Database**: SQLAlchemy ORM for data management
+- **Single-page layout** — Hero, About, Impact, Timeline, Projects, Skills, Blog Preview, Contact — all on one page with smooth anchor navigation
+- **Blog** — Full blog system with category filtering, RSS feed, and related posts
+- **Case studies** — Deep-dive project pages with challenge/approach/results/metrics
+- **Admin dashboard** — Tabbed interface with six panels: Analytics, Site Content, Projects, Experience, Blog Posts, Messages
+- **Visitor analytics** — Lightweight page-view tracking with top pages, referrers, locales, and unique visitor counts
+- **Editable site content** — Hero text, about bio, impact numbers, and more — all editable from the admin dashboard without code changes
+- **Dark / light mode** — Toggle with `localStorage` persistence, CSS variable theming
+- **Neural canvas** — Animated particle network in the hero section (80 nodes, mouse-reactive)
+- **GSAP animations** — Hero parallax fade, timeline marker dot scaling via ScrollTrigger
+- **Custom cursor** — Dot + ring, visible in both themes (purple / dark navy)
+- **SEO** — Sitemap, robots.txt, Open Graph tags, RSS feed
+- **Security hardened** — CSP, CSRF, rate limiting, input sanitisation, session expiry, custom error pages
+- **Automated backups** — GitHub Actions workflow for daily DB backup
+
+## Tech Stack
+
+| Layer      | Technology                                                |
+| ---------- | --------------------------------------------------------- |
+| Backend    | Flask 3.0.0, Flask-SQLAlchemy 3.1.1                       |
+| Security   | Flask-WTF 1.2.1 (CSRF), Flask-Limiter 3.5.0, bleach 6.1.0 |
+| WSGI       | gunicorn 21.2.0                                           |
+| Database   | SQLite (dev & prod)                                       |
+| Frontend   | Vanilla HTML / CSS / JS (no frameworks)                   |
+| Animation  | GSAP 3.12.2 + ScrollTrigger (CDN)                         |
+| Fonts      | Google Fonts — Space Grotesk, Inter, JetBrains Mono       |
+| Deployment | Render (free tier)                                        |
+| Python     | 3.11.x                                                    |
 
 ## Project Structure
 
 ```
 personal_website/
 ├── app/
-│   ├── __init__.py           # Flask app factory
-│   ├── models.py             # Database models
-│   ├── routes.py             # Application routes
-│   ├── static/
-│   │   ├── css/
-│   │   │   └── style.css     # Main stylesheet
-│   │   ├── js/
-│   │   │   └── main.js       # JavaScript utilities
-│   │   └── images/           # Image assets
-│   └── templates/
-│       ├── base.html         # Base template
-│       ├── index.html        # Homepage
-│       ├── projects.html     # Projects listing
-│       ├── project_detail.html
-│       ├── about.html        # About page
-│       └── contact.html      # Contact form
-├── config.py                 # Configuration settings
-├── run.py                    # Application entry point
-├── requirements.txt          # Python dependencies
-├── .env.example             # Environment variables template
-└── .gitignore               # Git ignore rules
+│   ├── __init__.py              # App factory, extensions, security headers, error handlers, visitor tracking
+│   ├── models.py                # SQLAlchemy models: Project, Experience, Message, BlogPost, SiteConfig, PageVisit
+│   ├── routes.py                # Public routes: index, blog, case_study, sitemap, robots, rss, contact, api
+│   ├── admin.py                 # Admin blueprint: CRUD, analytics dashboard, site config editor
+│   ├── utils.py                 # Shared helpers: sanitize_input, sanitize_html, validate_email, safe_int, generate_slug
+│   ├── templates/
+│   │   ├── base.html            # Base layout (CDN libs, theme toggle, nav, scroll bar)
+│   │   ├── index.html           # Single-page: Hero → About → Impact → Timeline → Projects → Skills → Blog → Contact
+│   │   ├── project_detail.html  # Individual project page
+│   │   ├── blog.html            # Blog listing with category filtering
+│   │   ├── blog_detail.html     # Individual blog post (OG tags, author card, related posts)
+│   │   ├── case_study.html      # Deep-dive case study (challenge / approach / results / metrics)
+│   │   ├── sitemap.xml          # SEO sitemap template
+│   │   ├── feed.xml             # RSS feed template
+│   │   ├── errors/              # Custom error pages (400, 404, 429, 500)
+│   │   └── admin/
+│   │       ├── base.html        # Admin layout
+│   │       ├── login.html       # Admin login
+│   │       ├── dashboard.html   # Admin dashboard (6 tabs: Analytics, Site Content, Projects, Experience, Blog, Messages)
+│   │       ├── project_form.html
+│   │       ├── experience_form.html
+│   │       ├── blog_form.html
+│   │       ├── case_study_form.html
+│   │       └── message_detail.html
+│   └── static/
+│       ├── css/style.css        # All styles (~2250 lines, dark + light themes)
+│       ├── js/main.js           # Neural canvas, GSAP, cursor, reveals, contact AJAX (~392 lines)
+│       └── images/              # logo.png, profile.png
+├── .github/workflows/backup.yml # Daily automated DB backup to GitHub
+├── config.py                    # Dev / Prod / Test configs with production enforcement
+├── run.py                       # Entry point (default port 5001)
+├── seed.py                      # Seeds DB with experiences, projects, blog posts, and site config defaults
+├── render.yaml                  # Render deployment config
+├── requirements.txt             # Python dependencies
+├── .env.example                 # Environment variable template
+├── AGENTS.md                    # AI agent instructions
+└── ROADMAP.md                   # Roadmap with status tracking
 ```
 
-## Setup Instructions
-
-### 1. Create Virtual Environment
+## Setup
 
 ```bash
+# Clone & enter
 cd personal_website
+
+# Virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
+source venv/bin/activate        # Windows: venv\Scripts\activate
 
-### 2. Install Dependencies
-
-```bash
+# Dependencies
 pip install -r requirements.txt
+
+# Environment
+cp .env.example .env            # Edit with your values
+
+# Seed database
+python seed.py
+
+# Run
+python run.py                   # → http://localhost:5001
 ```
 
-### 3. Configure Environment
+## Environment Variables
 
-```bash
-cp .env.example .env
-# Edit .env with your settings
-```
+| Variable         | Required   | Description                                 |
+| ---------------- | ---------- | ------------------------------------------- |
+| `FLASK_ENV`      | Yes        | `development` or `production`               |
+| `SECRET_KEY`     | Yes (prod) | Random 32+ char string for session signing  |
+| `DATABASE_URL`   | No         | Defaults to `sqlite:///personal_website.db` |
+| `ADMIN_PASSWORD` | Yes        | Password for `/admin` login                 |
 
-### 4. Initialize Database
+> **Production enforcement:** The app refuses to start in production if `SECRET_KEY` or `ADMIN_PASSWORD` are missing or set to defaults.
 
-```bash
-flask shell
->>> from app import db, create_app
->>> app = create_app()
->>> with app.app_context():
->>>     db.create_all()
-```
+## Routes
 
-### 5. Run Development Server
+### Public
 
-```bash
-python run.py
-```
+| Route              | Method | Description                             |
+| ------------------ | ------ | --------------------------------------- |
+| `/`                | GET    | Single-page index                       |
+| `/project/<id>`    | GET    | Project detail page                     |
+| `/case-study/<id>` | GET    | Deep-dive case study                    |
+| `/blog`            | GET    | Blog listing (`?category=` filter)      |
+| `/blog/<slug>`     | GET    | Individual blog post                    |
+| `/contact`         | POST   | Contact form (JSON, rate-limited 3/min) |
+| `/api/projects`    | GET    | JSON API for projects                   |
+| `/sitemap.xml`     | GET    | Auto-generated XML sitemap              |
+| `/robots.txt`      | GET    | SEO robots file                         |
+| `/feed.xml`        | GET    | RSS feed for blog posts                 |
 
-Visit `http://localhost:5000` in your browser.
+### Admin (session-authenticated)
+
+| Route                              | Method   | Description                |
+| ---------------------------------- | -------- | -------------------------- |
+| `/admin/login`                     | GET/POST | Login (rate-limited 5/min) |
+| `/admin/`                          | GET      | Dashboard (tabbed)         |
+| `/admin/site-config`               | POST     | Update site content        |
+| `/admin/project/new\|<id>/edit`    | GET/POST | Project CRUD               |
+| `/admin/experience/new\|<id>/edit` | GET/POST | Experience CRUD            |
+| `/admin/blog/new\|<id>/edit`       | GET/POST | Blog post CRUD             |
+| `/admin/project/<id>/case-study`   | GET/POST | Case study editor          |
+| `/admin/message/<id>`              | GET      | View contact message       |
 
 ## Database Models
 
 ### Project
-- title: Project title
-- description: Detailed description
-- image_url: Project image
-- demo_url: Live demo link
-- github_url: GitHub repository
-- technologies: Comma-separated tech stack
-- featured: Featured on homepage
-- created_at / updated_at: Timestamps
+`title`, `description`, `short_description`, `image_url`, `demo_url`, `github_url`, `technologies` (comma-sep), `category`, `year`, `client`, `featured`, `sort_order`, `case_study`, `metrics` (JSON), `challenge`, `approach`, `results`, `has_case_study`
+
+### Experience
+`role`, `company`, `location`, `date_range`, `description`, `highlights` (JSON), `sort_order`
 
 ### Message
-- name: Visitor name
-- email: Contact email
-- subject: Message subject
-- message: Message content
-- created_at: Submission timestamp
-- is_read: Read status
+`name`, `email`, `subject`, `message`, `is_read`, `created_at`
 
-### About
-- title: Professional title
-- bio: Biography
-- profile_image_url: Profile picture
-- skills: Comma-separated skills
-- social_links: JSON string of social profiles
+### BlogPost
+`title`, `slug` (unique), `excerpt`, `content` (HTML), `cover_image`, `category`, `tags` (comma-sep), `read_time`, `published`, `featured`, `created_at`, `updated_at`, `sort_order`
 
-## API Endpoints
+### SiteConfig
+`key` (unique, indexed), `value`, `label`, `group` — Key-value store for editable homepage content (hero, about, impact). Static helpers: `get(key)`, `set(key, value)`, `get_group(group)`
 
-- `GET /` - Homepage
-- `GET /projects` - Projects listing (paginated)
-- `GET /project/<id>` - Project details
-- `GET /about` - About page
-- `GET /contact` - Contact form page
-- `POST /contact` - Submit contact form
-- `GET /api/projects` - JSON projects API
+### PageVisit
+`path`, `referrer`, `user_agent`, `ip_hash` (SHA-256, no raw IPs), `country` (from Accept-Language), `visited_at` (indexed) — Lightweight visitor analytics
 
-## Customization
+## Security
 
-### Add a New Project
-
-```python
-from app import db, create_app
-from app.models import Project
-
-app = create_app()
-with app.app_context():
-    project = Project(
-        title="My Awesome Project",
-        description="Project description here...",
-        technologies="Python, Flask, SQLAlchemy",
-        demo_url="https://demo.example.com",
-        github_url="https://github.com/user/project",
-        featured=True
-    )
-    db.session.add(project)
-    db.session.commit()
-```
-
-### Update About Information
-
-```python
-from app.models import About
-
-about = About(
-    title="Full Stack Developer",
-    bio="Your bio here...",
-    skills="Python, JavaScript, React, Flask"
-)
-db.session.add(about)
-db.session.commit()
-```
+| Measure                | Detail                                                                       |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| CSRF Protection        | `CSRFProtect()` on all forms; `/contact` exempt (JSON + honeypot)            |
+| Rate Limiting          | Global 200/min; login 5/min; contact 3/min                                   |
+| Input Sanitisation     | `sanitize_input()` strips all HTML; `sanitize_html()` allowlists safe tags   |
+| Password Comparison    | `hmac.compare_digest()` (timing-safe)                                        |
+| CSP                    | Strict Content-Security-Policy header                                        |
+| Security Headers       | X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy |
+| HSTS                   | Enabled in production (`max-age=31536000; includeSubDomains`)                |
+| Session Hardening      | HttpOnly, SameSite=Lax, Secure (prod), 2-hour expiry                         |
+| Custom Error Pages     | 400, 404, 429, 500 — no Flask internals leaked                               |
+| Production Enforcement | App refuses to start with default `SECRET_KEY` or `ADMIN_PASSWORD`           |
+| Structured Logging     | Security events (login attempts, contact submissions) logged with context    |
+| Privacy-safe Analytics | Visitor IPs are SHA-256 hashed — no raw IP addresses stored                  |
 
 ## Deployment
 
-For production deployment, see [docSpace deployment instructions](https://docspace.com/deploy).
+Deployed on [Render](https://render.com) — see `render.yaml`:
 
+- **Build:** `pip install -r requirements.txt && python seed.py`
+- **Start:** `gunicorn run:app --bind 0.0.0.0:$PORT --workers 2`
+- Auto-deploys on `git push origin main`
+
+For org-specific deployment, refer to **docSpace**.
 Follow the [LSY Security Golden Path](https://github.com/lsy-central/lsy-security-golden-path) for security best practices.
 
-## Technologies Used
+## Testing
 
-- **Backend**: Flask, SQLAlchemy
-- **Frontend**: HTML5, CSS3, JavaScript
-- **Database**: SQLite (development), PostgreSQL (production)
-- **WSGI**: Werkzeug
+```bash
+python -c "
+from app import create_app
+app = create_app('development')
+with app.test_client() as c:
+    routes = [
+        ('Index', '/'),
+        ('Admin login', '/admin/login'),
+        ('Blog', '/blog'),
+        ('Sitemap', '/sitemap.xml'),
+        ('Robots', '/robots.txt'),
+        ('RSS', '/feed.xml'),
+        ('404 page', '/nonexistent'),
+    ]
+    for name, path in routes:
+        r = c.get(path)
+        status = '✓' if r.status_code in (200, 302, 404) else '✗'
+        print(f'  {status} {name}: {r.status_code}')
+"
+```
 
 ## License
 
-MIT License - feel free to use this for your personal website.
+MIT License — feel free to use this as a starting point for your own portfolio.

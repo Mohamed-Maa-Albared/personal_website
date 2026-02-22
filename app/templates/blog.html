@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Blog — Mohamed Maa Albared{% endblock %}
+
+{% block content %}
+<section class="section blog-hero-section">
+    <div class="container">
+        <div class="section-label reveal-up">INSIGHTS</div>
+        <h1 class="section-heading reveal-up">Neural<br><span class="accent">Transmissions</span><span
+                class="accent">.</span></h1>
+        <p class="section-sub reveal-up">Explorations at the intersection of artificial intelligence, neuroscience, and
+            art.</p>
+
+        <!-- Blog filters -->
+        <div class="blog-filters reveal-up">
+            <a href="{{ url_for('main.blog') }}"
+                class="filter-btn {% if active_category == 'all' %}active{% endif %}">All</a>
+            {% for cat in categories %}
+            <a href="{{ url_for('main.blog', category=cat) }}"
+                class="filter-btn {% if active_category == cat %}active{% endif %}">{{ cat }}</a>
+            {% endfor %}
+        </div>
+
+        <div class="blog-grid">
+            {% for post in posts %}
+            <article class="blog-card reveal-up" style="--delay: {{ loop.index0 * 0.1 }}s">
+                {% if post.cover_image %}
+                <div class="blog-card-image skeleton-wrapper">
+                    <div class="skeleton skeleton-image"></div>
+                    <img src="{{ post.cover_image }}" alt="{{ post.title }}" loading="lazy"
+                        onload="this.previousElementSibling.style.display='none'; this.style.opacity=1;">
+                </div>
+                {% else %}
+                <div class="blog-card-image blog-card-placeholder" data-category="{{ post.category }}">
+                    <div class="placeholder-pattern">
+                        {% if post.category == 'Neuroscience' %}
+                        <span class="placeholder-icon">&#129504;</span>
+                        {% elif post.category == 'AI' %}
+                        <span class="placeholder-icon">&#9883;</span>
+                        {% elif post.category == 'Art' %}
+                        <span class="placeholder-icon">&#127912;</span>
+                        {% else %}
+                        <span class="placeholder-icon">&#9883;</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                <div class="blog-card-body">
+                    <div class="blog-card-meta">
+                        <span class="blog-card-category">{{ post.category }}</span>
+                        <span class="blog-card-date">{{ post.created_at.strftime('%b %d, %Y') }}</span>
+                    </div>
+                    <h2 class="blog-card-title">
+                        <a href="{{ url_for('main.blog_detail', slug=post.slug) }}">{{ post.title }}</a>
+                    </h2>
+                    <p class="blog-card-excerpt">{{ post.excerpt }}</p>
+                    <div class="blog-card-footer">
+                        <span class="blog-read-time">{{ post.read_time }} min read</span>
+                        <a href="{{ url_for('main.blog_detail', slug=post.slug) }}" class="blog-read-more">Read Article
+                            →</a>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        {% if not posts %}
+        <div class="empty-state reveal-up">
+            <p>No posts yet. Check back soon for articles on AI, neuroscience, and creative technology.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

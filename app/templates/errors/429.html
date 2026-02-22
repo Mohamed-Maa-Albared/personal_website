@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}429 — Too Many Requests{% endblock %}
+
+{% block content %}
+<section class="section"
+    style="min-height:70vh;display:flex;align-items:center;justify-content:center;text-align:center;">
+    <div class="container">
+        <h1
+            style="font-size:5rem;font-family:'Space Grotesk',sans-serif;background:linear-gradient(135deg,var(--accent),var(--accent-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
+            429</h1>
+        <p style="font-size:1.25rem;color:var(--text-secondary);margin-bottom:2rem;">Slow down — you're sending too many
+            requests. Please try again shortly.</p>
+        <a href="/" class="btn-glow">Back to Home</a>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "admin/base.html" %}
+{% block title %}Case Study: {{ project.title }}{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <h1>Case Study: {{ project.title }}</h1>
+    <p>Add a deep-dive case study with metrics and detailed analysis.</p>
+</div>
+
+<div class="form-card">
+    <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="form-group">
+            <label class="checkbox-label">
+                <input type="checkbox" name="has_case_study" {{ 'checked' if project.has_case_study else '' }}>
+                Enable Case Study (visible on site)
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label for="challenge">The Challenge</label>
+            <textarea id="challenge" name="challenge"
+                rows="6">{{ project.challenge if project.challenge else '' }}</textarea>
+            <div class="form-hint">Describe the problem or challenge. Supports HTML.</div>
+        </div>
+
+        <div class="form-group">
+            <label for="approach">The Approach</label>
+            <textarea id="approach" name="approach"
+                rows="6">{{ project.approach if project.approach else '' }}</textarea>
+            <div class="form-hint">Describe the technical approach and methodology. Supports HTML.</div>
+        </div>
+
+        <div class="form-group">
+            <label for="results">Results & Impact</label>
+            <textarea id="results" name="results" rows="6">{{ project.results if project.results else '' }}</textarea>
+            <div class="form-hint">Describe the outcomes and business impact. Supports HTML.</div>
+        </div>
+
+        <div class="form-group">
+            <label for="metrics">Key Metrics (JSON)</label>
+            <textarea id="metrics" name="metrics" rows="4">{{ project.metrics if project.metrics else '[]' }}</textarea>
+            <div class="form-hint">JSON array of objects: [{"value": "20x", "label": "Performance Gain"}, ...]</div>
+        </div>
+
+        <div class="form-group">
+            <label for="case_study">Additional Content (HTML)</label>
+            <textarea id="case_study" name="case_study"
+                rows="10">{{ project.case_study if project.case_study else '' }}</textarea>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-save">Save Case Study</button>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

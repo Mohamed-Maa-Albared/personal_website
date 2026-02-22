@@ -4,32 +4,200 @@
 {% block content %}
 <div class="admin-header">
     <h1>Dashboard</h1>
-    <p>Manage your portfolio content, projects, experience, and messages.</p>
+    <p>Manage your portfolio content, analytics, and site configuration.</p>
 </div>
 
-<!-- Stats -->
+<!-- ═══════════════ OVERVIEW STATS ═══════════════ -->
 <div class="stats-row">
+    <div class="stat-card">
+        <div class="stat-val">{{ total_visits }}</div>
+        <div class="stat-lbl">Total Visits</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-val" style="color:var(--accent-cyan)">{{ today_visits }}</div>
+        <div class="stat-lbl">Today</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-val">{{ unique_visitors }}</div>
+        <div class="stat-lbl">Unique Visitors</div>
+    </div>
     <div class="stat-card">
         <div class="stat-val">{{ projects|length }}</div>
         <div class="stat-lbl">Projects</div>
     </div>
     <div class="stat-card">
-        <div class="stat-val">{{ experiences|length }}</div>
-        <div class="stat-lbl">Experiences</div>
+        <div class="stat-val">{{ blog_posts|length }}</div>
+        <div class="stat-lbl">Blog Posts</div>
     </div>
     <div class="stat-card">
         <div class="stat-val">{{ messages|length }}</div>
-        <div class="stat-lbl">Messages</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-val" style="color:var(--accent-cyan)">{{ unread }}</div>
-        <div class="stat-lbl">Unread</div>
+        <div class="stat-lbl">Messages{% if unread %} <span class="badge badge-cyan"
+                style="font-size:.6rem;vertical-align:super;">{{ unread }}</span>{% endif %}</div>
     </div>
 </div>
 
-<div class="admin-grid">
-    <!-- PROJECTS -->
-    <div class="admin-card" style="grid-column:1/-1;">
+<!-- ═══════════════ TAB NAVIGATION ═══════════════ -->
+<div class="admin-tabs">
+    <button class="admin-tab active" data-tab="tab-analytics">Analytics</button>
+    <button class="admin-tab" data-tab="tab-site-config">Site Content</button>
+    <button class="admin-tab" data-tab="tab-projects">Projects</button>
+    <button class="admin-tab" data-tab="tab-experience">Experience</button>
+    <button class="admin-tab" data-tab="tab-blog">Blog Posts</button>
+    <button class="admin-tab" data-tab="tab-messages">Messages{% if unread %} <span class="badge badge-cyan"
+            style="font-size:.55rem;">{{ unread }}</span>{% endif %}</button>
+</div>
+
+<!-- ═══════════════ TAB: ANALYTICS ═══════════════ -->
+<div class="tab-panel active" id="tab-analytics">
+    <div class="admin-grid" style="grid-template-columns:1fr 1fr;">
+        <!-- Top Pages -->
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h2>Top Pages <span class="badge badge-accent">Last 30 days</span></h2>
+            </div>
+            {% if top_pages %}
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Page</th>
+                        <th style="text-align:right">Views</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for page in top_pages %}
+                    <tr>
+                        <td><code style="font-size:.8rem;color:var(--accent-cyan);">{{ page.path }}</code></td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;">{{ page.count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="empty-state">No visits recorded yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- Top Referrers -->
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h2>Top Referrers</h2>
+            </div>
+            {% if top_referrers %}
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Source</th>
+                        <th style="text-align:right">Visits</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ref in top_referrers %}
+                    <tr>
+                        <td style="font-size:.8rem;">{{ ref.referrer if ref.referrer else '(direct)' }}</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;">{{ ref.count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="empty-state">No referrer data yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- Visitor Languages / Locales -->
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h2>Visitor Locales</h2>
+            </div>
+            {% if top_countries %}
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Locale</th>
+                        <th style="text-align:right">Visitors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in top_countries %}
+                    <tr>
+                        <td>{{ c.country if c.country else '(unknown)' }}</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;">{{ c.count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="empty-state">No locale data yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- Recent Visits -->
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h2>Recent Visits</h2>
+            </div>
+            {% if recent_visits %}
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Page</th>
+                        <th>When</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for v in recent_visits %}
+                    <tr>
+                        <td><code style="font-size:.8rem;color:var(--accent-cyan);">{{ v.path }}</code></td>
+                        <td style="font-size:.75rem;color:var(--text-secondary);">{{ v.visited_at.strftime('%d %b
+                            %H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="empty-state">No visits recorded yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ TAB: SITE CONFIG ═══════════════ -->
+<div class="tab-panel" id="tab-site-config">
+    <form method="POST" action="{{ url_for('admin.site_config_update') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        {% for group_name, group_label in [('hero', 'Hero Section'), ('about', 'About Section'), ('impact', 'Impact
+        Numbers'), ('skills', 'Skills & Extras')] %}
+        <div class="admin-card" style="margin-bottom:1.5rem;">
+            <div class="admin-card-header">
+                <h2>{{ group_label }}</h2>
+            </div>
+            <div class="config-fields">
+                {% for cfg in site_configs %}
+                {% if cfg.group == group_name %}
+                <div class="form-group">
+                    <label for="cfg_{{ cfg.key }}">{{ cfg.label or cfg.key }}</label>
+                    {% if cfg.value|length > 150 %}
+                    <textarea id="cfg_{{ cfg.key }}" name="cfg_{{ cfg.key }}" rows="3">{{ cfg.value }}</textarea>
+                    {% else %}
+                    <input type="text" id="cfg_{{ cfg.key }}" name="cfg_{{ cfg.key }}" value="{{ cfg.value }}">
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="form-actions">
+            <button type="submit" class="btn-save">Save All Changes</button>
+        </div>
+    </form>
+</div>
+
+<!-- ═══════════════ TAB: PROJECTS ═══════════════ -->
+<div class="tab-panel" id="tab-projects">
+    <div class="admin-card">
         <div class="admin-card-header">
             <h2>Projects <span class="badge badge-accent">{{ projects|length }}</span></h2>
             <a href="{{ url_for('admin.project_new') }}" class="btn-add">+ Add Project</a>
@@ -48,7 +216,7 @@
             <tbody>
                 {% for p in projects %}
                 <tr>
-                    <td style="font-family:'JetBrains Mono',monospace; color:var(--text-secondary);">{{ p.sort_order }}
+                    <td style="font-family:'JetBrains Mono',monospace;color:var(--text-secondary);">{{ p.sort_order }}
                     </td>
                     <td><strong>{{ p.title }}</strong></td>
                     <td><span class="badge badge-accent" style="font-size:.65rem;">{{ p.category|upper }}</span></td>
@@ -57,6 +225,8 @@
                             style="color:var(--text-secondary);">&mdash;</span>{% endif %}</td>
                     <td class="table-actions">
                         <a href="{{ url_for('admin.project_edit', project_id=p.id) }}" class="btn-sm btn-edit">Edit</a>
+                        <a href="{{ url_for('admin.case_study_edit', project_id=p.id) }}" class="btn-sm btn-view">Case
+                            Study</a>
                         <form method="POST" action="{{ url_for('admin.project_delete', project_id=p.id) }}"
                             onsubmit="return confirm('Delete this project?');" style="display:inline;">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -68,8 +238,10 @@
             </tbody>
         </table>
     </div>
+</div>
 
-    <!-- EXPERIENCE -->
+<!-- ═══════════════ TAB: EXPERIENCE ═══════════════ -->
+<div class="tab-panel" id="tab-experience">
     <div class="admin-card">
         <div class="admin-card-header">
             <h2>Experience <span class="badge badge-accent">{{ experiences|length }}</span></h2>
@@ -78,17 +250,21 @@
         <table class="admin-table">
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>Role</th>
                     <th>Company</th>
+                    <th>Period</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for e in experiences %}
                 <tr>
-                    <td><strong>{{ e.role }}</strong><br><span style="font-size:.75rem; color:var(--text-secondary);">{{
-                            e.date_range }}</span></td>
+                    <td style="font-family:'JetBrains Mono',monospace;color:var(--text-secondary);">{{ e.sort_order }}
+                    </td>
+                    <td><strong>{{ e.role }}</strong></td>
                     <td>{{ e.company }}</td>
+                    <td style="font-size:.75rem;color:var(--text-secondary);">{{ e.date_range }}</td>
                     <td class="table-actions">
                         <a href="{{ url_for('admin.experience_edit', exp_id=e.id) }}" class="btn-sm btn-edit">Edit</a>
                         <form method="POST" action="{{ url_for('admin.experience_delete', exp_id=e.id) }}"
@@ -102,8 +278,51 @@
             </tbody>
         </table>
     </div>
+</div>
 
-    <!-- MESSAGES -->
+<!-- ═══════════════ TAB: BLOG POSTS ═══════════════ -->
+<div class="tab-panel" id="tab-blog">
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2>Blog Posts <span class="badge badge-accent">{{ blog_posts|length }}</span></h2>
+            <a href="{{ url_for('admin.blog_new') }}" class="btn-add">+ Add Post</a>
+        </div>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Published</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bp in blog_posts %}
+                <tr>
+                    <td><strong>{{ bp.title }}</strong></td>
+                    <td><span class="badge badge-accent" style="font-size:.65rem;">{{ bp.category }}</span></td>
+                    <td>{% if bp.published %}<span style="color:var(--success);">&#10003;</span>{% else %}<span
+                            style="color:var(--text-secondary);">&mdash;</span>{% endif %}</td>
+                    <td style="font-size:.75rem;color:var(--text-secondary);">{{ bp.created_at.strftime('%d %b %Y') }}
+                    </td>
+                    <td class="table-actions">
+                        <a href="{{ url_for('admin.blog_edit', post_id=bp.id) }}" class="btn-sm btn-edit">Edit</a>
+                        <form method="POST" action="{{ url_for('admin.blog_delete', post_id=bp.id) }}"
+                            onsubmit="return confirm('Delete this post?');" style="display:inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn-sm btn-del">Del</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ═══════════════ TAB: MESSAGES ═══════════════ -->
+<div class="tab-panel" id="tab-messages">
     <div class="admin-card">
         <div class="admin-card-header">
             <h2>Messages {% if unread %}<span class="badge badge-cyan">{{ unread }} new</span>{% endif %}</h2>
@@ -112,18 +331,23 @@
         <table class="admin-table">
             <thead>
                 <tr>
-                    <th>From</th>
+                    <th style="width:25%">From</th>
                     <th>Subject</th>
-                    <th>Actions</th>
+                    <th style="width:10%">Date</th>
+                    <th style="width:15%">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for m in messages %}
                 <tr>
-                    <td>{% if not m.is_read %}<span class="unread-dot"></span>{% endif %}{{ m.name }}<br><span
-                            style="font-size:.7rem; color:var(--text-secondary);">{{ m.created_at.strftime('%d %b %Y')
-                            }}</span></td>
+                    <td>
+                        {% if not m.is_read %}<span class="unread-dot"></span>{% endif %}
+                        <strong>{{ m.name }}</strong><br>
+                        <span style="font-size:.7rem;color:var(--text-secondary);">{{ m.email }}</span>
+                    </td>
                     <td><span class="truncate-text">{{ m.subject }}</span></td>
+                    <td style="font-size:.75rem;color:var(--text-secondary);">{{ m.created_at.strftime('%d %b %Y') }}
+                    </td>
                     <td class="table-actions">
                         <a href="{{ url_for('admin.message_detail', msg_id=m.id) }}" class="btn-sm btn-view">Read</a>
                         <form method="POST" action="{{ url_for('admin.message_delete', msg_id=m.id) }}"
@@ -137,9 +361,9 @@
             </tbody>
         </table>
         {% else %}
-        <p style="color:var(--text-secondary); font-size:.9rem; text-align:center; padding:2rem 0;">No messages yet.
-            They'll appear here when someone contacts you.</p>
+        <p class="empty-state">No messages yet. They'll appear here when someone contacts you.</p>
         {% endif %}
     </div>
 </div>
+
 {% endblock %}

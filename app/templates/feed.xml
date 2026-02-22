@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Mohamed Maa Albared — Neural Transmissions</title>
+        <link>{{ url_for('main.blog', _external=True) }}</link>
+        <description>Explorations at the intersection of AI, neuroscience, and art by Mohamed Maa Albared.</description>
+        <language>en-us</language>
+        <atom:link href="{{ url_for('main.rss_feed', _external=True) }}" rel="self" type="application/rss+xml"/>
+        {% for post in posts %}
+        <item>
+            <title>{{ post.title }}</title>
+            <link>{{ url_for('main.blog_detail', slug=post.slug, _external=True) }}</link>
+            <description>{{ post.excerpt }}</description>
+            <pubDate>{{ post.created_at.strftime('%a, %d %b %Y %H:%M:%S +0000') }}</pubDate>
+            <guid>{{ url_for('main.blog_detail', slug=post.slug, _external=True) }}</guid>
+            {% if post.category %}<category>{{ post.category }}</category>{% endif %}
+        </item>
+        {% endfor %}
+    </channel>
+</rss>
