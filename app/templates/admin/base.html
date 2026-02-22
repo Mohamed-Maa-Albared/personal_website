@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin{% endblock %} — Mohamed Maa Albared</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #06080d;
+            --bg-surface: #0c1017;
+            --bg-card: #12161f;
+            --bg-card-hover: #1a1f2e;
+            --accent: #7c5cfc;
+            --accent-cyan: #00e5ff;
+            --accent-glow: rgba(124, 92, 252, .25);
+            --text-primary: #e8e6f0;
+            --text-secondary: #8b8a97;
+            --border: rgba(255, 255, 255, .06);
+            --radius: 12px;
+            --success: #34d399;
+            --error: #ff5050;
+            --warning: #fbbf24;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: var(--accent-cyan);
+        }
+
+        /* Admin nav */
+        .admin-nav {
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .admin-nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .admin-nav-brand img {
+            height: 36px;
+            width: auto;
+        }
+
+        .admin-nav-brand span {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+        }
+
+        .admin-nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .admin-nav-links a {
+            font-size: .85rem;
+            font-weight: 500;
+            padding: .4rem .8rem;
+            border-radius: 6px;
+            transition: all .2s;
+        }
+
+        .admin-nav-links a:hover {
+            background: var(--bg-card);
+        }
+
+        .admin-nav-links .btn-view-site {
+            background: rgba(124, 92, 252, .12);
+            color: var(--accent);
+            border: 1px solid rgba(124, 92, 252, .2);
+        }
+
+        .admin-nav-links .btn-logout {
+            color: var(--error);
+        }
+
+        /* Layout */
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .admin-header {
+            margin-bottom: 2rem;
+        }
+
+        .admin-header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .admin-header p {
+            color: var(--text-secondary);
+            margin-top: .4rem;
+        }
+
+        /* Flash */
+        .flash {
+            padding: .8rem 1.2rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            font-size: .9rem;
+        }
+
+        .flash-success {
+            background: rgba(52, 211, 153, .08);
+            border: 1px solid rgba(52, 211, 153, .2);
+            color: var(--success);
+        }
+
+        .flash-error {
+            background: rgba(255, 80, 80, .08);
+            border: 1px solid rgba(255, 80, 80, .2);
+            color: var(--error);
+        }
+
+        /* Cards */
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .admin-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            transition: border-color .3s;
+        }
+
+        .admin-card:hover {
+            border-color: rgba(124, 92, 252, .2);
+        }
+
+        .admin-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .admin-card-header h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 24px;
+            height: 24px;
+            padding: 0 8px;
+            border-radius: 12px;
+            font-size: .75rem;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .badge-accent {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .badge-cyan {
+            background: var(--accent-cyan);
+            color: #000;
+        }
+
+        .badge-warning {
+            background: var(--warning);
+            color: #000;
+        }
+
+        /* Tables */
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .85rem;
+        }
+
+        .admin-table th {
+            text-align: left;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: .7rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            padding: .6rem .5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .admin-table td {
+            padding: .7rem .5rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .admin-table tr:hover {
+            background: rgba(124, 92, 252, .03);
+        }
+
+        .table-actions {
+            display: flex;
+            gap: .5rem;
+        }
+
+        .btn-sm {
+            display: inline-flex;
+            align-items: center;
+            gap: .3rem;
+            padding: .3rem .6rem;
+            border-radius: 6px;
+            font-size: .75rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all .2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-edit {
+            background: rgba(124, 92, 252, .12);
+            color: var(--accent);
+        }
+
+        .btn-edit:hover {
+            background: rgba(124, 92, 252, .25);
+        }
+
+        .btn-del {
+            background: rgba(255, 80, 80, .08);
+            color: var(--error);
+        }
+
+        .btn-del:hover {
+            background: rgba(255, 80, 80, .2);
+        }
+
+        .btn-view {
+            background: rgba(0, 229, 255, .08);
+            color: var(--accent-cyan);
+        }
+
+        .btn-view:hover {
+            background: rgba(0, 229, 255, .18);
+        }
+
+        /* Add button */
+        .btn-add {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .5rem 1rem;
+            background: linear-gradient(135deg, var(--accent), #6341e0);
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: .85rem;
+            transition: all .3s;
+            font-family: 'Inter', sans-serif;
+            text-decoration: none;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px var(--accent-glow);
+            color: #fff;
+        }
+
+        /* Forms */
+        .form-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            max-width: 700px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: .8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: .5rem;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: .5px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: .7rem 1rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: .9rem;
+            transition: border-color .3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+
+        .form-check input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+        }
+
+        .form-hint {
+            font-size: .75rem;
+            color: var(--text-secondary);
+            margin-top: .3rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-save {
+            padding: .7rem 2rem;
+            background: linear-gradient(135deg, var(--accent), #6341e0);
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: .9rem;
+            transition: all .3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-save:hover {
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .btn-cancel {
+            padding: .7rem 2rem;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: .9rem;
+            transition: all .3s;
+            font-family: 'Inter', sans-serif;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-cancel:hover {
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
+        }
+
+        /* Message detail */
+        .msg-meta {
+            color: var(--text-secondary);
+            font-size: .85rem;
+            margin-bottom: 1rem;
+        }
+
+        .msg-body {
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        .unread-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .truncate-text {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+        }
+
+        /* Stats row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.2rem;
+            text-align: center;
+        }
+
+        .stat-card .stat-val {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-card .stat-lbl {
+            font-size: .75rem;
+            color: var(--text-secondary);
+            margin-top: .3rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 1rem;
+            }
+
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-nav {
+                flex-wrap: wrap;
+                gap: .5rem;
+                padding: .8rem 1rem;
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    {% if session.get('admin_logged_in') %}
+    <nav class="admin-nav">
+        <div class="admin-nav-brand">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+            <span>COMMAND CENTER</span>
+        </div>
+        <div class="admin-nav-links">
+            <a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+            <a href="/" class="btn-view-site" target="_blank">View Site &#8599;</a>
+            <a href="{{ url_for('admin.logout') }}" class="btn-logout">Log out</a>
+        </div>
+    </nav>
+    {% endif %}
+
+    <div class="admin-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+</body>
+
+</html>

@@ -33,3 +33,6 @@ Thumbs.db
 # Flask
 instance/
 .webassets-cache
+
+# Private files
+Achievements.md

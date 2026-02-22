@@ -1,0 +1,29 @@
+{% extends "admin/base.html" %}
+{% block title %}Message from {{ message.name }}{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <h1>Message from {{ message.name }}</h1>
+</div>
+
+<div class="form-card">
+    <div class="msg-meta">
+        <p><strong>From:</strong> {{ message.name }} &lt;{{ message.email }}&gt;</p>
+        <p><strong>Subject:</strong> {{ message.subject }}</p>
+        <p><strong>Date:</strong> {{ message.created_at.strftime('%d %B %Y at %H:%M') }}</p>
+    </div>
+    <hr style="border:none; border-top:1px solid var(--border); margin:1.5rem 0;">
+    <div class="msg-body">{{ message.message }}</div>
+
+    <div class="form-actions">
+        <a href="mailto:{{ message.email }}?subject=Re: {{ message.subject }}" class="btn-save"
+            style="text-decoration:none;">Reply via Email</a>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn-cancel">Back</a>
+        <form method="POST" action="{{ url_for('admin.message_delete', msg_id=message.id) }}"
+            onsubmit="return confirm('Delete this message?');" style="display:inline;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn-sm btn-del" style="padding:.7rem 1.5rem;">Delete</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

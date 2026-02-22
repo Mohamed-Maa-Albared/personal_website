@@ -1,0 +1,145 @@
+{% extends "admin/base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <h1>Dashboard</h1>
+    <p>Manage your portfolio content, projects, experience, and messages.</p>
+</div>
+
+<!-- Stats -->
+<div class="stats-row">
+    <div class="stat-card">
+        <div class="stat-val">{{ projects|length }}</div>
+        <div class="stat-lbl">Projects</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-val">{{ experiences|length }}</div>
+        <div class="stat-lbl">Experiences</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-val">{{ messages|length }}</div>
+        <div class="stat-lbl">Messages</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-val" style="color:var(--accent-cyan)">{{ unread }}</div>
+        <div class="stat-lbl">Unread</div>
+    </div>
+</div>
+
+<div class="admin-grid">
+    <!-- PROJECTS -->
+    <div class="admin-card" style="grid-column:1/-1;">
+        <div class="admin-card-header">
+            <h2>Projects <span class="badge badge-accent">{{ projects|length }}</span></h2>
+            <a href="{{ url_for('admin.project_new') }}" class="btn-add">+ Add Project</a>
+        </div>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Year</th>
+                    <th>Featured</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in projects %}
+                <tr>
+                    <td style="font-family:'JetBrains Mono',monospace; color:var(--text-secondary);">{{ p.sort_order }}
+                    </td>
+                    <td><strong>{{ p.title }}</strong></td>
+                    <td><span class="badge badge-accent" style="font-size:.65rem;">{{ p.category|upper }}</span></td>
+                    <td>{{ p.year }}</td>
+                    <td>{% if p.featured %}<span style="color:var(--success);">&#10003;</span>{% else %}<span
+                            style="color:var(--text-secondary);">&mdash;</span>{% endif %}</td>
+                    <td class="table-actions">
+                        <a href="{{ url_for('admin.project_edit', project_id=p.id) }}" class="btn-sm btn-edit">Edit</a>
+                        <form method="POST" action="{{ url_for('admin.project_delete', project_id=p.id) }}"
+                            onsubmit="return confirm('Delete this project?');" style="display:inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn-sm btn-del">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- EXPERIENCE -->
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2>Experience <span class="badge badge-accent">{{ experiences|length }}</span></h2>
+            <a href="{{ url_for('admin.experience_new') }}" class="btn-add">+ Add</a>
+        </div>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Role</th>
+                    <th>Company</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in experiences %}
+                <tr>
+                    <td><strong>{{ e.role }}</strong><br><span style="font-size:.75rem; color:var(--text-secondary);">{{
+                            e.date_range }}</span></td>
+                    <td>{{ e.company }}</td>
+                    <td class="table-actions">
+                        <a href="{{ url_for('admin.experience_edit', exp_id=e.id) }}" class="btn-sm btn-edit">Edit</a>
+                        <form method="POST" action="{{ url_for('admin.experience_delete', exp_id=e.id) }}"
+                            onsubmit="return confirm('Delete?');" style="display:inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn-sm btn-del">Del</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- MESSAGES -->
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2>Messages {% if unread %}<span class="badge badge-cyan">{{ unread }} new</span>{% endif %}</h2>
+        </div>
+        {% if messages %}
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>From</th>
+                    <th>Subject</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in messages %}
+                <tr>
+                    <td>{% if not m.is_read %}<span class="unread-dot"></span>{% endif %}{{ m.name }}<br><span
+                            style="font-size:.7rem; color:var(--text-secondary);">{{ m.created_at.strftime('%d %b %Y')
+                            }}</span></td>
+                    <td><span class="truncate-text">{{ m.subject }}</span></td>
+                    <td class="table-actions">
+                        <a href="{{ url_for('admin.message_detail', msg_id=m.id) }}" class="btn-sm btn-view">Read</a>
+                        <form method="POST" action="{{ url_for('admin.message_delete', msg_id=m.id) }}"
+                            onsubmit="return confirm('Delete?');" style="display:inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn-sm btn-del">Del</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="color:var(--text-secondary); font-size:.9rem; text-align:center; padding:2rem 0;">No messages yet.
+            They'll appear here when someone contacts you.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

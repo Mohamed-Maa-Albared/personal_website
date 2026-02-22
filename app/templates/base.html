@@ -4,38 +4,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}My Portfolio{% endblock %}</title>
+    <meta name="description"
+        content="Mohamed Maa Albared — Data Scientist & AI Engineer. Architecting intelligent systems at the intersection of art and neuroscience.">
+    <meta name="author" content="Mohamed Maa Albared">
+    <meta property="og:title" content="Mohamed Maa Albared — Architecting Intelligence">
+    <meta property="og:description"
+        content="Data Scientist & AI Engineer specializing in Generative AI, Recommendation Systems, and Autonomous Agents.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="{{ url_for('static', filename='images/logo.png', _external=True) }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
+    <title>{% block title %}Mohamed Maa Albared — Architecting Intelligence{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% block extra_css %}{% endblock %}
 </head>
 
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <a href="/" class="logo">Portfolio</a>
-            <ul class="nav-links">
-                <li><a href="/">Home</a></li>
-                <li><a href="/projects">Projects</a></li>
-                <li><a href="/about">About</a></li>
-                <li><a href="/contact">Contact</a></li>
+    <!-- Loading Screen -->
+    <div id="loader" class="loader">
+        <div class="loader-inner">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="" class="logo-loader">
+            <div class="neural-pulse"></div>
+            <span class="loader-text">INITIALIZING</span>
+        </div>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Mohamed Maa Albared"
+                    class="logo-img">
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/#about" data-section="about">About</a></li>
+                <li><a href="/#experience" data-section="experience">Experience</a></li>
+                <li><a href="/#projects" data-section="projects">Projects</a></li>
+                <li><a href="/#skills" data-section="skills">Skills</a></li>
+                <li><a href="/#contact" data-section="contact" class="nav-cta">Get in Touch</a></li>
             </ul>
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 
     <main>
         {% block content %}{% endblock %}
     </main>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2026 My Portfolio. All rights reserved.</p>
-            <div class="footer-links">
-                <a href="#">GitHub</a>
-                <a href="#">LinkedIn</a>
-                <a href="#">Twitter</a>
-            </div>
-        </div>
-    </footer>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     {% block extra_js %}{% endblock %}

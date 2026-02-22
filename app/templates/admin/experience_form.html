@@ -1,0 +1,64 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Edit' if experience else 'New' }} Experience{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <h1>{{ 'Edit' if experience else 'New' }} Experience</h1>
+    <p>{{ 'Update this experience entry.' if experience else 'Add a new position or education entry.' }}</p>
+</div>
+
+<div class="form-card">
+    <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+            <label for="role">Role / Title *</label>
+            <input type="text" id="role" name="role" required value="{{ experience.role if experience else '' }}">
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="company">Company / Institution *</label>
+                <input type="text" id="company" name="company" required
+                    value="{{ experience.company if experience else '' }}">
+            </div>
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location"
+                    value="{{ experience.location if experience else '' }}">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="date_range">Date Range *</label>
+                <input type="text" id="date_range" name="date_range" required
+                    value="{{ experience.date_range if experience else '' }}" placeholder="e.g. Jan 2022 — Present">
+            </div>
+            <div class="form-group">
+                <label for="sort_order">Sort Order</label>
+                <input type="number" id="sort_order" name="sort_order"
+                    value="{{ experience.sort_order if experience else 0 }}">
+                <div class="form-hint">Lower number = appears first.</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description"
+                rows="3">{{ experience.description if experience else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="highlights">Key Highlights</label>
+            <textarea id="highlights" name="highlights" rows="5" placeholder="One highlight per line">{% if experience and experience.highlights %}{% for h in experience.highlights|from_json %}{{ h }}
+{% endfor %}{% endif %}</textarea>
+            <div class="form-hint">Enter one bullet point per line. These appear as timeline highlights.</div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-save">{{ 'Update' if experience else 'Create' }} Experience</button>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

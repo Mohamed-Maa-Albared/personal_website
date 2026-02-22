@@ -1,0 +1,100 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Edit' if project else 'New' }} Project{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <h1>{{ 'Edit' if project else 'New' }} Project</h1>
+    <p>{{ 'Update project details below.' if project else 'Fill in the details to create a new project.' }}</p>
+</div>
+
+<div class="form-card">
+    <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+            <label for="title">Title *</label>
+            <input type="text" id="title" name="title" required value="{{ project.title if project else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="short_description">Short Description</label>
+            <input type="text" id="short_description" name="short_description" maxlength="300"
+                value="{{ project.short_description if project else '' }}">
+            <div class="form-hint">Displayed on the project card (max 300 chars).</div>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Full Description *</label>
+            <textarea id="description" name="description" rows="6"
+                required>{{ project.description if project else '' }}</textarea>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category">
+                    <option value="">Select...</option>
+                    {% for cat in ['genai', 'recsys', 'nlp', 'cv', 'rl', 'rl cv'] %}
+                    <option value="{{ cat }}" {{ 'selected' if project and project.category==cat else '' }}>{{ cat|upper
+                        }}</option>
+                    {% endfor %}
+                </select>
+                <div class="form-hint">Used for filtering on the site.</div>
+            </div>
+            <div class="form-group">
+                <label for="year">Year</label>
+                <input type="text" id="year" name="year" value="{{ project.year if project else '' }}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="technologies">Technologies</label>
+            <input type="text" id="technologies" name="technologies"
+                value="{{ project.technologies if project else '' }}">
+            <div class="form-hint">Comma-separated, e.g. "Python, TensorFlow, Flask"</div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="client">Client / Context</label>
+                <input type="text" id="client" name="client" value="{{ project.client if project else '' }}">
+            </div>
+            <div class="form-group">
+                <label for="sort_order">Sort Order</label>
+                <input type="number" id="sort_order" name="sort_order"
+                    value="{{ project.sort_order if project else 0 }}">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="demo_url">Demo URL</label>
+                <input type="url" id="demo_url" name="demo_url" value="{{ project.demo_url if project else '' }}">
+            </div>
+            <div class="form-group">
+                <label for="github_url">GitHub URL</label>
+                <input type="url" id="github_url" name="github_url" value="{{ project.github_url if project else '' }}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="image_url">Image URL</label>
+            <input type="text" id="image_url" name="image_url" value="{{ project.image_url if project else '' }}">
+        </div>
+
+        <div class="form-group">
+            <div class="form-check">
+                <input type="checkbox" id="featured" name="featured" {{ 'checked' if project and project.featured
+                    else '' }}>
+                <label for="featured" style="margin:0; font-size:.9rem; color:var(--text-primary);">Featured
+                    Project</label>
+            </div>
+            <div class="form-hint">Featured projects appear with a highlight on the homepage hero area.</div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-save">{{ 'Update Project' if project else 'Create Project' }}</button>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
