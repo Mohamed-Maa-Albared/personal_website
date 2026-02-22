@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Projects - My Portfolio{% endblock %}
+
+{% block content %}
+<section class="projects-section">
+    <div class="container">
+        <h1>My Projects</h1>
+        <div class="projects-grid">
+            {% for project in projects.items %}
+            <div class="project-card">
+                {% if project.image_url %}
+                <img src="{{ project.image_url }}" alt="{{ project.title }}">
+                {% endif %}
+                <h3>{{ project.title }}</h3>
+                <p>{{ project.description[:150] }}...</p>
+                <div class="project-tech">
+                    {% for tech in project.technologies.split(',') %}
+                    <span class="tag">{{ tech.strip() }}</span>
+                    {% endfor %}
+                </div>
+                <div class="project-links">
+                    {% if project.demo_url %}
+                    <a href="{{ project.demo_url }}" target="_blank" class="btn btn-small">Demo</a>
+                    {% endif %}
+                    {% if project.github_url %}
+                    <a href="{{ project.github_url }}" target="_blank" class="btn btn-small">GitHub</a>
+                    {% endif %}
+                    <a href="/project/{{ project.id }}" class="btn btn-small">Details</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if projects.pages > 1 %}
+        <div class="pagination">
+            {% if projects.has_prev %}
+            <a href="{{ url_for('main.projects', page=projects.prev_num) }}">&laquo; Previous</a>
+            {% endif %}
+
+            {% for page_num in projects.iter_pages() %}
+            {% if page_num %}
+            {% if page_num == projects.page %}
+            <span class="current">{{ page_num }}</span>
+            {% else %}
+            <a href="{{ url_for('main.projects', page=page_num) }}">{{ page_num }}</a>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+
+            {% if projects.has_next %}
+            <a href="{{ url_for('main.projects', page=projects.next_num) }}">Next &raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

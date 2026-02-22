@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} - My Portfolio{% endblock %}
+
+{% block content %}
+<section class="project-detail">
+    <div class="container">
+        <a href="/projects" class="back-link">&larr; Back to Projects</a>
+
+        {% if project.image_url %}
+        <img src="{{ project.image_url }}" alt="{{ project.title }}" class="project-image">
+        {% endif %}
+
+        <h1>{{ project.title }}</h1>
+
+        <div class="project-meta">
+            <span class="date">{{ project.created_at.strftime('%B %Y') }}</span>
+        </div>
+
+        <div class="project-description">
+            {{ project.description }}
+        </div>
+
+        <div class="project-tech">
+            <h3>Technologies</h3>
+            <div class="tech-list">
+                {% for tech in project.technologies.split(',') %}
+                <span class="tag">{{ tech.strip() }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="project-links">
+            {% if project.demo_url %}
+            <a href="{{ project.demo_url }}" target="_blank" class="btn btn-primary">View Demo</a>
+            {% endif %}
+            {% if project.github_url %}
+            <a href="{{ project.github_url }}" target="_blank" class="btn btn-secondary">View on GitHub</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
