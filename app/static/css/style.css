@@ -226,14 +226,14 @@ strong {
 }
 
 .logo-loader {
-    height: 72px;
+    height: 340px;
     width: auto;
     margin-bottom: 1.5rem;
     animation: logo-float 3s ease-in-out infinite;
 }
 
 .logo-footer {
-    height: 64px;
+    height: 92px;
     width: auto;
     transition: filter .3s;
 }
