@@ -589,11 +589,11 @@ IMPACT_CARDS = [
         "sort_order": 2,
     },
     {
-        "icon": "&#10047;",
-        "value": "82",
-        "prefix": "0.",
-        "suffix": "",
-        "description": "ML model performance metric",
+        "icon": "&#9992;",
+        "value": "6",
+        "prefix": "",
+        "suffix": "+",
+        "description": "Airline partners using recommendation systems",
         "sort_order": 3,
     },
     {

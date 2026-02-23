@@ -185,7 +185,19 @@ def _send_via_resend(
             msg = err.get("message", body)
         except (json.JSONDecodeError, ValueError):
             msg = body
-        detail = f"Resend API error {exc.code}: {msg}"
+
+        # Provide actionable guidance for common Resend errors
+        if "1010" in str(msg) or exc.code == 403:
+            detail = (
+                f"Resend API error {exc.code}: {msg}. "
+                "With the free test sender (onboarding@resend.dev) you can only send "
+                "to the SAME email you signed up for Resend with. Fix: set NOTIFICATION_EMAIL "
+                "to your Resend signup email, OR verify your own domain at resend.com/domains "
+                "and set RESEND_FROM to an address on that domain."
+            )
+        else:
+            detail = f"Resend API error {exc.code}: {msg}"
+
         logger.error(detail)
         return False, detail
     except urllib.error.URLError as exc:
