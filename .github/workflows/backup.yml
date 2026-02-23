@@ -35,14 +35,16 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
+          # Use explicit path to ensure v18 pg_dump (not the pre-installed v16)
+          PG_DUMP=/usr/lib/postgresql/18/bin/pg_dump
+          echo "Using: $($PG_DUMP --version)"
+
           mkdir -p backups
           TIMESTAMP=$(date -u +%Y%m%d_%H%M%S)
 
-          echo "Using pg_dump: $(which pg_dump) — $(pg_dump --version)"
-
           if [ -n "$DATABASE_URL" ]; then
             echo "PostgreSQL backup via pg_dump..."
-            pg_dump "$DATABASE_URL" --no-owner --no-acl \
+            $PG_DUMP "$DATABASE_URL" --no-owner --no-acl \
               -f "backups/portfolio_${TIMESTAMP}.sql"
             echo "Backup saved to backups/portfolio_${TIMESTAMP}.sql"
           else
