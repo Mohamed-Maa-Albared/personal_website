@@ -178,6 +178,7 @@ def _send_via_resend(
         headers={
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
+            "User-Agent": "portfolio-website/1.0",
         },
         method="POST",
     )
