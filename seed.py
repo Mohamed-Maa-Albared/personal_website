@@ -25,7 +25,7 @@ EXPERIENCES = [
         "role": "Data Scientist",
         "company": "zeroG – AI in Aviation (Lufthansa Group)",
         "location": "Frankfurt, Germany",
-        "date_range": "Dec 2022 — Present",
+        "date_range": "Dec 2022 – Present",
         "description": (
             "Lead the innovation, design, and implementation of advanced AI systems "
             "to drive customer engagement and strategic business initiatives. "
@@ -35,8 +35,8 @@ EXPERIENCES = [
             [
                 "Keynote on Agentic AI with live multi-agent system demo at Data Community Day",
                 "Pioneered first generative AI 'categories model' for city destination scoring",
-                "Engineered ancillary recommender -> 3-15% purchase increase across airlines",
-                "Optimised recommender APIs for up to 20x performance gain",
+                "Engineered ancillary recommender, driving 3-15% purchase increase across airlines",
+                "Re-factored recommender APIs for up to 20x performance gain",
                 "Built AB testing pipeline from scratch for rigorous model validation",
             ]
         ),
@@ -46,7 +46,7 @@ EXPERIENCES = [
         "role": "AI Engineer (Freelance)",
         "company": "Freelance",
         "location": "Remote",
-        "date_range": "Apr 2021 — Oct 2022",
+        "date_range": "Apr 2021 – Oct 2022",
         "description": (
             "Delivered end-to-end AI solutions for diverse clients, "
             "managing every stage from scoping to deployment and maintenance."
@@ -63,7 +63,7 @@ EXPERIENCES = [
         "role": "Engineering Lecturer (Part-Time)",
         "company": "Arab International University",
         "location": "Damascus, Syria",
-        "date_range": "Feb 2022 — Jun 2022",
+        "date_range": "Feb 2022 – Jun 2022",
         "description": (
             "Instructed undergraduate students in Algorithms & Data Structures. "
             "Developed curriculum, projects, and assessments."
@@ -80,27 +80,27 @@ EXPERIENCES = [
         "role": "Data Scientist",
         "company": "Damascus-based Start-Up",
         "location": "Damascus, Syria",
-        "date_range": "Apr 2020 — Jun 2021",
+        "date_range": "Apr 2020 – Jun 2021",
         "description": (
-            "Owned the full data science pipeline — from web scraping and cleaning "
+            "Owned the full data science pipeline from web scraping and cleaning "
             "to modelling and deployment of predictive systems."
         ),
         "highlights": json.dumps(
             [
-                "Foreign Exchange Forecasting (JPY/CAD) — time-series model",
-                "Emotion Prediction from Voice — deep learning classifier",
-                "Arabic Tweets Classifier — NLP sentiment analysis",
+                "Foreign Exchange Forecasting (JPY/CAD): time-series model",
+                "Emotion Prediction from Voice: deep learning classifier",
+                "Arabic Tweets Classifier: NLP sentiment analysis",
             ]
         ),
         "sort_order": 4,
     },
     {
-        "role": "BSc Informatics Engineering — AI Major",
+        "role": "BSc Informatics Engineering, AI Major",
         "company": "Arab International University",
         "location": "Damascus, Syria",
-        "date_range": "Sep 2015 — Mar 2021",
+        "date_range": "Sep 2015 – Mar 2021",
         "description": (
-            "Thesis: Human Behavior Simulation — a multi-modal AI system combining "
+            "Thesis: Human Behavior Simulation. A multi-modal AI system combining "
             "voice cloning, 3D avatar reconstruction, and deep RL agent training."
         ),
         "highlights": json.dumps(
@@ -288,10 +288,9 @@ PROJECTS = [
         "short_description": "Comprehensive experimentation pipeline with causal inference.",
         "description": (
             "Led research and development of a comprehensive, generalised AB testing framework. "
-            "Includes covariate balance checking, ATE analysis, and a sophisticated CATE framework "
+            "Includes covariate balance checking, ATE analysis, and a CATE framework "
             "with five meta-learners, SHAP-based customer archetype discovery, and automated "
-            "dual-reporting (technical and stakeholder). This pipeline became the foundation for a "
-            "newly created independent Performance Measurement team at the client."
+            "dual-reporting (technical and stakeholder)."
         ),
         "technologies": "Python,Causal Inference,SHAP,Meta-Learners,Statistical Testing",
         "category": "recsys",
@@ -522,26 +521,26 @@ SITE_CONFIGS = [
     },
     {
         "key": "hero_subtitle",
-        "value": "Where neural networks meet creative intuition — building systems that reason, collaborate, and act.",
+        "value": "Where neural networks meet creative intuition. Building systems that reason, collaborate, and act.",
         "label": "Subtitle",
         "group": "hero",
     },
     # ── About Section ──
     {
         "key": "about_bio1",
-        "value": "Accomplished Data Scientist with over <strong>4 years of experience</strong> specializing in the development and deployment of machine learning and generative AI solutions within the <strong>aviation sector</strong>.",
+        "value": "Data Scientist with <strong>4+ years of experience</strong> building and deploying machine learning and generative AI solutions in the <strong>aviation sector</strong>.",
         "label": "Bio Paragraph 1",
         "group": "about",
     },
     {
         "key": "about_bio2",
-        "value": "Proven track record of driving significant business value by architecting <strong>recommendation systems</strong>, optimizing model performance by up to <strong>20x</strong>, and pioneering <strong>AB testing frameworks</strong> from the ground up.",
+        "value": "I build <strong>recommendation systems</strong> that move the needle (3-15% purchase lift), optimize ML pipelines for up to <strong>20x</strong> faster response, and design <strong>AB testing frameworks</strong> from scratch.",
         "label": "Bio Paragraph 2",
         "group": "about",
     },
     {
         "key": "about_bio3",
-        "value": "Recognized as a subject matter expert in <strong>LLM orchestration</strong> and <strong>autonomous agent design</strong>, adept at translating complex AI capabilities into strategic, impactful business outcomes.",
+        "value": "Go-to person for <strong>LLM orchestration</strong> and <strong>autonomous agent design</strong> at zeroG, turning cutting-edge AI research into systems that actually ship.",
         "label": "Bio Paragraph 3",
         "group": "about",
     },
@@ -553,7 +552,7 @@ SITE_CONFIGS = [
     },
     {
         "key": "about_projects_count",
-        "value": "12",
+        "value": "10",
         "label": "Projects Delivered",
         "group": "about",
     },
@@ -577,7 +576,7 @@ IMPACT_CARDS = [
         "value": "15",
         "prefix": "",
         "suffix": "%",
-        "description": "Increase in purchases via recommendation systems",
+        "description": "Ancillary purchase lift across airline partners",
         "sort_order": 1,
     },
     {
@@ -585,7 +584,7 @@ IMPACT_CARDS = [
         "value": "20",
         "prefix": "",
         "suffix": "x",
-        "description": "API performance optimization achieved",
+        "description": "Recommender API speedup for real-time scoring",
         "sort_order": 2,
     },
     {
@@ -593,15 +592,15 @@ IMPACT_CARDS = [
         "value": "6",
         "prefix": "",
         "suffix": "+",
-        "description": "Airline partners using recommendation systems",
+        "description": "Airlines served with personalized recommendations",
         "sort_order": 3,
     },
     {
         "icon": "&#9733;",
         "value": "2",
         "prefix": "",
-        "suffix": "",
-        "description": "Consecutive years keynoting Data Community Day",
+        "suffix": "x",
+        "description": "Keynote presenter at the biggest LHG data event",
         "sort_order": 4,
     },
 ]
