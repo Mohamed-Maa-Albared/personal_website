@@ -189,10 +189,9 @@ def contact():
         logger.info("Contact message received from %s <%s>", name, email)
 
         # Send email notification (non-blocking: failure doesn't affect response)
-        try:
-            send_notification_email(name, email, subject, msg_text)
-        except Exception:
-            logger.warning("Email notification failed for message from %s", email)
+        email_sent = send_notification_email(name, email, subject, msg_text)
+        if not email_sent:
+            logger.warning("Email notification was not sent for message from %s", email)
 
         return (
             jsonify({"success": True, "message": "Message sent successfully!"}),

@@ -746,6 +746,44 @@
             margin: 1em 0;
         }
 
+        /* ═══════ HTML Source View ═══════ */
+        .wysiwyg-source {
+            display: block;
+            width: 100%;
+            min-height: 320px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: .82rem;
+            line-height: 1.65;
+            background: var(--bg-deep);
+            color: #00e5ff;
+            border: 1px solid var(--border);
+            border-radius: 0 0 8px 8px;
+            padding: 1rem;
+            resize: vertical;
+            tab-size: 2;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .wysiwyg-source:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(124, 92, 252, .15);
+        }
+
+        .toolbar-toggle-html {
+            margin-left: auto;
+            font-size: .75rem;
+            letter-spacing: .02em;
+        }
+
+        .toolbar-toggle-html.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
         .btn-upload {
             background: rgba(124, 92, 252, .12);
             color: var(--accent);

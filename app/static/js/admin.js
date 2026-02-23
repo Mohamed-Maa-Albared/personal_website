@@ -108,7 +108,7 @@ function initWysiwygEditors() {
         // ── Toolbar click handler ──
         toolbar.addEventListener('click', function (e) {
             var btn = e.target.closest('.toolbar-btn');
-            if (!btn) return;
+            if (!btn || btn.classList.contains('toolbar-toggle-html')) return;
             e.preventDefault();
             editor.focus();
             execToolbarCmd(btn.getAttribute('data-cmd'));
@@ -132,7 +132,74 @@ function initWysiwygEditors() {
                     if (ed && ed.classList.contains('wysiwyg-editor')) {
                         ta.value = ed.innerHTML;
                     }
+                    // Also sync from source view if it's active
+                    var src = ta.parentNode.querySelector('.wysiwyg-source');
+                    if (src && src.style.display !== 'none') {
+                        ta.value = src.value;
+                    }
                 });
+            });
+        }
+
+        // ── HTML / Visual toggle (non-mini editors only) ──
+        if (!isMini) {
+            // Add separator and toggle button to toolbar
+            var sep = document.createElement('span');
+            sep.className = 'toolbar-sep';
+            toolbar.appendChild(sep);
+
+            var toggleBtn = document.createElement('button');
+            toggleBtn.type = 'button';
+            toggleBtn.className = 'toolbar-btn toolbar-toggle-html';
+            toggleBtn.innerHTML = '&lt;/&gt; HTML';
+            toggleBtn.title = 'Toggle HTML Source';
+            toolbar.appendChild(toggleBtn);
+
+            // Create HTML source textarea
+            var sourceView = document.createElement('textarea');
+            sourceView.className = 'wysiwyg-source';
+            sourceView.style.display = 'none';
+            sourceView.rows = rows;
+            sourceView.spellcheck = false;
+            editor.parentNode.insertBefore(sourceView, editor.nextSibling);
+
+            var isHtmlMode = false;
+
+            toggleBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                isHtmlMode = !isHtmlMode;
+
+                if (isHtmlMode) {
+                    // Switch to HTML source mode
+                    sourceView.value = editor.innerHTML;
+                    editor.style.display = 'none';
+                    sourceView.style.display = 'block';
+                    toggleBtn.classList.add('active');
+                    // Disable formatting buttons
+                    toolbar.querySelectorAll('.toolbar-btn:not(.toolbar-toggle-html)').forEach(function (btn) {
+                        btn.disabled = true;
+                        btn.style.opacity = '0.3';
+                        btn.style.pointerEvents = 'none';
+                    });
+                } else {
+                    // Switch back to Visual mode
+                    editor.innerHTML = sourceView.value;
+                    textarea.value = sourceView.value;
+                    sourceView.style.display = 'none';
+                    editor.style.display = 'block';
+                    toggleBtn.classList.remove('active');
+                    // Re-enable formatting buttons
+                    toolbar.querySelectorAll('.toolbar-btn:not(.toolbar-toggle-html)').forEach(function (btn) {
+                        btn.disabled = false;
+                        btn.style.opacity = '';
+                        btn.style.pointerEvents = '';
+                    });
+                }
+            });
+
+            // Sync source view to textarea on input
+            sourceView.addEventListener('input', function () {
+                textarea.value = sourceView.value;
             });
         }
     });

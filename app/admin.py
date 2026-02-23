@@ -39,11 +39,13 @@ from app.models import (
 )
 from app.utils import (
     generate_slug,
+    get_email_config_status,
     parse_locale,
     parse_user_agent_short,
     safe_int,
     sanitize_html,
     sanitize_input,
+    send_notification_email,
 )
 
 logger = logging.getLogger(__name__)
@@ -126,6 +128,34 @@ def logout():
     session.pop("admin_logged_in", None)
     flash("Logged out.", "success")
     return redirect(url_for("admin.login"))
+
+
+@admin_bp.route("/test-email", methods=["POST"])
+@login_required
+def test_email():
+    """Send a test email to verify SMTP configuration."""
+    config = get_email_config_status()
+    if not config["configured"]:
+        missing = [k for k, v in config.items() if k != "configured" and not v]
+        flash(f"Email not configured — missing: {', '.join(missing)}", "error")
+        return redirect(url_for("admin.dashboard") + "#tab-messages")
+
+    success = send_notification_email(
+        "Test Sender",
+        os.environ.get("NOTIFICATION_EMAIL", "test@test.com"),
+        "Test Email from Portfolio Admin",
+        "This is a test email sent from your portfolio admin panel. "
+        "If you received this, your email configuration is working correctly!",
+    )
+    if success:
+        flash("Test email sent successfully! Check your inbox.", "success")
+    else:
+        flash(
+            "Failed to send test email. Check your SMTP credentials — "
+            "for Gmail, make sure you're using an App Password (not your regular password).",
+            "error",
+        )
+    return redirect(url_for("admin.dashboard") + "#tab-messages")
 
 
 # ── Dashboard ────────────────────────────────────
@@ -272,6 +302,7 @@ def dashboard():
         device_breakdown=device_breakdown,
         avg_pages=avg_pages,
         bounce_rate=bounce_rate,
+        email_config=get_email_config_status(),
     )
 
 

@@ -135,12 +135,32 @@ def generate_slug(title: str) -> str:
 # ---------------------------------------------------------------------------
 
 
-def send_notification_email(name: str, email: str, subject: str, message: str) -> None:
+def get_email_config_status() -> dict:
+    """Return a dict describing which MAIL_* env vars are set.
+
+    Useful for admin dashboard diagnostics.
+    """
+    keys = [
+        "MAIL_SERVER",
+        "MAIL_PORT",
+        "MAIL_USERNAME",
+        "MAIL_PASSWORD",
+        "NOTIFICATION_EMAIL",
+    ]
+    status = {k: bool(os.environ.get(k)) for k in keys}
+    status["configured"] = all(
+        os.environ.get(k)
+        for k in ["MAIL_SERVER", "MAIL_USERNAME", "MAIL_PASSWORD", "NOTIFICATION_EMAIL"]
+    )
+    return status
+
+
+def send_notification_email(name: str, email: str, subject: str, message: str) -> bool:
     """Send an email notification when a contact form is submitted.
 
     Requires environment variables:
         MAIL_SERVER, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, NOTIFICATION_EMAIL
-    Silently returns if not configured.
+    Returns True if email was sent successfully, False otherwise.
     """
     mail_server = os.environ.get("MAIL_SERVER")
     mail_port = int(os.environ.get("MAIL_PORT", "587"))
@@ -149,8 +169,20 @@ def send_notification_email(name: str, email: str, subject: str, message: str) -
     notification_email = os.environ.get("NOTIFICATION_EMAIL")
 
     if not all([mail_server, mail_username, mail_password, notification_email]):
-        logger.debug("Email notification skipped — MAIL_* env vars not configured")
-        return
+        missing = [
+            k
+            for k in [
+                "MAIL_SERVER",
+                "MAIL_USERNAME",
+                "MAIL_PASSWORD",
+                "NOTIFICATION_EMAIL",
+            ]
+            if not os.environ.get(k)
+        ]
+        logger.warning(
+            "Email notification skipped — missing env vars: %s", ", ".join(missing)
+        )
+        return False
 
     msg = MIMEMultipart("alternative")
     msg["Subject"] = f"[Portfolio Contact] {subject}"
@@ -203,9 +235,21 @@ def send_notification_email(name: str, email: str, subject: str, message: str) -
             server.login(mail_username, mail_password)
             server.send_message(msg)
         logger.info("Email notification sent for contact from %s", email)
+        return True
+    except smtplib.SMTPAuthenticationError:
+        logger.error(
+            "Email authentication failed — check MAIL_USERNAME and MAIL_PASSWORD. "
+            "For Gmail, use an App Password (not your regular password)."
+        )
+        return False
+    except smtplib.SMTPConnectError:
+        logger.error(
+            "Could not connect to MAIL_SERVER=%s on port %s", mail_server, mail_port
+        )
+        return False
     except Exception:
         logger.exception("Failed to send email notification")
-        raise
+        return False
 
 
 # ---------------------------------------------------------------------------

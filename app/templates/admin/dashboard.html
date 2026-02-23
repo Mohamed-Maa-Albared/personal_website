@@ -637,6 +637,50 @@
 
 <!-- ═══════════════ TAB: MESSAGES ═══════════════ -->
 <div class="tab-panel" id="tab-messages">
+    <!-- Email Configuration Status -->
+    <div class="admin-card" style="margin-bottom:1.5rem;">
+        <div class="admin-card-header">
+            <h2>Email Notifications
+                {% if email_config.configured %}
+                <span class="badge" style="background:rgba(52,211,153,.15);color:#34d399;">Configured</span>
+                {% else %}
+                <span class="badge" style="background:rgba(255,80,80,.15);color:#ff5050;">Not Configured</span>
+                {% endif %}
+            </h2>
+        </div>
+        <div style="padding:0 1rem 1rem;">
+            {% if email_config.configured %}
+            <p style="color:var(--text-secondary);font-size:.85rem;margin-bottom:.8rem;">
+                SMTP is configured. Contact form submissions will trigger email notifications.
+            </p>
+            <form method="POST" action="{{ url_for('admin.test_email') }}" style="display:inline;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn-sm btn-view">Send Test Email</button>
+            </form>
+            {% else %}
+            <p style="color:var(--text-secondary);font-size:.85rem;margin-bottom:.6rem;">
+                Set these environment variables to receive email alerts when someone contacts you:
+            </p>
+            <ul style="color:var(--text-secondary);font-size:.8rem;margin:0;padding-left:1.2rem;line-height:1.8;">
+                <li>MAIL_SERVER {% if email_config.MAIL_SERVER %}<span style="color:#34d399;">✓</span>{% else %}<span
+                        style="color:#ff5050;">✗</span>{% endif %} <span style="color:var(--text-muted);">(e.g.
+                        smtp.gmail.com)</span></li>
+                <li>MAIL_PORT {% if email_config.MAIL_PORT %}<span style="color:#34d399;">✓</span>{% else %}<span
+                        style="color:#94a3b8;">optional, default 587</span>{% endif %}</li>
+                <li>MAIL_USERNAME {% if email_config.MAIL_USERNAME %}<span style="color:#34d399;">✓</span>{% else
+                    %}<span style="color:#ff5050;">✗</span>{% endif %} <span style="color:var(--text-muted);">(your
+                        email address)</span></li>
+                <li>MAIL_PASSWORD {% if email_config.MAIL_PASSWORD %}<span style="color:#34d399;">✓</span>{% else
+                    %}<span style="color:#ff5050;">✗</span>{% endif %} <span style="color:var(--text-muted);">(Gmail:
+                        use App Password)</span></li>
+                <li>NOTIFICATION_EMAIL {% if email_config.NOTIFICATION_EMAIL %}<span style="color:#34d399;">✓</span>{%
+                    else %}<span style="color:#ff5050;">✗</span>{% endif %} <span
+                        style="color:var(--text-muted);">(where to receive alerts)</span></li>
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+
     <div class="admin-card">
         <div class="admin-card-header">
             <h2>Messages {% if unread %}<span class="badge badge-cyan">{{ unread }} new</span>{% endif %}</h2>

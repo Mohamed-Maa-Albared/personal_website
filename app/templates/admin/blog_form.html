@@ -46,6 +46,8 @@
                 <button type="button" class="toolbar-btn" data-cmd="code" title="Code Block">&lt;/&gt;</button>
                 <button type="button" class="toolbar-btn" data-cmd="hr" title="Horizontal Rule">&#8213;</button>
                 <button type="button" class="toolbar-btn" data-cmd="p" title="Paragraph">&#182;</button>
+                <button type="button" class="toolbar-btn" data-cmd="removeFormat"
+                    title="Clear Formatting">&#10005;</button>
             </div>
             <textarea id="content" name="content" rows="20" required
                 data-wysiwyg>{{ post.content if post else '' }}</textarea>
