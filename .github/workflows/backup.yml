@@ -27,7 +27,9 @@ jobs:
             | sudo tee /etc/apt/sources.list.d/pgdg.list
           sudo apt-get update
           sudo apt-get install -y postgresql-client-18
-          pg_dump --version
+          # Put v18 first on PATH so it takes priority over the pre-installed v16
+          echo "/usr/lib/postgresql/18/bin" >> "$GITHUB_PATH"
+          /usr/lib/postgresql/18/bin/pg_dump --version
 
       - name: Export database backup
         env:
@@ -35,6 +37,8 @@ jobs:
         run: |
           mkdir -p backups
           TIMESTAMP=$(date -u +%Y%m%d_%H%M%S)
+
+          echo "Using pg_dump: $(which pg_dump) — $(pg_dump --version)"
 
           if [ -n "$DATABASE_URL" ]; then
             echo "PostgreSQL backup via pg_dump..."
