@@ -159,7 +159,8 @@ personal_website/
 - **Rich text toolbar** — admin blog editor toolbar (bold, italic, headings, links, images, lists) — no HTML typing needed
 - **HTML/Visual toggle** — switch between WYSIWYG visual editor and raw HTML source in blog editor
 - **Chart.js analytics** — daily visits line chart, browser/device doughnut charts in admin dashboard
-- **Email diagnostics** — email config status panel in admin dashboard, test email button with SMTP error feedback
+- **Email diagnostics** — email config status panel in admin dashboard, test email button with error feedback
+- **Dual email providers** — Resend HTTP API (recommended for Render free tier) with SMTP fallback
 - **Image upload** — local file upload for blog cover images (stored in static/uploads/, validated with extension + MIME + Pillow magic bytes)
 
 ---
@@ -196,17 +197,21 @@ All security measures are already implemented. Do not remove or weaken them.
 
 Defined in `.env` (never committed). See `.env.example` for template.
 
-| Variable             | Required   | Description                                             |
-| -------------------- | ---------- | ------------------------------------------------------- |
-| `FLASK_ENV`          | Yes        | `development` or `production`                           |
-| `SECRET_KEY`         | Yes (prod) | Random 32+ char string for session signing              |
-| `DATABASE_URL`       | No         | Defaults to `sqlite:///personal_website.db`             |
-| `ADMIN_PASSWORD`     | Yes        | Password for `/admin` login                             |
-| `MAIL_SERVER`        | No         | SMTP host for email notifications (e.g. smtp.gmail.com) |
-| `MAIL_PORT`          | No         | SMTP port (default 587)                                 |
-| `MAIL_USERNAME`      | No         | SMTP login username                                     |
-| `MAIL_PASSWORD`      | No         | SMTP login password / app password                      |
-| `NOTIFICATION_EMAIL` | No         | Address to receive contact form notifications           |
+| Variable             | Required   | Description                                                  |
+| -------------------- | ---------- | ------------------------------------------------------------ |
+| `FLASK_ENV`          | Yes        | `development` or `production`                                |
+| `SECRET_KEY`         | Yes (prod) | Random 32+ char string for session signing                   |
+| `DATABASE_URL`       | No         | Defaults to `sqlite:///personal_website.db`                  |
+| `ADMIN_PASSWORD`     | Yes        | Password for `/admin` login                                  |
+| `RESEND_API_KEY`     | No*        | Resend HTTP email API key (recommended for Render)           |
+| `RESEND_FROM`        | No         | Sender address for Resend (default: `onboarding@resend.dev`) |
+| `NOTIFICATION_EMAIL` | No*        | Address to receive contact form notifications                |
+| `MAIL_SERVER`        | No         | SMTP host (fallback if Resend not set)                       |
+| `MAIL_PORT`          | No         | SMTP port (default 587)                                      |
+| `MAIL_USERNAME`      | No         | SMTP login username                                          |
+| `MAIL_PASSWORD`      | No         | SMTP login password / app password                           |
+
+*Set `RESEND_API_KEY` + `NOTIFICATION_EMAIL` for email on Render free tier (SMTP ports are blocked).
 
 ---
 

@@ -23,8 +23,8 @@
 - HTML/Visual toggle — switch between WYSIWYG visual editor and raw HTML source in blog editor
 - Local image upload — upload blog cover images from your computer (stored in static/uploads/)
 - Enhanced analytics — daily visits chart (Chart.js), browser/device/OS breakdown, bounce rate, avg pages per visit, readable locale names
-- Email notifications — automatic email when someone submits the contact form (smtplib, configurable via env vars)
-- Email diagnostics — config status panel in admin dashboard, test email button with SMTP error feedback
+- Email notifications — Resend HTTP API (recommended) with SMTP fallback, configurable via env vars
+- Email diagnostics — config status panel in admin dashboard, test email button with error feedback
 - SEO: Open Graph meta tags, sitemap.xml, robots.txt, RSS feed
 - Skeleton loading screens for images
 - Button ripple micro-interactions

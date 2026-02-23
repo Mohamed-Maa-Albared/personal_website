@@ -5,11 +5,14 @@ Centralises security helpers so routes.py and admin.py share a single
 implementation, reducing duplication and the risk of divergent logic.
 """
 
+import json
 import logging
 import os
 import re
 import smtplib
 import ssl
+import urllib.error
+import urllib.request
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -136,24 +139,95 @@ def generate_slug(title: str) -> str:
 # ---------------------------------------------------------------------------
 
 
-def get_email_config_status() -> dict:
-    """Return a dict describing which MAIL_* env vars are set.
+def _send_via_resend(
+    api_key: str, to_email: str, subject: str, html_body: str, text_body: str
+) -> tuple[bool, str]:
+    """Send email via Resend HTTP API (no SMTP, no extra packages).
 
-    Useful for admin dashboard diagnostics.
+    Uses only Python stdlib (urllib.request). Works on Render free tier
+    where outbound SMTP ports are blocked.
+
+    Docs: https://resend.com/docs/api-reference/emails/send-email
     """
-    keys = [
-        "MAIL_SERVER",
-        "MAIL_PORT",
-        "MAIL_USERNAME",
-        "MAIL_PASSWORD",
-        "NOTIFICATION_EMAIL",
-    ]
-    status = {k: bool(os.environ.get(k)) for k in keys}
-    status["configured"] = all(
-        os.environ.get(k)
-        for k in ["MAIL_SERVER", "MAIL_USERNAME", "MAIL_PASSWORD", "NOTIFICATION_EMAIL"]
+    from_email = os.environ.get(
+        "RESEND_FROM", "Portfolio <onboarding@resend.dev>"
+    ).strip()
+
+    payload = json.dumps(
+        {
+            "from": from_email,
+            "to": [to_email],
+            "subject": subject,
+            "html": html_body,
+            "text": text_body,
+        }
+    ).encode()
+
+    req = urllib.request.Request(
+        "https://api.resend.com/emails",
+        data=payload,
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
+        method="POST",
     )
-    return status
+
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read())
+            logger.info("Email sent via Resend (id=%s)", data.get("id"))
+            return True, "Email sent successfully via Resend"
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode(errors="replace")
+        try:
+            err = json.loads(body)
+            msg = err.get("message", body)
+        except (json.JSONDecodeError, ValueError):
+            msg = body
+        detail = f"Resend API error {exc.code}: {msg}"
+        logger.error(detail)
+        return False, detail
+    except urllib.error.URLError as exc:
+        detail = f"Could not reach Resend API: {exc.reason}"
+        logger.error(detail)
+        return False, detail
+    except Exception as exc:
+        detail = f"Resend error: {type(exc).__name__}: {exc}"
+        logger.exception("Failed to send via Resend")
+        return False, detail
+
+
+def get_email_config_status() -> dict:
+    """Return a dict describing which email env vars are set.
+
+    Supports two providers:
+    - **Resend** (HTTP API, recommended for Render free tier): needs RESEND_API_KEY + NOTIFICATION_EMAIL
+    - **SMTP** (legacy): needs MAIL_SERVER, MAIL_USERNAME, MAIL_PASSWORD, NOTIFICATION_EMAIL
+    """
+    resend_key = bool(os.environ.get("RESEND_API_KEY", "").strip())
+    notification = bool(os.environ.get("NOTIFICATION_EMAIL", "").strip())
+
+    smtp_keys = ["MAIL_SERVER", "MAIL_PORT", "MAIL_USERNAME", "MAIL_PASSWORD"]
+    smtp_status = {k: bool(os.environ.get(k)) for k in smtp_keys}
+
+    resend_configured = resend_key and notification
+    smtp_configured = (
+        all(
+            os.environ.get(k) for k in ["MAIL_SERVER", "MAIL_USERNAME", "MAIL_PASSWORD"]
+        )
+        and notification
+    )
+
+    return {
+        "configured": resend_configured or smtp_configured,
+        "provider": (
+            "resend" if resend_configured else ("smtp" if smtp_configured else None)
+        ),
+        "RESEND_API_KEY": resend_key,
+        "NOTIFICATION_EMAIL": notification,
+        **smtp_status,
+    }
 
 
 def send_notification_email(
@@ -161,44 +235,19 @@ def send_notification_email(
 ) -> tuple[bool, str]:
     """Send an email notification when a contact form is submitted.
 
-    Requires environment variables:
-        MAIL_SERVER, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, NOTIFICATION_EMAIL
-
-    Supports port 587 (STARTTLS) and port 465 (SSL).
+    Tries providers in order:
+    1. **Resend** (HTTP API) — if RESEND_API_KEY is set
+    2. **SMTP** — if MAIL_SERVER / MAIL_USERNAME / MAIL_PASSWORD are set
 
     Returns (success: bool, detail: str) — detail contains a human-readable
     diagnostic message for admin display.
     """
-    mail_server = os.environ.get("MAIL_SERVER", "").strip()
-    mail_username = os.environ.get("MAIL_USERNAME", "").strip()
-    mail_password = os.environ.get("MAIL_PASSWORD", "").strip()
     notification_email = os.environ.get("NOTIFICATION_EMAIL", "").strip()
+    if not notification_email:
+        return False, "Missing env var: NOTIFICATION_EMAIL"
 
-    # Safe port parsing
-    try:
-        mail_port = int(os.environ.get("MAIL_PORT", "587"))
-    except (ValueError, TypeError):
-        mail_port = 587
-
-    if not all([mail_server, mail_username, mail_password, notification_email]):
-        missing = [
-            k
-            for k in [
-                "MAIL_SERVER",
-                "MAIL_USERNAME",
-                "MAIL_PASSWORD",
-                "NOTIFICATION_EMAIL",
-            ]
-            if not os.environ.get(k, "").strip()
-        ]
-        detail = f"Missing env vars: {', '.join(missing)}"
-        logger.warning("Email notification skipped — %s", detail)
-        return False, detail
-
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"[Portfolio Contact] {subject}"
-    msg["From"] = mail_username
-    msg["To"] = notification_email
+    # ── Build email body ──────────────────────────────────────────────
+    full_subject = f"[Portfolio Contact] {subject}"
 
     text_body = (
         f"New contact form submission:\n\n"
@@ -235,6 +284,38 @@ def send_notification_email(
     </div>
     """
 
+    # ── Try Resend first (HTTP API — works on Render free tier) ───────
+    resend_api_key = os.environ.get("RESEND_API_KEY", "").strip()
+    if resend_api_key:
+        return _send_via_resend(
+            resend_api_key, notification_email, full_subject, html_body, text_body
+        )
+
+    # ── Fall back to SMTP ─────────────────────────────────────────────
+    mail_server = os.environ.get("MAIL_SERVER", "").strip()
+    mail_username = os.environ.get("MAIL_USERNAME", "").strip()
+    mail_password = os.environ.get("MAIL_PASSWORD", "").strip()
+
+    if not all([mail_server, mail_username, mail_password]):
+        missing = [
+            k
+            for k in ["MAIL_SERVER", "MAIL_USERNAME", "MAIL_PASSWORD"]
+            if not os.environ.get(k, "").strip()
+        ]
+        detail = f"No email provider configured. Set RESEND_API_KEY (recommended) or SMTP vars. Missing: {', '.join(missing)}"
+        logger.warning("Email notification skipped — %s", detail)
+        return False, detail
+
+    # Safe port parsing
+    try:
+        mail_port = int(os.environ.get("MAIL_PORT", "587"))
+    except (ValueError, TypeError):
+        mail_port = 587
+
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = full_subject
+    msg["From"] = mail_username
+    msg["To"] = notification_email
     msg.attach(MIMEText(text_body, "plain"))
     msg.attach(MIMEText(html_body, "html"))
 
