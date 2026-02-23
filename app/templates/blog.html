@@ -27,8 +27,8 @@
                 {% if post.cover_image %}
                 <div class="blog-card-image skeleton-wrapper">
                     <div class="skeleton skeleton-image"></div>
-                    <img src="{{ post.cover_image }}" alt="{{ post.title }}" loading="lazy"
-                        onload="this.previousElementSibling.style.display='none'; this.style.opacity=1;">
+                    <img src="{{ post.cover_image }}" alt="{{ post.title }}" loading="lazy" class="skeleton-img"
+                        style="opacity:0">
                 </div>
                 {% else %}
                 <div class="blog-card-image blog-card-placeholder" data-category="{{ post.category }}">

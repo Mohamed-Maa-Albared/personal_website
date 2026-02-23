@@ -26,6 +26,12 @@ class Config:
 
     WTF_CSRF_TIME_LIMIT = 3600  # 1 hour
 
+    # Upload settings
+    MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5 MB max upload
+    UPLOAD_FOLDER = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "app", "static", "uploads"
+    )
+
 
 class DevelopmentConfig(Config):
     """Development configuration"""
@@ -55,10 +61,13 @@ class ProductionConfig(Config):
 
 
 class TestingConfig(Config):
-    """Testing configuration"""
+    """Testing configuration — in-memory DB, CSRF disabled for test clients."""
 
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    WTF_CSRF_ENABLED = False  # Disable CSRF for test POST requests
+    SERVER_NAME = "localhost"  # Required for url_for in tests
+    RATELIMIT_ENABLED = False  # Disable rate limiting during tests
 
 
 config = {

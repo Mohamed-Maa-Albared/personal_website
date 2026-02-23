@@ -8,7 +8,15 @@ import os
 from datetime import datetime, timedelta
 
 from app import create_app, db
-from app.models import BlogPost, Experience, Project, SiteConfig
+from app.models import (
+    BlogPost,
+    Experience,
+    ImpactCard,
+    LanguageItem,
+    Project,
+    SiteConfig,
+    SkillCluster,
+)
 
 app = create_app(os.environ.get("FLASK_ENV", "development"))
 
@@ -556,54 +564,87 @@ SITE_CONFIGS = [
         "group": "about",
     },
     # ── Impact Numbers ──
+    # (moved to ImpactCard model — see IMPACT_CARDS below)
+]
+
+
+# ═══════════════════════════════════════════════════════════════
+# IMPACT CARDS  (Homepage – Impact Numbers Section)
+# ═══════════════════════════════════════════════════════════════
+IMPACT_CARDS = [
     {
-        "key": "impact_purchases_pct",
+        "icon": "&#9883;",
         "value": "15",
-        "label": "Purchase Increase (%)",
-        "group": "impact",
+        "prefix": "",
+        "suffix": "%",
+        "description": "Increase in purchases via recommendation systems",
+        "sort_order": 1,
     },
     {
-        "key": "impact_purchases_desc",
-        "value": "Increase in purchases via recommendation systems",
-        "label": "Purchase Desc",
-        "group": "impact",
-    },
-    {
-        "key": "impact_api_speedup",
+        "icon": "&#9889;",
         "value": "20",
-        "label": "API Speedup (x)",
-        "group": "impact",
+        "prefix": "",
+        "suffix": "x",
+        "description": "API performance optimization achieved",
+        "sort_order": 2,
     },
     {
-        "key": "impact_api_desc",
-        "value": "API performance optimization achieved",
-        "label": "API Desc",
-        "group": "impact",
-    },
-    {
-        "key": "impact_auc_score",
+        "icon": "&#10047;",
         "value": "82",
-        "label": "AUC Score (after decimal)",
-        "group": "impact",
+        "prefix": "0.",
+        "suffix": "",
+        "description": "ML model performance metric",
+        "sort_order": 3,
     },
     {
-        "key": "impact_auc_desc",
-        "value": "ML model performance metric",
-        "label": "AUC Desc",
-        "group": "impact",
-    },
-    {
-        "key": "impact_keynotes",
+        "icon": "&#9733;",
         "value": "2",
-        "label": "Keynotes Count",
-        "group": "impact",
+        "prefix": "",
+        "suffix": "",
+        "description": "Consecutive years keynoting Data Community Day",
+        "sort_order": 4,
+    },
+]
+
+
+# ═══════════════════════════════════════════════════════════════
+# SKILL CLUSTERS  (Homepage – Capabilities Section)
+# ═══════════════════════════════════════════════════════════════
+SKILL_CLUSTERS = [
+    {
+        "icon": "&#129302;",
+        "title": "Generative & Agentic AI",
+        "tags": "LLM Orchestration, Multi-Agent Systems, Prompt Engineering, RAG Pipelines, Fine-Tuning, LangChain/LangGraph, Semantic Kernel",
+        "sort_order": 1,
     },
     {
-        "key": "impact_keynotes_desc",
-        "value": "Consecutive years keynoting Data Community Day",
-        "label": "Keynotes Desc",
-        "group": "impact",
+        "icon": "&#129504;",
+        "title": "ML & Data Science",
+        "tags": "Recommendation Systems, NLP/NLU, Classification, Regression, Feature Engineering, A/B Testing, XGBoost, Deep Learning",
+        "sort_order": 2,
     },
+    {
+        "icon": "&#128187;",
+        "title": "Tech Stack",
+        "tags": "Python, SQL, Flask, FastAPI, TensorFlow, PyTorch, scikit-learn, Pandas, NumPy, Git, REST APIs",
+        "sort_order": 3,
+    },
+    {
+        "icon": "&#9729;",
+        "title": "Cloud & MLOps",
+        "tags": "Azure ML, AWS (S3, Lambda), Docker, CI/CD, MLflow, Weights & Biases, Databricks, Airflow",
+        "sort_order": 4,
+    },
+]
+
+
+# ═══════════════════════════════════════════════════════════════
+# LANGUAGES  (Homepage – Languages mini-section)
+# ═══════════════════════════════════════════════════════════════
+LANGUAGE_ITEMS = [
+    {"name": "Arabic", "level": "Native", "sort_order": 1},
+    {"name": "English", "level": "C1-C2", "sort_order": 2},
+    {"name": "German", "level": "A2", "sort_order": 3},
 ]
 
 
@@ -615,6 +656,9 @@ def seed():
         Experience.query.delete()
         BlogPost.query.delete()
         SiteConfig.query.delete()
+        ImpactCard.query.delete()
+        SkillCluster.query.delete()
+        LanguageItem.query.delete()
         db.session.commit()
 
         for exp_data in EXPERIENCES:
@@ -629,12 +673,24 @@ def seed():
         for cfg_data in SITE_CONFIGS:
             db.session.add(SiteConfig(**cfg_data))
 
+        for card_data in IMPACT_CARDS:
+            db.session.add(ImpactCard(**card_data))
+
+        for cluster_data in SKILL_CLUSTERS:
+            db.session.add(SkillCluster(**cluster_data))
+
+        for lang_data in LANGUAGE_ITEMS:
+            db.session.add(LanguageItem(**lang_data))
+
         db.session.commit()
         print(
             f"Seeded {len(EXPERIENCES)} experiences, "
             f"{len(PROJECTS)} projects, "
-            f"{len(BLOG_POSTS)} blog posts, and "
-            f"{len(SITE_CONFIGS)} site config entries."
+            f"{len(BLOG_POSTS)} blog posts, "
+            f"{len(SITE_CONFIGS)} site config entries, "
+            f"{len(IMPACT_CARDS)} impact cards, "
+            f"{len(SKILL_CLUSTERS)} skill clusters, and "
+            f"{len(LANGUAGE_ITEMS)} languages."
         )
 
 

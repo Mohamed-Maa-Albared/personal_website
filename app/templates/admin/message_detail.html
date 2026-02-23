@@ -20,7 +20,7 @@
             style="text-decoration:none;">Reply via Email</a>
         <a href="{{ url_for('admin.dashboard') }}" class="btn-cancel">Back</a>
         <form method="POST" action="{{ url_for('admin.message_delete', msg_id=message.id) }}"
-            onsubmit="return confirm('Delete this message?');" style="display:inline;">
+            data-confirm="Delete this message?" style="display:inline;">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" class="btn-sm btn-del" style="padding:.7rem 1.5rem;">Delete</button>
         </form>

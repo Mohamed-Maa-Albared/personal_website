@@ -13,6 +13,17 @@
         }, 800);
     });
 
+    // ─── SKELETON IMAGE REVEAL (CSP-safe) ────────
+    document.querySelectorAll('img.skeleton-img').forEach(img => {
+        const reveal = () => {
+            const skel = img.previousElementSibling;
+            if (skel) skel.style.display = 'none';
+            img.style.opacity = '1';
+        };
+        if (img.complete) { reveal(); }
+        else { img.addEventListener('load', reveal); }
+    });
+
     // ─── NEURAL CANVAS ────────────────────────────
     const canvas = document.getElementById('neuralCanvas');
     if (canvas) {

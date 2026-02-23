@@ -91,29 +91,15 @@
 <section class="section impact-section">
     <div class="container">
         <div class="impact-grid">
-            <div class="impact-card reveal-up">
-                <div class="impact-icon">&#9883;</div>
-                <div class="impact-value"><span data-count="{{ cfg.get('impact_purchases_pct', '15') }}">0</span>%</div>
-                <div class="impact-desc">{{ cfg.get('impact_purchases_desc', 'Increase in purchases via recommendation
-                    systems') }}</div>
+            {% for card in impact_cards %}
+            <div class="impact-card reveal-up" {% if not loop.first %}style="--delay:{{ (loop.index0) * 0.1 }}s" {%
+                endif %}>
+                <div class="impact-icon">{{ card.icon | safe }}</div>
+                <div class="impact-value">{{ card.prefix | safe }}<span data-count="{{ card.value }}">0</span>{{
+                    card.suffix | safe }}</div>
+                <div class="impact-desc">{{ card.description }}</div>
             </div>
-            <div class="impact-card reveal-up" style="--delay:.1s">
-                <div class="impact-icon">&#9889;</div>
-                <div class="impact-value"><span data-count="{{ cfg.get('impact_api_speedup', '20') }}">0</span>x</div>
-                <div class="impact-desc">{{ cfg.get('impact_api_desc', 'API performance optimization achieved') }}</div>
-            </div>
-            <div class="impact-card reveal-up" style="--delay:.2s">
-                <div class="impact-icon">&#10047;</div>
-                <div class="impact-value">0.<span data-count="{{ cfg.get('impact_auc_score', '82') }}">0</span></div>
-                <div class="impact-desc">{{ cfg.get('impact_auc_desc', 'ML model performance metric') }}
-                </div>
-            </div>
-            <div class="impact-card reveal-up" style="--delay:.3s">
-                <div class="impact-icon">&#9733;</div>
-                <div class="impact-value"><span data-count="{{ cfg.get('impact_keynotes', '2') }}">0</span></div>
-                <div class="impact-desc">{{ cfg.get('impact_keynotes_desc', 'Consecutive years keynoting Data Community
-                    Day') }}</div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </section>
@@ -441,81 +427,33 @@
         <h2 class="section-heading reveal-up">Neural Stack<span class="accent">.</span></h2>
 
         <div class="skills-grid">
-            <div class="skill-cluster reveal-up">
-                <div class="cluster-icon">&#9881;</div>
-                <h3 class="cluster-title">Generative & Agentic AI</h3>
+            {% for cluster in skill_clusters %}
+            <div class="skill-cluster reveal-up" {% if not loop.first %}style="--delay:{{ loop.index0 * 0.1 }}s" {%
+                endif %}>
+                <div class="cluster-icon">{{ cluster.icon | safe }}</div>
+                <h3 class="cluster-title">{{ cluster.title }}</h3>
                 <div class="cluster-tags">
-                    <span>LLM Orchestration</span>
-                    <span>RAG Pipelines</span>
-                    <span>Multi-Agent Systems</span>
-                    <span>Prompt Engineering</span>
-                    <span>Tool Use</span>
-                    <span>MCP Servers</span>
+                    {% for tag in cluster.tags.split(',') %}
+                    <span>{{ tag.strip() }}</span>
+                    {% endfor %}
                 </div>
             </div>
-
-            <div class="skill-cluster reveal-up" style="--delay:.1s">
-                <div class="cluster-icon">&#9670;</div>
-                <h3 class="cluster-title">Machine Learning & Data Science</h3>
-                <div class="cluster-tags">
-                    <span>Deep Learning</span>
-                    <span>NLP</span>
-                    <span>Computer Vision</span>
-                    <span>Reinforcement Learning (PPO)</span>
-                    <span>Time-Series</span>
-                    <span>Causal Inference</span>
-                    <span>Recommendation Systems</span>
-                    <span>Bayesian Methods</span>
-                </div>
-            </div>
-
-            <div class="skill-cluster reveal-up" style="--delay:.2s">
-                <div class="cluster-icon">&#9671;</div>
-                <h3 class="cluster-title">Technology Stack</h3>
-                <div class="cluster-tags">
-                    <span>Python</span>
-                    <span>TensorFlow</span>
-                    <span>Keras</span>
-                    <span>Scikit-Learn</span>
-                    <span>Pandas</span>
-                    <span>NumPy</span>
-                    <span>C#</span>
-                    <span>JavaScript</span>
-                </div>
-            </div>
-
-            <div class="skill-cluster reveal-up" style="--delay:.3s">
-                <div class="cluster-icon">&#9729;</div>
-                <h3 class="cluster-title">Cloud & MLOps</h3>
-                <div class="cluster-tags">
-                    <span>Azure ML</span>
-                    <span>Azure Data Factory</span>
-                    <span>Azure SQL / Cosmos DB</span>
-                    <span>Docker</span>
-                    <span>Git</span>
-                    <span>API Development</span>
-                    <span>AB Testing Frameworks</span>
-                </div>
-            </div>
+            {% endfor %}
         </div>
 
+        {% if language_items %}
         <div class="languages-bar reveal-up">
             <h3>Languages</h3>
             <div class="lang-items">
+                {% for lang in language_items %}
                 <div class="lang-item">
-                    <span class="lang-name">Arabic</span>
-                    <span class="lang-level">Native</span>
+                    <span class="lang-name">{{ lang.name }}</span>
+                    <span class="lang-level">{{ lang.level }}</span>
                 </div>
-                <div class="lang-item">
-                    <span class="lang-name">English</span>
-                    <span class="lang-level">C1–C2</span>
-                </div>
-                <div class="lang-item">
-                    <span class="lang-name">German</span>
-                    <span class="lang-level">A2</span>
-                </div>
+                {% endfor %}
             </div>
         </div>
+        {% endif %}
     </div>
 </section>
 
@@ -642,6 +580,8 @@
         </div>
         <div class="footer-bottom">
             <p>&copy; 2026 Mohamed Maa Albared. Built with curiosity and neural fire.</p>
+            <p style="margin-top: .5rem; font-size: .75rem;"><a href="/privacy"
+                    style="color: var(--text-secondary); text-decoration: none; opacity: .7;">Privacy Policy</a></p>
         </div>
     </div>
 </footer>

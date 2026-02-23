@@ -1,6 +1,6 @@
 # AGENTS.md — AI Agent Instructions for personal_website
 
-> Last updated: 2026-02-22
+> Last updated: 2025-07-23
 
 ## Project Overview
 
@@ -25,6 +25,7 @@ Personal portfolio website for **Mohamed Maa Albared**, Data Scientist at zeroG 
 | Python             | 3.11.x                                              | —       |
 | Frontend           | Vanilla HTML/CSS/JS                                 | —       |
 | CDN: Animation     | GSAP + ScrollTrigger                                | 3.12.2  |
+| CDN: Charts        | Chart.js                                            | 4.4.4   |
 | Fonts              | Google Fonts (Space Grotesk, Inter, JetBrains Mono) | —       |
 
 ---
@@ -35,10 +36,10 @@ Personal portfolio website for **Mohamed Maa Albared**, Data Scientist at zeroG 
 personal_website/
 ├── app/
 │   ├── __init__.py              # App factory, extensions, security headers, CSP, error handlers, visitor tracking
-│   ├── models.py                # SQLAlchemy models: Project, Experience, Message, BlogPost, SiteConfig, PageVisit
+│   ├── models.py                # SQLAlchemy models: Project, Experience, Message, BlogPost, SiteConfig, PageVisit, ImpactCard, SkillCluster, LanguageItem
 │   ├── routes.py                # Public routes: index, blog, case_study, sitemap, robots, rss, contact, api
 │   ├── admin.py                 # Admin blueprint: CRUD, analytics dashboard, site config editor
-│   ├── utils.py                 # Shared helpers: sanitize_input, sanitize_html, validate_email, safe_int, generate_slug
+│   ├── utils.py                 # Shared helpers: sanitize, validate, email notifications, locale/UA parsing, generate_slug
 │   ├── templates/
 │   │   ├── base.html            # Base layout (CDN libs, dark/light toggle, scroll progress bar, nav)
 │   │   ├── index.html           # Single-page: Hero, About, Impact, Timeline, Projects, Skills, Blog Preview, Contact
@@ -60,16 +61,19 @@ personal_website/
 │   │       └── message_detail.html    # View contact message
 │   └── static/
 │       ├── css/style.css        # ~2250 lines, dark/light themes, blog, case study, skeleton screens
-│       ├── js/main.js           # ~392 lines: neural canvas, GSAP parallax, dark mode, ripples
-│       └── images/
-│           ├── logo.png         # Site logo
-│           └── profile.png      # Profile photo
+│       ├── js/
+│       │   ├── main.js          # ~392 lines: neural canvas, GSAP parallax, dark mode, ripples
+│       │   └── admin.js         # ~220 lines: rich text toolbar, image upload, Chart.js init
+│       ├── images/
+│       │   ├── logo.png         # Site logo
+│       │   └── profile.png      # Profile photo
+│       └── uploads/             # User-uploaded blog images (.gitkeep)
 ├── .github/
 │   └── workflows/
 │       └── backup.yml           # Automated daily DB backup to GitHub
 ├── config.py                    # Config classes: Development, Production, Testing (with production enforcement)
 ├── run.py                       # Entry point, shell context (default port 5001)
-├── seed.py                      # Seeds DB: 5 experiences, 12 projects, 4 blog posts, 20 site config entries
+├── seed.py                      # Seeds DB: experiences, projects, blog posts, site configs, impact cards, skill clusters, languages
 ├── requirements.txt             # Python dependencies
 ├── render.yaml                  # Render deployment config
 ├── .env.example                 # Environment variable template
@@ -95,8 +99,11 @@ personal_website/
 - **Experience**: role, company, location, date_range, description, highlights (JSON string), sort_order
 - **Message**: name, email, subject, message, is_read, created_at
 - **BlogPost**: title, slug (unique), excerpt, content (HTML), cover_image, category, tags (comma-separated), read_time, published, featured, created_at, updated_at, sort_order
-- **SiteConfig**: key (unique, indexed), value, label, group — Key-value store for editable homepage content (hero, about, impact). Static helpers: `get(key)`, `set(key, value)`, `get_group(group)`
+- **SiteConfig**: key (unique, indexed), value, label, group — Key-value store for editable homepage content (hero, about). Static helpers: `get(key)`, `set(key, value)`, `get_group(group)`
 - **PageVisit**: path, referrer, user_agent, ip_hash (SHA-256), country (from Accept-Language), visited_at (indexed) — Lightweight visitor analytics
+- **ImpactCard**: icon, value, prefix, suffix, description, sort_order — Dynamic impact metrics on homepage
+- **SkillCluster**: icon, title, tags (comma-separated), sort_order — Skill categories on homepage
+- **LanguageItem**: name, level, sort_order — Spoken languages on homepage
 
 ### Routing
 - `/` — Single-page index (loads projects, experiences, latest 3 blog posts from DB)
@@ -111,12 +118,16 @@ personal_website/
 - `/feed.xml` — RSS feed for blog posts
 - `/admin/` — Dashboard with 6 tabs: Analytics, Site Content, Projects, Experience, Blog, Messages
 - `/admin/login` (GET/POST) — Login (rate-limited 5/min)
-- `/admin/site-config` (POST) — Update editable site content (hero, about, impact)
+- `/admin/site-config` (POST) — Update editable site content (hero, about)
 - `/admin/projects/new|edit|delete` — Project CRUD
 - `/admin/experiences/new|edit|delete` — Experience CRUD
 - `/admin/messages/<id>` — View/delete messages
 - `/admin/blog/new|edit|delete` — Blog post CRUD
 - `/admin/project/<id>/case-study` — Case study editor
+- `/admin/impact-cards/new|edit|delete` — Impact card CRUD
+- `/admin/skill-clusters/new|edit|delete` — Skill cluster CRUD
+- `/admin/languages/new|edit|delete` — Language item CRUD
+- `/admin/upload-image` (POST, JSON) — Blog image file upload
 
 ### Frontend
 - **Single-page layout** — all public content in `index.html` with anchor navigation (`#about`, `#experience`, `#projects`, `#skills`, `#blog`, `#contact`)
@@ -133,6 +144,9 @@ personal_website/
 - **Skeleton screens** — shimmer loading animation for blog card images
 - **Button ripple effect** — click micro-interaction on all buttons
 - **Contact form** — AJAX POST with honeypot spam field, client-side validation
+- **Rich text toolbar** — admin blog editor toolbar (bold, italic, headings, links, images, lists) — no HTML typing needed
+- **Chart.js analytics** — daily visits line chart, browser/device doughnut charts in admin dashboard
+- **Image upload** — local file upload for blog cover images (stored in static/uploads/)
 
 ---
 
@@ -162,12 +176,17 @@ All security measures are already implemented. Do not remove or weaken them.
 
 Defined in `.env` (never committed). See `.env.example` for template.
 
-| Variable         | Required   | Description                                 |
-| ---------------- | ---------- | ------------------------------------------- |
-| `FLASK_ENV`      | Yes        | `development` or `production`               |
-| `SECRET_KEY`     | Yes (prod) | Random 32+ char string for session signing  |
-| `DATABASE_URL`   | No         | Defaults to `sqlite:///personal_website.db` |
-| `ADMIN_PASSWORD` | Yes        | Password for `/admin` login                 |
+| Variable             | Required   | Description                                             |
+| -------------------- | ---------- | ------------------------------------------------------- |
+| `FLASK_ENV`          | Yes        | `development` or `production`                           |
+| `SECRET_KEY`         | Yes (prod) | Random 32+ char string for session signing              |
+| `DATABASE_URL`       | No         | Defaults to `sqlite:///personal_website.db`             |
+| `ADMIN_PASSWORD`     | Yes        | Password for `/admin` login                             |
+| `MAIL_SERVER`        | No         | SMTP host for email notifications (e.g. smtp.gmail.com) |
+| `MAIL_PORT`          | No         | SMTP port (default 587)                                 |
+| `MAIL_USERNAME`      | No         | SMTP login username                                     |
+| `MAIL_PASSWORD`      | No         | SMTP login password / app password                      |
+| `NOTIFICATION_EMAIL` | No         | Address to receive contact form notifications           |
 
 ---
 
@@ -290,21 +309,21 @@ with app.test_client() as c:
 
 ## File Sizes (approximate)
 
-| File                   | Lines | Purpose                                         |
-| ---------------------- | ----- | ----------------------------------------------- |
-| `style.css`            | ~2257 | All styles (dark + light themes)                |
-| `admin/base.html`      | ~664  | Admin layout + tab/config CSS                   |
-| `index.html`           | ~647  | Full single-page + blog preview                 |
-| `seed.py`              | ~642  | Data seeder (projects, blog, site config)       |
-| `main.js`              | ~392  | Canvas, GSAP parallax, toggle                   |
-| `admin/dashboard.html` | ~387  | Admin dashboard (6 tabs, analytics, config)     |
-| `admin.py`             | ~386  | Admin CRUD + analytics + site config            |
-| `routes.py`            | ~278  | Public + blog + SEO routes                      |
-| `models.py`            | ~157  | 6 database models                               |
-| `__init__.py`          | ~148  | App factory + visitor tracking + error handlers |
-| `utils.py`             | ~126  | Shared sanitisation & validation helpers        |
-| `case_study.html`      | ~102  | Case study template                             |
-| `base.html`            | ~95   | Base layout + CDN scripts                       |
-| `blog_detail.html`     | ~87   | Blog post template                              |
-| `blog.html`            | ~73   | Blog listing template                           |
-| `config.py`            | ~69   | Configuration + production enforcement          |
+| File                   | Lines | Purpose                                             |
+| ---------------------- | ----- | --------------------------------------------------- |
+| `style.css`            | ~2257 | All styles (dark + light themes)                    |
+| `admin/base.html`      | ~664  | Admin layout + tab/config CSS                       |
+| `index.html`           | ~647  | Full single-page + blog preview                     |
+| `seed.py`              | ~642  | Data seeder (projects, blog, site config)           |
+| `main.js`              | ~392  | Canvas, GSAP parallax, toggle                       |
+| `admin/dashboard.html` | ~450  | Admin dashboard (6 tabs, charts, inline CRUD)       |
+| `admin.py`             | ~550  | Admin CRUD + analytics + site config + image upload |
+| `routes.py`            | ~278  | Public + blog + SEO routes                          |
+| `models.py`            | ~190  | 9 database models                                   |
+| `__init__.py`          | ~148  | App factory + visitor tracking + error handlers     |
+| `utils.py`             | ~200  | Sanitisation, validation, email, locale/UA          |
+| `case_study.html`      | ~102  | Case study template                                 |
+| `base.html`            | ~95   | Base layout + CDN scripts                           |
+| `blog_detail.html`     | ~87   | Blog post template                                  |
+| `blog.html`            | ~73   | Blog listing template                               |
+| `config.py`            | ~69   | Configuration + production enforcement              |

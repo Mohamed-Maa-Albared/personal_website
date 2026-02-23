@@ -1,6 +1,38 @@
 /* ====================================================
    Mohamed Maa Albared — Personal Website
    Neural Dark Theme — Art + Neuroscience Fusion
+   ====================================================
+
+   TABLE OF CONTENTS
+   ─────────────────
+    1.  RESET & VARIABLES          (line ~30)
+    2.  LOADER                     (line ~80)
+    3.  CUSTOM CURSOR              (line ~132)
+    4.  NAVIGATION                 (line ~175)
+    5.  HERO                       (line ~369)
+    6.  BUTTONS                    (line ~505)
+    7.  SECTIONS (shared)          (line ~567)
+    8.  ABOUT                      (line ~597)
+    9.  IMPACT                     (line ~712)
+   10.  EXPERIENCE TIMELINE        (line ~758)
+   11.  PROJECTS                   (line ~851)
+   12.  SKILLS                     (line ~973)
+   13.  CONTACT                    (line ~1064)
+   14.  FOOTER                     (line ~1168)
+   15.  REVEAL ANIMATIONS          (line ~1232)
+   16.  PROJECT DETAIL             (line ~1246)
+   17.  RESPONSIVE                 (line ~1345)
+   18.  LIGHT THEME OVERRIDES      (line ~1412)
+   19.  SCROLL PROGRESS BAR        (line ~1478)
+   20.  BLOG HERO & PREVIEW        (line ~1515)
+   21.  BLOG CARDS                 (line ~1529)
+   22.  BLOG DETAIL                (line ~1727)
+   23.  CASE STUDY                 (line ~1974)
+   24.  ERROR PAGES                (line ~2156)
+   25.  SKELETON SCREENS           (line ~2193)
+   26.  FORM HELPERS               (line ~2218)
+   27.  RESPONSIVE ADDITIONS       (line ~2239)
+
    ==================================================== */
 
 /* --- RESET & VARIABLES --- */
@@ -1796,10 +1828,13 @@ strong {
     border-radius: var(--radius-lg);
     overflow: hidden;
     margin-bottom: 2.5rem;
+    max-height: 480px;
 }
 
 .blog-detail-cover img {
     width: 100%;
+    max-height: 480px;
+    object-fit: cover;
     display: block;
 }
 
@@ -1857,6 +1892,26 @@ strong {
 
 .blog-detail-content em {
     color: var(--accent-cyan);
+}
+
+.blog-detail-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    margin: 1.5rem 0;
+    display: block;
+}
+
+.blog-detail-content figure {
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.blog-detail-content figcaption {
+    font-size: .85rem;
+    color: var(--text-secondary);
+    margin-top: .5rem;
+    font-style: italic;
 }
 
 /* Author Card */

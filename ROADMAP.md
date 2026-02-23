@@ -15,7 +15,14 @@
 - Contact form with honeypot spam protection
 - Admin panel at `/admin` with 6-tab dashboard (Analytics, Site Content, Projects, Experience, Blog, Messages)
 - Visitor analytics — page views, top pages, referrers, locales, unique visitors (privacy-safe: IPs hashed)
-- Editable site content — hero text, about bio, impact numbers editable from admin without code changes
+- Editable site content — hero text, about bio editable from admin without code changes
+- Dynamic impact cards — add/edit/delete impact metrics from admin panel
+- Dynamic skill clusters — manage skills & capabilities from admin (no HTML needed)
+- Dynamic language items — manage spoken languages from admin
+- Rich text toolbar — format blog content (bold, italic, headings, links, images) without writing HTML
+- Local image upload — upload blog cover images from your computer (stored in static/uploads/)
+- Enhanced analytics — daily visits chart (Chart.js), browser/device/OS breakdown, bounce rate, avg pages per visit, readable locale names
+- Email notifications — automatic email when someone submits the contact form (smtplib, configurable via env vars)
 - SEO: Open Graph meta tags, sitemap.xml, robots.txt, RSS feed
 - Skeleton loading screens for images
 - Button ripple micro-interactions
@@ -68,7 +75,7 @@ git add -A && git commit -m "your message" && git push origin main
 - [x] **RSS feed** — for blog posts at `/feed.xml`
 - [ ] **Image optimization** — WebP format, lazy loading, CDN (Cloudflare free tier)
 - [ ] **Progressive Web App (PWA)** — offline support, installable on mobile
-- [ ] **Email notifications** — get notified when someone submits the contact form
+- [x] **Email notifications** — get notified when someone submits the contact form
 - [ ] **Database upgrade** — migrate to PostgreSQL on Render ($0 for 90 days)
 - [ ] **CI/CD pipeline** — GitHub Actions for linting, testing before deploy
 - [x] **Automated backups** — daily DB export to GitHub via GitHub Actions workflow
@@ -81,9 +88,17 @@ git add -A && git commit -m "your message" && git push origin main
 - [ ] **Medium/Dev.to** — cross-post blog articles
 
 ### Security (ongoing)
+- [x] **HMAC-salted IP hashing** — visitor IPs hashed with SECRET_KEY via HMAC-SHA256 (not rainbow-tableable)
+- [x] **Hardened file uploads** — extension + MIME + Pillow magic-byte validation, SVG blocked, rate-limited
+- [x] **Login lockout** — exponential backoff after 5 failed login attempts (10-minute cooldown)
+- [x] **Audit logging** — all admin CRUD operations logged with context
+- [x] **SRI integrity hashes** — GSAP, ScrollTrigger, and Chart.js CDN scripts verified with SHA-384
+- [x] **CSP hardened** — added `base-uri`, `form-action` directives
+- [x] **Privacy policy** — transparent data collection disclosure at `/privacy`
+- [x] **Data retention** — admin can purge analytics older than 90 days
+- [x] **Comprehensive test suite** — 68 pytest tests covering routes, admin, utils, and security
 - [ ] **2FA for admin panel** — TOTP-based two-factor authentication
 - [ ] **Cloudflare** — free DDoS protection + CDN + SSL
-- [ ] **Content Security Policy tuning** — tighten as you add features (currently allows cdnjs, jsdelivr for GSAP)
 - [ ] **Dependency scanning** — GitHub Dependabot or Snyk
 - [ ] Review [LSY Security Golden Path](https://github.com/lsy-central/lsy-security-golden-path) for updates
 
@@ -111,16 +126,17 @@ git add -A && git commit -m "your message" && git push origin main
 personal_website/
 ├── app/
 │   ├── __init__.py          # Flask app factory, visitor tracking, error handlers
-│   ├── models.py            # Database models (Project, Experience, Message, BlogPost, SiteConfig, PageVisit)
+│   ├── models.py            # Database models (Project, Experience, Message, BlogPost, SiteConfig, PageVisit, ImpactCard, SkillCluster, LanguageItem)
 │   ├── routes.py            # Public routes + blog + SEO
 │   ├── admin.py             # Admin panel (6-tab dashboard, analytics, site config, CRUD)
-│   ├── utils.py             # Shared helpers (sanitize_input, sanitize_html, validate_email, safe_int)
+│   ├── utils.py             # Shared helpers (sanitize, validate, email notifications, locale/UA parsing)
 │   ├── templates/           # Jinja2 HTML templates
-│   │   ├── base.html        # Base layout (CDN libs, dark/light toggle)
+│   │   ├── base.html        # Base layout (CDN libs with SRI, dark/light toggle)
 │   │   ├── index.html       # Single-page + blog preview
 │   │   ├── blog.html        # Blog listing
 │   │   ├── blog_detail.html # Blog post
 │   │   ├── case_study.html  # Case study
+│   │   ├── privacy.html     # Privacy policy
 │   │   ├── sitemap.xml      # SEO sitemap
 │   │   ├── feed.xml         # RSS feed
 │   │   ├── errors/          # Custom error pages (400, 404, 429, 500)
@@ -129,13 +145,20 @@ personal_website/
 │   └── static/
 │       ├── css/style.css    # All styles (~2257 lines, dark + light themes)
 │       ├── js/main.js       # All interactions (~392 lines, GSAP, dark mode, ripples)
-│       └── images/          # Logo, profile photo
+│       ├── images/          # Logo, profile photo
+│       └── uploads/         # User-uploaded blog images
 ├── .github/workflows/
 │   └── backup.yml           # Daily automated DB backup
 ├── config.py                # App configuration (with production enforcement)
 ├── run.py                   # Entry point (port 5001)
-├── seed.py                  # Database seeder (5 experiences, 12 projects, 4 blog posts, 20 site configs)
+├── seed.py                  # Database seeder (5 experiences, 12 projects, 4 blog posts, site configs, 4 impact cards, 4 skill clusters, 3 languages)
 ├── requirements.txt         # Python dependencies
+├── requirements-dev.txt     # Dev/test dependencies (pytest, black, flake8)
+├── tests/                   # Pytest test suite (68 tests)
+│   ├── conftest.py          # Fixtures (app, client, auth_client, sample data)
+│   ├── test_routes.py       # Public route tests
+│   ├── test_admin.py        # Admin CRUD + security tests
+│   └── test_utils.py        # Utility function tests
 ├── render.yaml              # Render deployment config
 ├── .python-version          # Python version for Render
 ├── .env                     # Secrets (never commit!)

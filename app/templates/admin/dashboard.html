@@ -22,6 +22,14 @@
         <div class="stat-lbl">Unique Visitors</div>
     </div>
     <div class="stat-card">
+        <div class="stat-val" style="color:var(--accent-cyan)">{{ avg_pages }}</div>
+        <div class="stat-lbl">Avg Pages/Visit</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-val">{{ bounce_rate }}%</div>
+        <div class="stat-lbl">Bounce Rate</div>
+    </div>
+    <div class="stat-card">
         <div class="stat-val">{{ projects|length }}</div>
         <div class="stat-lbl">Projects</div>
     </div>
@@ -49,11 +57,21 @@
 
 <!-- ═══════════════ TAB: ANALYTICS ═══════════════ -->
 <div class="tab-panel active" id="tab-analytics">
+    <!-- Visits Over Time Chart -->
+    <div class="admin-card" style="margin-bottom:1.5rem;">
+        <div class="admin-card-header">
+            <h2>Visits Over Time <span class="badge badge-accent">Last 30 days</span></h2>
+        </div>
+        <div style="height:260px;padding:.5rem;">
+            <canvas id="dailyVisitsChart" data-labels='{{ daily_labels }}' data-counts='{{ daily_counts }}'></canvas>
+        </div>
+    </div>
+
     <div class="admin-grid" style="grid-template-columns:1fr 1fr;">
         <!-- Top Pages -->
         <div class="admin-card">
             <div class="admin-card-header">
-                <h2>Top Pages <span class="badge badge-accent">Last 30 days</span></h2>
+                <h2>Top Pages</h2>
             </div>
             {% if top_pages %}
             <table class="admin-table">
@@ -104,24 +122,24 @@
             {% endif %}
         </div>
 
-        <!-- Visitor Languages / Locales -->
+        <!-- Visitor Languages / Locales (improved) -->
         <div class="admin-card">
             <div class="admin-card-header">
-                <h2>Visitor Locales</h2>
+                <h2>Visitor Languages</h2>
             </div>
             {% if top_countries %}
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th>Locale</th>
+                        <th>Language (Region)</th>
                         <th style="text-align:right">Visitors</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for c in top_countries %}
+                    {% for country_name, count in top_countries %}
                     <tr>
-                        <td>{{ c.country if c.country else '(unknown)' }}</td>
-                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;">{{ c.count }}</td>
+                        <td>{{ country_name }}</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;">{{ count }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -159,6 +177,61 @@
             {% endif %}
         </div>
     </div>
+
+    <!-- Browser & Device Charts -->
+    <div class="admin-grid" style="grid-template-columns:1fr 1fr;margin-top:1.5rem;">
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h2>Browsers</h2>
+            </div>
+            <div style="height:220px;padding:.5rem;display:flex;align-items:center;justify-content:center;">
+                {% if top_browsers %}
+                <canvas id="browserChart" data-labels='{{ top_browsers | map(attribute=0) | list | tojson }}'
+                    data-counts='{{ top_browsers | map(attribute=1) | list | tojson }}'></canvas>
+                {% else %}
+                <p class="empty-state">No browser data yet.</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h2>Devices</h2>
+            </div>
+            <div style="height:220px;padding:.5rem;display:flex;align-items:center;justify-content:center;">
+                {% if device_breakdown %}
+                <canvas id="deviceChart" data-labels='{{ device_breakdown | map(attribute=0) | list | tojson }}'
+                    data-counts='{{ device_breakdown | map(attribute=1) | list | tojson }}'></canvas>
+                {% else %}
+                <p class="empty-state">No device data yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- OS breakdown table -->
+    {% if top_os %}
+    <div class="admin-card" style="margin-top:1.5rem;">
+        <div class="admin-card-header">
+            <h2>Operating Systems</h2>
+        </div>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>OS</th>
+                    <th style="text-align:right">Visitors</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for os_name, os_count in top_os %}
+                <tr>
+                    <td>{{ os_name }}</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;">{{ os_count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
 </div>
 
 <!-- ═══════════════ TAB: SITE CONFIG ═══════════════ -->
@@ -166,8 +239,7 @@
     <form method="POST" action="{{ url_for('admin.site_config_update') }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-        {% for group_name, group_label in [('hero', 'Hero Section'), ('about', 'About Section'), ('impact', 'Impact
-        Numbers'), ('skills', 'Skills & Extras')] %}
+        {% for group_name, group_label in [('hero', 'Hero Section'), ('about', 'About Section')] %}
         <div class="admin-card" style="margin-bottom:1.5rem;">
             <div class="admin-card-header">
                 <h2>{{ group_label }}</h2>
@@ -177,7 +249,10 @@
                 {% if cfg.group == group_name %}
                 <div class="form-group">
                     <label for="cfg_{{ cfg.key }}">{{ cfg.label or cfg.key }}</label>
-                    {% if cfg.value|length > 150 %}
+                    {% if cfg.key.startswith('about_bio') %}
+                    <textarea id="cfg_{{ cfg.key }}" name="cfg_{{ cfg.key }}" rows="3"
+                        data-wysiwyg="mini">{{ cfg.value }}</textarea>
+                    {% elif cfg.value|length > 150 %}
                     <textarea id="cfg_{{ cfg.key }}" name="cfg_{{ cfg.key }}" rows="3">{{ cfg.value }}</textarea>
                     {% else %}
                     <input type="text" id="cfg_{{ cfg.key }}" name="cfg_{{ cfg.key }}" value="{{ cfg.value }}">
@@ -190,9 +265,248 @@
         {% endfor %}
 
         <div class="form-actions">
-            <button type="submit" class="btn-save">Save All Changes</button>
+            <button type="submit" class="btn-save">Save Site Content</button>
         </div>
     </form>
+
+    <!-- ═══════ IMPACT CARDS (Dynamic) ═══════ -->
+    <div class="admin-card" style="margin-top:2rem;margin-bottom:1.5rem;">
+        <div class="admin-card-header">
+            <h2>Impact Cards <span class="badge badge-accent">{{ impact_cards|length }}</span></h2>
+        </div>
+        <p style="color:var(--text-secondary);font-size:.85rem;padding:0 0 1rem;">
+            These cards appear in the Impact Numbers section on the homepage. Add, edit, or remove them dynamically.
+        </p>
+
+        {% for card in impact_cards %}
+        <div
+            style="background:var(--bg-surface);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:.8rem;position:relative;">
+            <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+                <span style="font-size:1.5rem;">{{ card.icon | safe }}</span>
+                <strong style="font-size:1.2rem;color:var(--accent);">{{ card.prefix }}{{ card.value }}{{ card.suffix
+                    }}</strong>
+                <span style="color:var(--text-secondary);font-size:.85rem;flex:1;">{{ card.description }}</span>
+                <span style="color:var(--text-secondary);font-size:.7rem;font-family:'JetBrains Mono',monospace;">#{{
+                    card.sort_order }}</span>
+                <button type="button" class="btn-sm btn-edit inline-edit-toggle"
+                    data-form="edit-impact-{{ card.id }}">Edit</button>
+                <form method="POST" action="{{ url_for('admin.impact_card_delete', card_id=card.id) }}"
+                    data-confirm="Delete this impact card?" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn-sm btn-del">Del</button>
+                </form>
+            </div>
+            <form method="POST" action="{{ url_for('admin.impact_card_edit', card_id=card.id) }}"
+                id="edit-impact-{{ card.id }}" style="display:none;margin-top:1rem;" class="config-fields">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label>Icon (HTML entity)</label>
+                    <input type="text" name="icon" value="{{ card.icon }}">
+                </div>
+                <div class="form-group">
+                    <label>Prefix (e.g. "0.")</label>
+                    <input type="text" name="prefix" value="{{ card.prefix }}">
+                </div>
+                <div class="form-group">
+                    <label>Value (number)</label>
+                    <input type="text" name="value" value="{{ card.value }}">
+                </div>
+                <div class="form-group">
+                    <label>Suffix (e.g. "%" or "x")</label>
+                    <input type="text" name="suffix" value="{{ card.suffix }}">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" name="description" value="{{ card.description }}">
+                </div>
+                <div class="form-group">
+                    <label>Sort Order</label>
+                    <input type="number" name="sort_order" value="{{ card.sort_order }}">
+                </div>
+                <div style="grid-column:1/-1;"><button type="submit" class="btn-save"
+                        style="padding:.4rem 1.2rem;font-size:.8rem;">Save</button></div>
+            </form>
+        </div>
+        {% endfor %}
+
+        <!-- Add new impact card -->
+        <details style="margin-top:1rem;">
+            <summary style="cursor:pointer;color:var(--accent);font-weight:600;font-size:.9rem;">+ Add Impact Card
+            </summary>
+            <form method="POST" action="{{ url_for('admin.impact_card_new') }}" class="config-fields"
+                style="margin-top:.8rem;background:var(--bg-surface);border:1px solid var(--border);border-radius:8px;padding:1rem;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label>Icon (HTML entity, e.g. &amp;#9733;)</label>
+                    <input type="text" name="icon" value="&#9733;" required>
+                </div>
+                <div class="form-group">
+                    <label>Prefix (e.g. "0.")</label>
+                    <input type="text" name="prefix" value="">
+                </div>
+                <div class="form-group">
+                    <label>Value (number)</label>
+                    <input type="text" name="value" required>
+                </div>
+                <div class="form-group">
+                    <label>Suffix (e.g. "%" or "x")</label>
+                    <input type="text" name="suffix" value="">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" name="description" required>
+                </div>
+                <div class="form-group">
+                    <label>Sort Order</label>
+                    <input type="number" name="sort_order" value="0">
+                </div>
+                <div style="grid-column:1/-1;"><button type="submit" class="btn-add">Add Card</button></div>
+            </form>
+        </details>
+    </div>
+
+    <!-- ═══════ SKILL CLUSTERS (Dynamic) ═══════ -->
+    <div class="admin-card" style="margin-bottom:1.5rem;">
+        <div class="admin-card-header">
+            <h2>Skill Clusters <span class="badge badge-accent">{{ skill_clusters|length }}</span></h2>
+        </div>
+        <p style="color:var(--text-secondary);font-size:.85rem;padding:0 0 1rem;">
+            Manage the skill categories shown in the Capabilities section. Tags are comma-separated.
+        </p>
+
+        {% for cluster in skill_clusters %}
+        <div
+            style="background:var(--bg-surface);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:.8rem;">
+            <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+                <span style="font-size:1.3rem;">{{ cluster.icon | safe }}</span>
+                <strong>{{ cluster.title }}</strong>
+                <span
+                    style="color:var(--text-secondary);font-size:.75rem;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{
+                    cluster.tags }}</span>
+                <button type="button" class="btn-sm btn-edit inline-edit-toggle"
+                    data-form="edit-skill-{{ cluster.id }}">Edit</button>
+                <form method="POST" action="{{ url_for('admin.skill_cluster_delete', cluster_id=cluster.id) }}"
+                    data-confirm="Delete this skill cluster?" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn-sm btn-del">Del</button>
+                </form>
+            </div>
+            <form method="POST" action="{{ url_for('admin.skill_cluster_edit', cluster_id=cluster.id) }}"
+                id="edit-skill-{{ cluster.id }}" style="display:none;margin-top:1rem;" class="config-fields">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label>Icon (HTML entity)</label>
+                    <input type="text" name="icon" value="{{ cluster.icon }}">
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" name="title" value="{{ cluster.title }}">
+                </div>
+                <div class="form-group" style="grid-column:1/-1;">
+                    <label>Tags (comma-separated)</label>
+                    <textarea name="tags" rows="2">{{ cluster.tags }}</textarea>
+                </div>
+                <div class="form-group">
+                    <label>Sort Order</label>
+                    <input type="number" name="sort_order" value="{{ cluster.sort_order }}">
+                </div>
+                <div style="grid-column:1/-1;"><button type="submit" class="btn-save"
+                        style="padding:.4rem 1.2rem;font-size:.8rem;">Save</button></div>
+            </form>
+        </div>
+        {% endfor %}
+
+        <details style="margin-top:1rem;">
+            <summary style="cursor:pointer;color:var(--accent);font-weight:600;font-size:.9rem;">+ Add Skill Cluster
+            </summary>
+            <form method="POST" action="{{ url_for('admin.skill_cluster_new') }}" class="config-fields"
+                style="margin-top:.8rem;background:var(--bg-surface);border:1px solid var(--border);border-radius:8px;padding:1rem;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label>Icon (HTML entity)</label>
+                    <input type="text" name="icon" value="&#9881;" required>
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" name="title" required>
+                </div>
+                <div class="form-group" style="grid-column:1/-1;">
+                    <label>Tags (comma-separated)</label>
+                    <textarea name="tags" rows="2" required placeholder="Python, TensorFlow, Docker"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Sort Order</label>
+                    <input type="number" name="sort_order" value="0">
+                </div>
+                <div style="grid-column:1/-1;"><button type="submit" class="btn-add">Add Cluster</button></div>
+            </form>
+        </details>
+    </div>
+
+    <!-- ═══════ LANGUAGES (Dynamic) ═══════ -->
+    <div class="admin-card" style="margin-bottom:1.5rem;">
+        <div class="admin-card-header">
+            <h2>Languages <span class="badge badge-accent">{{ language_items|length }}</span></h2>
+        </div>
+
+        {% for lang in language_items %}
+        <div
+            style="background:var(--bg-surface);border:1px solid var(--border);border-radius:8px;padding:.8rem 1rem;margin-bottom:.5rem;">
+            <div style="display:flex;align-items:center;gap:1rem;">
+                <strong>{{ lang.name }}</strong>
+                <span style="color:var(--accent-cyan);font-size:.85rem;">{{ lang.level }}</span>
+                <span style="flex:1;"></span>
+                <button type="button" class="btn-sm btn-edit inline-edit-toggle"
+                    data-form="edit-lang-{{ lang.id }}">Edit</button>
+                <form method="POST" action="{{ url_for('admin.language_delete', lang_id=lang.id) }}"
+                    data-confirm="Delete this language?" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn-sm btn-del">Del</button>
+                </form>
+            </div>
+            <form method="POST" action="{{ url_for('admin.language_edit', lang_id=lang.id) }}"
+                id="edit-lang-{{ lang.id }}" style="display:none;margin-top:.8rem;" class="config-fields">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" name="name" value="{{ lang.name }}">
+                </div>
+                <div class="form-group">
+                    <label>Level</label>
+                    <input type="text" name="level" value="{{ lang.level }}">
+                </div>
+                <div class="form-group">
+                    <label>Sort Order</label>
+                    <input type="number" name="sort_order" value="{{ lang.sort_order }}">
+                </div>
+                <div><button type="submit" class="btn-save" style="padding:.4rem 1.2rem;font-size:.8rem;">Save</button>
+                </div>
+            </form>
+        </div>
+        {% endfor %}
+
+        <details style="margin-top:.8rem;">
+            <summary style="cursor:pointer;color:var(--accent);font-weight:600;font-size:.9rem;">+ Add Language
+            </summary>
+            <form method="POST" action="{{ url_for('admin.language_new') }}" class="config-fields"
+                style="margin-top:.8rem;background:var(--bg-surface);border:1px solid var(--border);border-radius:8px;padding:1rem;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" name="name" required placeholder="e.g. English">
+                </div>
+                <div class="form-group">
+                    <label>Level</label>
+                    <input type="text" name="level" required placeholder="e.g. C1-C2">
+                </div>
+                <div class="form-group">
+                    <label>Sort Order</label>
+                    <input type="number" name="sort_order" value="0">
+                </div>
+                <div><button type="submit" class="btn-add">Add Language</button></div>
+            </form>
+        </details>
+    </div>
 </div>
 
 <!-- ═══════════════ TAB: PROJECTS ═══════════════ -->
@@ -228,7 +542,7 @@
                         <a href="{{ url_for('admin.case_study_edit', project_id=p.id) }}" class="btn-sm btn-view">Case
                             Study</a>
                         <form method="POST" action="{{ url_for('admin.project_delete', project_id=p.id) }}"
-                            onsubmit="return confirm('Delete this project?');" style="display:inline;">
+                            data-confirm="Delete this project?" style="display:inline;">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="btn-sm btn-del">Delete</button>
                         </form>
@@ -268,7 +582,7 @@
                     <td class="table-actions">
                         <a href="{{ url_for('admin.experience_edit', exp_id=e.id) }}" class="btn-sm btn-edit">Edit</a>
                         <form method="POST" action="{{ url_for('admin.experience_delete', exp_id=e.id) }}"
-                            onsubmit="return confirm('Delete?');" style="display:inline;">
+                            data-confirm="Delete this experience?" style="display:inline;">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="btn-sm btn-del">Del</button>
                         </form>
@@ -309,7 +623,7 @@
                     <td class="table-actions">
                         <a href="{{ url_for('admin.blog_edit', post_id=bp.id) }}" class="btn-sm btn-edit">Edit</a>
                         <form method="POST" action="{{ url_for('admin.blog_delete', post_id=bp.id) }}"
-                            onsubmit="return confirm('Delete this post?');" style="display:inline;">
+                            data-confirm="Delete this blog post?" style="display:inline;">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="btn-sm btn-del">Del</button>
                         </form>
@@ -351,7 +665,7 @@
                     <td class="table-actions">
                         <a href="{{ url_for('admin.message_detail', msg_id=m.id) }}" class="btn-sm btn-view">Read</a>
                         <form method="POST" action="{{ url_for('admin.message_delete', msg_id=m.id) }}"
-                            onsubmit="return confirm('Delete?');" style="display:inline;">
+                            data-confirm="Delete this message?" style="display:inline;">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="btn-sm btn-del">Del</button>
                         </form>

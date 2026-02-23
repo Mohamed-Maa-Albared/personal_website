@@ -1,4 +1,5 @@
 import hashlib
+import hmac as _hmac
 import json
 import logging
 
@@ -72,7 +73,9 @@ def create_app(config_name="development"):
             "font-src 'self' https://fonts.gstatic.com; "
             "img-src 'self' data: https:; "
             "connect-src 'self'; "
-            "frame-ancestors 'none';"
+            "frame-ancestors 'none'; "
+            "base-uri 'self'; "
+            "form-action 'self';"
         )
         if not app.debug:
             response.headers["Strict-Transport-Security"] = (
@@ -113,7 +116,9 @@ def create_app(config_name="development"):
             from app.models import PageVisit
 
             ip_raw = flask_request.remote_addr or "unknown"
-            ip_hash = hashlib.sha256(ip_raw.encode()).hexdigest()
+            # Salted HMAC — not rainbow-tableable unlike plain sha256
+            secret = app.config["SECRET_KEY"].encode()
+            ip_hash = _hmac.new(secret, ip_raw.encode(), hashlib.sha256).hexdigest()
             # Infer rough locale from Accept-Language header
             accept_lang = flask_request.headers.get("Accept-Language", "")
             country = (
@@ -142,7 +147,4 @@ def create_app(config_name="development"):
     with app.app_context():
         db.create_all()
 
-    return app
-    return app
-    return app
     return app

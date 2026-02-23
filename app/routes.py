@@ -13,18 +13,33 @@ from flask import (
 )
 
 from app import csrf, db, limiter
-from app.models import BlogPost, Experience, Message, Project, SiteConfig
-from app.utils import sanitize_input, validate_email
+from app.models import (
+    BlogPost,
+    Experience,
+    ImpactCard,
+    LanguageItem,
+    Message,
+    Project,
+    SiteConfig,
+    SkillCluster,
+)
+from app.utils import sanitize_input, send_notification_email, validate_email
 
 logger = logging.getLogger(__name__)
 
 main_bp = Blueprint("main", __name__)
 
 
-# --- Public routes ---
+# ── Public pages ─────────────────────────────────────────────────────────────
+
+
 @main_bp.route("/")
 def index():
-    """Homepage — the main immersive experience"""
+    """Homepage — single-page layout with all portfolio sections.
+
+    Loads featured projects, experiences, latest blog posts, editable
+    site config values, impact cards, skill clusters, and languages.
+    """
     projects = Project.query.filter_by(featured=True).order_by(Project.sort_order).all()
     experiences = Experience.query.order_by(Experience.sort_order).all()
     all_projects = Project.query.order_by(Project.sort_order).all()
@@ -40,6 +55,11 @@ def index():
     for sc in SiteConfig.query.all():
         cfg[sc.key] = sc.value
 
+    # Dynamic sections
+    impact_cards = ImpactCard.query.order_by(ImpactCard.sort_order).all()
+    skill_clusters = SkillCluster.query.order_by(SkillCluster.sort_order).all()
+    language_items = LanguageItem.query.order_by(LanguageItem.sort_order).all()
+
     return render_template(
         "index.html",
         featured_projects=projects,
@@ -47,19 +67,28 @@ def index():
         experiences=experiences,
         latest_posts=latest_posts,
         cfg=cfg,
+        impact_cards=impact_cards,
+        skill_clusters=skill_clusters,
+        language_items=language_items,
     )
 
 
 @main_bp.route("/project/<int:project_id>")
 def project_detail(project_id):
-    """Individual project detail page"""
+    """Individual project detail page.
+
+    Returns 404 if the project does not exist.
+    """
     project = Project.query.get_or_404(project_id)
     return render_template("project_detail.html", project=project)
 
 
 @main_bp.route("/case-study/<int:project_id>")
 def case_study(project_id):
-    """Deep-dive case study page for a project"""
+    """Deep-dive case study page for a project.
+
+    Returns 404 if the project doesn't exist or has no case study.
+    """
     project = Project.query.get_or_404(project_id)
     if not project.has_case_study:
         abort(404)
@@ -67,9 +96,12 @@ def case_study(project_id):
 
 
 # --- Blog routes ---
+# ── Blog ─────────────────────────────────────────────────────────────────────
+
+
 @main_bp.route("/blog")
 def blog():
-    """Blog listing page"""
+    """Blog listing page with optional ``?category=`` filter."""
     category = request.args.get("category", "all")
     if category and category != "all":
         posts = (
@@ -97,7 +129,7 @@ def blog():
 
 @main_bp.route("/blog/<slug>")
 def blog_detail(slug):
-    """Individual blog post page"""
+    """Individual blog post page with related articles sidebar."""
     post = BlogPost.query.filter_by(slug=slug, published=True).first_or_404()
     # Get related posts (same category, excluding current)
     related = (
@@ -112,11 +144,18 @@ def blog_detail(slug):
     return render_template("blog_detail.html", post=post, related=related)
 
 
+# ── Contact ──────────────────────────────────────────────────────────────────
+
+
 @main_bp.route("/contact", methods=["POST"])
 @csrf.exempt  # AJAX JSON endpoint — uses honeypot + server validation instead
 @limiter.limit("3 per minute")
 def contact():
-    """Contact form submission (AJAX only)"""
+    """Process a contact form submission (JSON only).
+
+    Validates all fields, checks for honeypot spam, saves to DB,
+    and sends an optional email notification.
+    """
     if not request.is_json:
         abort(400)
 
@@ -148,6 +187,13 @@ def contact():
         db.session.add(message)
         db.session.commit()
         logger.info("Contact message received from %s <%s>", name, email)
+
+        # Send email notification (non-blocking: failure doesn't affect response)
+        try:
+            send_notification_email(name, email, subject, msg_text)
+        except Exception:
+            logger.warning("Email notification failed for message from %s", email)
+
         return (
             jsonify({"success": True, "message": "Message sent successfully!"}),
             200,
@@ -161,9 +207,12 @@ def contact():
         )
 
 
+# ── API ──────────────────────────────────────────────────────────────────────
+
+
 @main_bp.route("/api/projects")
 def api_projects():
-    """API endpoint for projects data"""
+    """JSON API returning all projects ordered by sort_order."""
     projects = Project.query.order_by(Project.sort_order).all()
     return jsonify(
         [
@@ -185,10 +234,19 @@ def api_projects():
     )
 
 
-# --- SEO routes ---
+# ── SEO ──────────────────────────────────────────────────────────────────────
+
+
+@main_bp.route("/privacy")
+def privacy():
+    """Privacy policy page — describes data collection and retention."""
+    now = datetime.now(timezone.utc).strftime("%B %Y")
+    return render_template("privacy.html", now=now)
+
+
 @main_bp.route("/sitemap.xml")
 def sitemap():
-    """Generate sitemap.xml"""
+    """Auto-generated XML sitemap covering all public pages."""
     pages = []
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
@@ -253,7 +311,7 @@ def sitemap():
 
 @main_bp.route("/robots.txt")
 def robots():
-    """Serve robots.txt"""
+    """Serve robots.txt — disallows /admin/ for crawlers."""
     content = (
         "User-agent: *\n"
         "Allow: /\n"
@@ -265,7 +323,7 @@ def robots():
 
 @main_bp.route("/feed.xml")
 def rss_feed():
-    """Generate RSS feed for blog posts"""
+    """RSS 2.0 feed of the latest 20 published blog posts."""
     posts = (
         BlogPost.query.filter_by(published=True)
         .order_by(BlogPost.created_at.desc())

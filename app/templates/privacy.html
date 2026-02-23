@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Privacy Policy — Mohamed Maa Albared{% endblock %}
+
+{% block content %}
+<section class="section blog-detail-section" style="padding-top: 8rem;">
+    <div class="container" style="max-width: 800px; margin: 0 auto;">
+        <h1 class="section-heading" style="margin-bottom: 2rem;">Privacy Policy</h1>
+        <div class="blog-content" style="color: var(--text-secondary); line-height: 1.8;">
+
+            <p><strong>Last updated:</strong> {{ now }}</p>
+
+            <h2>1. Overview</h2>
+            <p>
+                This website is a personal portfolio operated by Mohamed Maa Albared.
+                Your privacy is important. This policy explains what data is collected,
+                how it's used, and your rights.
+            </p>
+
+            <h2>2. Data Collected</h2>
+            <h3>2.1 Analytics (Automatic)</h3>
+            <p>When you visit this site, the following is recorded for analytics purposes:</p>
+            <ul>
+                <li><strong>Page visited</strong> — the URL path you accessed.</li>
+                <li><strong>Referrer</strong> — the page that linked you here (if any).</li>
+                <li><strong>User agent</strong> — your browser and OS type.</li>
+                <li><strong>Country/language</strong> — inferred from your browser's Accept-Language header.</li>
+                <li><strong>IP address hash</strong> — your IP is immediately hashed (HMAC-SHA256) with a secret salt.
+                    The raw IP address is <strong>never stored</strong>.</li>
+            </ul>
+
+            <h3>2.2 Contact Form (Voluntary)</h3>
+            <p>If you submit the contact form, the following is stored:</p>
+            <ul>
+                <li>Your name, email address, subject, and message.</li>
+            </ul>
+            <p>This data is used solely to respond to your inquiry.</p>
+
+            <h2>3. Cookies</h2>
+            <p>
+                This site uses a <strong>session cookie</strong> for admin authentication only.
+                No tracking cookies, advertising cookies, or third-party analytics cookies are used.
+                A <code>localStorage</code> key is used to remember your theme preference (dark/light mode).
+            </p>
+
+            <h2>4. Third-Party Services</h2>
+            <p>This site loads resources from the following CDNs:</p>
+            <ul>
+                <li><strong>Google Fonts</strong> (fonts.googleapis.com) — for web fonts.</li>
+                <li><strong>Cloudflare CDN</strong> (cdnjs.cloudflare.com) — for GSAP animation library.</li>
+                <li><strong>jsDelivr</strong> (cdn.jsdelivr.net) — for Chart.js (admin only).</li>
+            </ul>
+            <p>
+                These services may receive your IP address as part of the HTTP request.
+                Refer to their respective privacy policies for details.
+            </p>
+
+            <h2>5. Data Retention</h2>
+            <ul>
+                <li><strong>Page visit analytics</strong> are retained for up to 90 days, then automatically purged.
+                </li>
+                <li><strong>Contact messages</strong> are retained until manually deleted by the site administrator.
+                </li>
+            </ul>
+
+            <h2>6. Your Rights</h2>
+            <p>
+                You may request deletion of any personal data by contacting me through the
+                <a href="/#contact" style="color: var(--accent);">contact form</a>.
+                Since IP addresses are only stored as irreversible hashes, they cannot be
+                linked back to you.
+            </p>
+
+            <h2>7. Data Security</h2>
+            <p>
+                All communication is encrypted via HTTPS. Security headers (CSP, HSTS,
+                X-Frame-Options, etc.) are enforced. Input is sanitised to prevent XSS
+                and injection attacks. Subresource Integrity (SRI) is used for all CDN scripts.
+            </p>
+
+            <h2>8. Contact</h2>
+            <p>
+                For privacy-related inquiries, please use the
+                <a href="/#contact" style="color: var(--accent);">contact form</a>.
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

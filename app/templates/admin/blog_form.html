@@ -8,7 +8,7 @@
 </div>
 
 <div class="form-card">
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
         <div class="form-group">
@@ -29,9 +29,29 @@
         </div>
 
         <div class="form-group">
-            <label for="content">Content (HTML) *</label>
-            <textarea id="content" name="content" rows="20" required>{{ post.content if post else '' }}</textarea>
-            <div class="form-hint">Full article content. Supports HTML tags.</div>
+            <label for="content">Content *</label>
+            <!-- Rich text toolbar -->
+            <div class="editor-toolbar">
+                <button type="button" class="toolbar-btn" data-cmd="bold" title="Bold"><strong>B</strong></button>
+                <button type="button" class="toolbar-btn" data-cmd="italic" title="Italic"><em>I</em></button>
+                <button type="button" class="toolbar-btn" data-cmd="h2" title="Heading 2">H2</button>
+                <button type="button" class="toolbar-btn" data-cmd="h3" title="Heading 3">H3</button>
+                <span class="toolbar-sep"></span>
+                <button type="button" class="toolbar-btn" data-cmd="link" title="Insert Link">&#128279;</button>
+                <button type="button" class="toolbar-btn" data-cmd="image" title="Insert Image">&#128247;</button>
+                <button type="button" class="toolbar-btn" data-cmd="ul" title="Bulleted List">&#8226; List</button>
+                <button type="button" class="toolbar-btn" data-cmd="ol" title="Numbered List">1. List</button>
+                <span class="toolbar-sep"></span>
+                <button type="button" class="toolbar-btn" data-cmd="blockquote" title="Blockquote">&#10077;</button>
+                <button type="button" class="toolbar-btn" data-cmd="code" title="Code Block">&lt;/&gt;</button>
+                <button type="button" class="toolbar-btn" data-cmd="hr" title="Horizontal Rule">&#8213;</button>
+                <button type="button" class="toolbar-btn" data-cmd="p" title="Paragraph">&#182;</button>
+            </div>
+            <textarea id="content" name="content" rows="20" required
+                data-wysiwyg>{{ post.content if post else '' }}</textarea>
+            <div class="form-hint">
+                Use the toolbar to insert formatting without writing HTML manually.
+            </div>
         </div>
 
         <div class="form-row">
@@ -58,7 +78,26 @@
 
         <div class="form-group">
             <label for="cover_image">Cover Image URL</label>
-            <input type="url" id="cover_image" name="cover_image" value="{{ post.cover_image if post else '' }}">
+            <input type="text" id="cover_image" name="cover_image" value="{{ post.cover_image if post else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Or Upload Cover Image</label>
+            <div class="upload-area" id="uploadArea">
+                <input type="file" id="imageUpload" accept="image/*" style="display:none;">
+                <button type="button" class="btn-upload" id="uploadBtn">
+                    Choose File
+                </button>
+                <span id="uploadStatus" class="form-hint" style="margin-left:.8rem;">No file chosen</span>
+            </div>
+            <div class="form-hint">Max 5 MB. PNG, JPG, GIF, WebP. URL will be placed in the Cover Image field
+                above.</div>
+            {% if post and post.cover_image %}
+            <div style="margin-top:.8rem;">
+                <img src="{{ post.cover_image }}" alt="Current cover"
+                    style="max-width:200px;max-height:120px;border-radius:8px;border:1px solid var(--border);object-fit:cover;">
+            </div>
+            {% endif %}
         </div>
 
         <div class="form-group">
@@ -88,4 +127,5 @@
         </div>
     </form>
 </div>
+
 {% endblock %}
