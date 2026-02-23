@@ -1,6 +1,6 @@
 # AGENTS.md — AI Agent Instructions for personal_website
 
-> Last updated: 2025-07-23
+> Last updated: 2026-02-23
 
 ## Project Overview
 
@@ -20,8 +20,10 @@ Personal portfolio website for **Mohamed Maa Albared**, Data Scientist at zeroG 
 | CSRF               | Flask-WTF                                           | 1.2.1   |
 | Rate Limiting      | Flask-Limiter                                       | 3.5.0   |
 | Input Sanitization | bleach                                              | 6.1.0   |
+| Image Processing   | Pillow                                              | 10.4.0  |
 | WSGI Server        | gunicorn                                            | 21.2.0  |
 | Database (dev)     | SQLite                                              | —       |
+| Database (prod)    | PostgreSQL (via psycopg2-binary)                    | 18.x    |
 | Python             | 3.11.x                                              | —       |
 | Frontend           | Vanilla HTML/CSS/JS                                 | —       |
 | CDN: Animation     | GSAP + ScrollTrigger                                | 3.12.2  |
@@ -38,8 +40,8 @@ personal_website/
 │   ├── __init__.py              # App factory, extensions, security headers, CSP, error handlers, visitor tracking
 │   ├── models.py                # SQLAlchemy models: Project, Experience, Message, BlogPost, SiteConfig, PageVisit, ImpactCard, SkillCluster, LanguageItem
 │   ├── routes.py                # Public routes: index, blog, case_study, sitemap, robots, rss, contact, api
-│   ├── admin.py                 # Admin blueprint: CRUD, analytics dashboard, site config editor
-│   ├── utils.py                 # Shared helpers: sanitize, validate, email notifications, locale/UA parsing, generate_slug
+│   ├── admin.py                 # Admin blueprint: CRUD, analytics dashboard, email diagnostics, site config, login lockout
+│   ├── utils.py                 # Shared helpers: sanitize, validate, email notifications (with diagnostics), locale/UA parsing, generate_slug
 │   ├── templates/
 │   │   ├── base.html            # Base layout (CDN libs, dark/light toggle, scroll progress bar, nav)
 │   │   ├── index.html           # Single-page: Hero, About, Impact, Timeline, Projects, Skills, Blog Preview, Contact
@@ -47,6 +49,7 @@ personal_website/
 │   │   ├── blog.html            # Blog listing with category filtering
 │   │   ├── blog_detail.html     # Individual blog post (OG tags, author card, related posts)
 │   │   ├── case_study.html      # Deep-dive case study (challenge/approach/results/metrics)
+│   │   ├── privacy.html         # Privacy policy page
 │   │   ├── sitemap.xml          # SEO sitemap template
 │   │   ├── feed.xml             # RSS feed template
 │   │   ├── errors/              # Custom error pages (400, 404, 429, 500)
@@ -62,19 +65,25 @@ personal_website/
 │   └── static/
 │       ├── css/style.css        # ~2250 lines, dark/light themes, blog, case study, skeleton screens
 │       ├── js/
-│       │   ├── main.js          # ~392 lines: neural canvas, GSAP parallax, dark mode, ripples
-│       │   └── admin.js         # ~220 lines: rich text toolbar, image upload, Chart.js init
+│       │   ├── main.js          # ~403 lines: neural canvas, GSAP parallax, dark mode, ripples
+│       │   └── admin.js         # ~480 lines: rich text toolbar + HTML toggle, image upload, Chart.js init
 │       ├── images/
 │       │   ├── logo.png         # Site logo
 │       │   └── profile.png      # Profile photo
 │       └── uploads/             # User-uploaded blog images (.gitkeep)
+├── tests/
+│   ├── conftest.py              # Pytest fixtures (app, client, auth_client, sample data)
+│   ├── test_routes.py           # Public route + SEO tests
+│   ├── test_admin.py            # Admin CRUD + security tests
+│   └── test_utils.py            # Utility function tests
 ├── .github/
 │   └── workflows/
-│       └── backup.yml           # Automated daily DB backup to GitHub
+│       └── backup.yml           # Automated daily PostgreSQL backup via pg_dump to GitHub
 ├── config.py                    # Config classes: Development, Production, Testing (with production enforcement)
 ├── run.py                       # Entry point, shell context (default port 5001)
 ├── seed.py                      # Seeds DB: experiences, projects, blog posts, site configs, impact cards, skill clusters, languages
 ├── requirements.txt             # Python dependencies
+├── requirements-dev.txt         # Dev/test dependencies (pytest, black, flake8)
 ├── render.yaml                  # Render deployment config
 ├── .env.example                 # Environment variable template
 ├── .gitignore                   # Ignores .env, *.db, venv/, Achievements.md, etc.
@@ -112,13 +121,17 @@ personal_website/
 - `/blog/<slug>` — Individual blog post with related articles
 - `/case-study/<int:id>` — Deep-dive case study page (404 if project has no case study)
 - `/contact` (POST, JSON) — Contact form submission (CSRF-exempt, rate-limited 3/min)
+- `/privacy` — Privacy policy page
 - `/api/projects` (GET) — JSON API for projects
 - `/sitemap.xml` — Auto-generated XML sitemap
 - `/robots.txt` — SEO robots file (disallows `/admin/`)
 - `/feed.xml` — RSS feed for blog posts
 - `/admin/` — Dashboard with 6 tabs: Analytics, Site Content, Projects, Experience, Blog, Messages
-- `/admin/login` (GET/POST) — Login (rate-limited 5/min)
+- `/admin/login` (GET/POST) — Login (rate-limited 5/min, lockout after 5 failures)
+- `/admin/logout` (GET) — Logout and clear session
+- `/admin/test-email` (POST) — Send test email with diagnostic flash messages
 - `/admin/site-config` (POST) — Update editable site content (hero, about)
+- `/admin/purge-analytics` (POST) — Delete analytics data older than 90 days
 - `/admin/projects/new|edit|delete` — Project CRUD
 - `/admin/experiences/new|edit|delete` — Experience CRUD
 - `/admin/messages/<id>` — View/delete messages
@@ -137,7 +150,6 @@ personal_website/
 - **Custom cursor** — dot + ring, dark purple in dark mode, dark navy in light mode, hidden on mobile
 - **Scroll reveals** — IntersectionObserver-based `.reveal-up` class for all sections, cards, labels
 - **Scroll progress bar** — fixed gradient bar at top tracking page scroll
-- **Scroll reveals** — IntersectionObserver-based `.reveal-up` class
 - **Project filters** — client-side category filtering with animated transitions
 - **Counter animations** — count-up effect for impact numbers
 - **Blog preview** — latest 3 posts section on index page
@@ -145,8 +157,10 @@ personal_website/
 - **Button ripple effect** — click micro-interaction on all buttons
 - **Contact form** — AJAX POST with honeypot spam field, client-side validation
 - **Rich text toolbar** — admin blog editor toolbar (bold, italic, headings, links, images, lists) — no HTML typing needed
+- **HTML/Visual toggle** — switch between WYSIWYG visual editor and raw HTML source in blog editor
 - **Chart.js analytics** — daily visits line chart, browser/device doughnut charts in admin dashboard
-- **Image upload** — local file upload for blog cover images (stored in static/uploads/)
+- **Email diagnostics** — email config status panel in admin dashboard, test email button with SMTP error feedback
+- **Image upload** — local file upload for blog cover images (stored in static/uploads/, validated with extension + MIME + Pillow magic bytes)
 
 ---
 
@@ -154,21 +168,27 @@ personal_website/
 
 All security measures are already implemented. Do not remove or weaken them.
 
-| Measure                 | Location                  | Details                                                                                   |
-| ----------------------- | ------------------------- | ----------------------------------------------------------------------------------------- |
-| CSRF Protection         | `app/__init__.py`         | `CSRFProtect()` on all forms; `/contact` is `@csrf.exempt` (JSON endpoint)                |
-| Rate Limiting           | `app/__init__.py`         | Global 200/min; login 5/min; contact 3/min                                                |
-| Input Sanitization      | `utils.py`, `admin.py`    | `sanitize_input()` strips HTML; `sanitize_html()` allowlists safe tags                    |
-| Password Comparison     | `admin.py`                | `hmac.compare_digest()` (timing-safe)                                                     |
-| Content Security Policy | `app/__init__.py`         | Full CSP header in `after_request`                                                        |
-| Security Headers        | `app/__init__.py`         | X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, HSTS (prod) |
-| Session Security        | `config.py`               | `HTTPONLY=True`, `SAMESITE=Lax`, `SECURE=True` (prod), 2-hour expiry                      |
-| Honeypot                | `index.html`, `routes.py` | Hidden `website` field to catch bots                                                      |
-| CSRF Tokens             | All admin templates       | `<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">` in every POST form   |
-| Custom Error Pages      | `app/templates/errors/`   | 400, 404, 429, 500 — no Flask internals leaked                                            |
-| Production Enforcement  | `config.py`               | App refuses to start with default `SECRET_KEY` or `ADMIN_PASSWORD`                        |
-| Structured Logging      | `app/__init__.py`         | Security events (login attempts, contact submissions) logged with context                 |
-| Privacy-safe Analytics  | `app/__init__.py`         | Visitor IPs are SHA-256 hashed — no raw IP addresses stored                               |
+| Measure                 | Location                    | Details                                                                                   |
+| ----------------------- | --------------------------- | ----------------------------------------------------------------------------------------- |
+| CSRF Protection         | `app/__init__.py`           | `CSRFProtect()` on all forms; `/contact` is `@csrf.exempt` (JSON endpoint)                |
+| Rate Limiting           | `app/__init__.py`           | Global 200/min; login 5/min; contact 3/min                                                |
+| Input Sanitization      | `utils.py`, `admin.py`      | `sanitize_input()` strips HTML; `sanitize_html()` allowlists safe tags                    |
+| Password Comparison     | `admin.py`                  | `hmac.compare_digest()` (timing-safe)                                                     |
+| Login Lockout           | `admin.py`                  | Exponential backoff after 5 failed attempts (10-minute cooldown)                          |
+| Content Security Policy | `app/__init__.py`           | Full CSP header with `base-uri`, `form-action` directives                                 |
+| SRI Integrity Hashes    | `base.html`                 | GSAP + ScrollTrigger CDN scripts verified with SHA-384                                    |
+| Security Headers        | `app/__init__.py`           | X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, HSTS (prod) |
+| Session Security        | `config.py`                 | `HTTPONLY=True`, `SAMESITE=Lax`, `SECURE=True` (prod), 2-hour expiry                      |
+| Honeypot                | `index.html`, `routes.py`   | Hidden `website` field to catch bots                                                      |
+| CSRF Tokens             | All admin templates         | `<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">` in every POST form   |
+| Custom Error Pages      | `app/templates/errors/`     | 400, 404, 429, 500 — no Flask internals leaked                                            |
+| Production Enforcement  | `config.py`                 | App refuses to start with default `SECRET_KEY` or `ADMIN_PASSWORD`                        |
+| Structured Logging      | `app/__init__.py`           | Security events (login attempts, contact submissions) logged with context                 |
+| Audit Logging           | `admin.py`                  | All admin CRUD operations logged with user context                                        |
+| Privacy-safe Analytics  | `app/__init__.py`           | Visitor IPs HMAC-SHA256 hashed with SECRET_KEY — not rainbow-tableable                    |
+| Data Retention          | `admin.py`                  | Admin can purge analytics older than 90 days via `/admin/purge-analytics`                 |
+| Hardened File Uploads   | `admin.py`                  | Extension + MIME + Pillow magic-byte validation, SVG blocked, rate-limited                |
+| Privacy Policy          | `routes.py`, `privacy.html` | Transparent data collection disclosure at `/privacy`                                      |
 
 ---
 
@@ -247,7 +267,7 @@ flask shell
 ### Key Decisions
 - **No JavaScript frameworks** — vanilla JS only for simplicity and performance
 - **No CSS frameworks** — fully custom styles
-- **SQLite for dev/prod** — sufficient for a personal portfolio
+- **SQLite for dev, PostgreSQL for prod** — SQLite locally, psycopg2-binary + Render PostgreSQL in production
 - **Session-based admin auth** — no user model, single password from env var
 - **Single-page public site** — all content on index with anchor links
 - **No build tools** — no webpack, no SASS, no bundler
@@ -274,56 +294,46 @@ flask shell
 
 ## Testing
 
-No test framework is set up yet. To validate manually:
+70 pytest tests covering routes, admin CRUD, security, and utility functions.
 
-```python
-python -c "
-from app import create_app
-app = create_app('development')
-with app.test_client() as c:
-    r1 = c.get('/')
-    r2 = c.get('/admin/login')
-    r3 = c.post('/contact', json={'name':'t','email':'a@b.com','subject':'t','message':'test message long enough'})
-    r4 = c.get('/admin/')
-    r5 = c.get('/blog')
-    r6 = c.get('/blog/architecture-of-thought-neuroscience-ai-agents')
-    r7 = c.get('/case-study/1')
-    r8 = c.get('/sitemap.xml')
-    r9 = c.get('/robots.txt')
-    r10 = c.get('/feed.xml')
-    print(f'Index: {r1.status_code}')          # 200
-    print(f'Admin login: {r2.status_code}')    # 200
-    print(f'Contact: {r3.status_code}')        # 200
-    print(f'Admin redirect: {r4.status_code}') # 302
-    print(f'Blog: {r5.status_code}')           # 200
-    print(f'Blog detail: {r6.status_code}')    # 200
-    print(f'Case study: {r7.status_code}')     # 200
-    print(f'Sitemap: {r8.status_code}')        # 200
-    print(f'Robots: {r9.status_code}')         # 200
-    print(f'RSS: {r10.status_code}')           # 200
-    print(f'CSP: {\"Content-Security-Policy\" in r1.headers}')  # True
-"
+```bash
+# Install dev dependencies
+pip install -r requirements-dev.txt
+
+# Run tests
+python -m pytest tests/ -v
+
+# Quick smoke test
+python -m pytest tests/ -q
 ```
+
+Test files:
+- `tests/conftest.py` — Fixtures: app factory, test client, authenticated client, sample data
+- `tests/test_routes.py` — Public routes, blog, SEO endpoints, contact form
+- `tests/test_admin.py` — Admin login/lockout, CRUD operations, file upload, security
+- `tests/test_utils.py` — Sanitization, validation, email helpers, locale/UA parsing
 
 ---
 
 ## File Sizes (approximate)
 
-| File                   | Lines | Purpose                                             |
-| ---------------------- | ----- | --------------------------------------------------- |
-| `style.css`            | ~2257 | All styles (dark + light themes)                    |
-| `admin/base.html`      | ~664  | Admin layout + tab/config CSS                       |
-| `index.html`           | ~647  | Full single-page + blog preview                     |
-| `seed.py`              | ~642  | Data seeder (projects, blog, site config)           |
-| `main.js`              | ~392  | Canvas, GSAP parallax, toggle                       |
-| `admin/dashboard.html` | ~450  | Admin dashboard (6 tabs, charts, inline CRUD)       |
-| `admin.py`             | ~550  | Admin CRUD + analytics + site config + image upload |
-| `routes.py`            | ~278  | Public + blog + SEO routes                          |
-| `models.py`            | ~190  | 9 database models                                   |
-| `__init__.py`          | ~148  | App factory + visitor tracking + error handlers     |
-| `utils.py`             | ~200  | Sanitisation, validation, email, locale/UA          |
-| `case_study.html`      | ~102  | Case study template                                 |
-| `base.html`            | ~95   | Base layout + CDN scripts                           |
-| `blog_detail.html`     | ~87   | Blog post template                                  |
-| `blog.html`            | ~73   | Blog listing template                               |
-| `config.py`            | ~69   | Configuration + production enforcement              |
+| File                   | Lines | Purpose                                                     |
+| ---------------------- | ----- | ----------------------------------------------------------- |
+| `style.css`            | ~2312 | All styles (dark + light themes)                            |
+| `admin.py`             | ~838  | Admin CRUD + analytics + email diagnostics + image upload   |
+| `admin/base.html`      | ~841  | Admin layout + tab/config CSS                               |
+| `admin/dashboard.html` | ~726  | Admin dashboard (6 tabs, charts, email config, inline CRUD) |
+| `seed.py`              | ~702  | Data seeder (projects, blog, site config)                   |
+| `index.html`           | ~587  | Full single-page + blog preview                             |
+| `utils.py`             | ~498  | Sanitisation, validation, email diagnostics, locale/UA      |
+| `admin.js`             | ~480  | Rich text + HTML toggle, image upload, Chart.js             |
+| `main.js`              | ~403  | Canvas, GSAP parallax, dark mode toggle                     |
+| `routes.py`            | ~339  | Public + blog + privacy + SEO routes                        |
+| `models.py`            | ~321  | 9 database models                                           |
+| `__init__.py`          | ~150  | App factory + HMAC visitor tracking + error handlers        |
+| `blog_form.html`       | ~132  | Blog editor with WYSIWYG toolbar + HTML toggle              |
+| `case_study.html`      | ~102  | Case study template                                         |
+| `base.html`            | ~99   | Base layout + CDN scripts with SRI                          |
+| `blog_detail.html`     | ~87   | Blog post template                                          |
+| `config.py`            | ~82   | Configuration + production enforcement                      |
+| `blog.html`            | ~73   | Blog listing template                                       |

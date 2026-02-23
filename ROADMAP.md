@@ -20,9 +20,11 @@
 - Dynamic skill clusters — manage skills & capabilities from admin (no HTML needed)
 - Dynamic language items — manage spoken languages from admin
 - Rich text toolbar — format blog content (bold, italic, headings, links, images) without writing HTML
+- HTML/Visual toggle — switch between WYSIWYG visual editor and raw HTML source in blog editor
 - Local image upload — upload blog cover images from your computer (stored in static/uploads/)
 - Enhanced analytics — daily visits chart (Chart.js), browser/device/OS breakdown, bounce rate, avg pages per visit, readable locale names
 - Email notifications — automatic email when someone submits the contact form (smtplib, configurable via env vars)
+- Email diagnostics — config status panel in admin dashboard, test email button with SMTP error feedback
 - SEO: Open Graph meta tags, sitemap.xml, robots.txt, RSS feed
 - Skeleton loading screens for images
 - Button ripple micro-interactions
@@ -76,9 +78,9 @@ git add -A && git commit -m "your message" && git push origin main
 - [ ] **Image optimization** — WebP format, lazy loading, CDN (Cloudflare free tier)
 - [ ] **Progressive Web App (PWA)** — offline support, installable on mobile
 - [x] **Email notifications** — get notified when someone submits the contact form
-- [ ] **Database upgrade** — migrate to PostgreSQL on Render ($0 for 90 days)
+- [x] **Database upgrade** — PostgreSQL on Render for production (psycopg2-binary driver)
 - [ ] **CI/CD pipeline** — GitHub Actions for linting, testing before deploy
-- [x] **Automated backups** — daily DB export to GitHub via GitHub Actions workflow
+- [x] **Automated backups** — daily PostgreSQL backup to GitHub via pg_dump (GitHub Actions)
 
 ### Integrations
 - [ ] **GitHub API** — auto-fetch and display your latest repos
@@ -96,7 +98,7 @@ git add -A && git commit -m "your message" && git push origin main
 - [x] **CSP hardened** — added `base-uri`, `form-action` directives
 - [x] **Privacy policy** — transparent data collection disclosure at `/privacy`
 - [x] **Data retention** — admin can purge analytics older than 90 days
-- [x] **Comprehensive test suite** — 68 pytest tests covering routes, admin, utils, and security
+- [x] **Comprehensive test suite** — 70 pytest tests covering routes, admin, utils, and security
 - [ ] **2FA for admin panel** — TOTP-based two-factor authentication
 - [ ] **Cloudflare** — free DDoS protection + CDN + SSL
 - [ ] **Dependency scanning** — GitHub Dependabot or Snyk
@@ -128,8 +130,8 @@ personal_website/
 │   ├── __init__.py          # Flask app factory, visitor tracking, error handlers
 │   ├── models.py            # Database models (Project, Experience, Message, BlogPost, SiteConfig, PageVisit, ImpactCard, SkillCluster, LanguageItem)
 │   ├── routes.py            # Public routes + blog + SEO
-│   ├── admin.py             # Admin panel (6-tab dashboard, analytics, site config, CRUD)
-│   ├── utils.py             # Shared helpers (sanitize, validate, email notifications, locale/UA parsing)
+│   ├── admin.py             # Admin panel (6-tab dashboard, analytics, email diagnostics, site config, CRUD)
+│   ├── utils.py             # Shared helpers (sanitize, validate, email notifications with diagnostics, locale/UA parsing)
 │   ├── templates/           # Jinja2 HTML templates
 │   │   ├── base.html        # Base layout (CDN libs with SRI, dark/light toggle)
 │   │   ├── index.html       # Single-page + blog preview
@@ -143,18 +145,19 @@ personal_website/
 │   │   ├── project_detail.html
 │   │   └── admin/           # Admin panel templates (dashboard, forms)
 │   └── static/
-│       ├── css/style.css    # All styles (~2257 lines, dark + light themes)
-│       ├── js/main.js       # All interactions (~392 lines, GSAP, dark mode, ripples)
+│       ├── css/style.css    # All styles (~2312 lines, dark + light themes)
+│       ├── js/main.js       # All interactions (~403 lines, GSAP, dark mode, ripples)
+│       ├── js/admin.js      # Admin UI (~480 lines, WYSIWYG + HTML toggle, upload, charts)
 │       ├── images/          # Logo, profile photo
 │       └── uploads/         # User-uploaded blog images
 ├── .github/workflows/
-│   └── backup.yml           # Daily automated DB backup
+│   └── backup.yml           # Daily automated PostgreSQL backup via pg_dump
 ├── config.py                # App configuration (with production enforcement)
 ├── run.py                   # Entry point (port 5001)
 ├── seed.py                  # Database seeder (5 experiences, 12 projects, 4 blog posts, site configs, 4 impact cards, 4 skill clusters, 3 languages)
 ├── requirements.txt         # Python dependencies
 ├── requirements-dev.txt     # Dev/test dependencies (pytest, black, flake8)
-├── tests/                   # Pytest test suite (68 tests)
+├── tests/                   # Pytest test suite (70 tests)
 │   ├── conftest.py          # Fixtures (app, client, auth_client, sample data)
 │   ├── test_routes.py       # Public route tests
 │   ├── test_admin.py        # Admin CRUD + security tests
