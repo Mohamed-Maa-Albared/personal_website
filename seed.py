@@ -652,14 +652,11 @@ def seed():
     with app.app_context():
         db.create_all()
 
-        Project.query.delete()
-        Experience.query.delete()
-        BlogPost.query.delete()
-        SiteConfig.query.delete()
-        ImpactCard.query.delete()
-        SkillCluster.query.delete()
-        LanguageItem.query.delete()
-        db.session.commit()
+        # Skip seeding if data already exists (preserves admin-added content)
+        if Project.query.first() is not None:
+            print("Database already has data — skipping seed.")
+            print("To force re-seed, run:  python seed.py --force")
+            return
 
         for exp_data in EXPERIENCES:
             db.session.add(Experience(**exp_data))
@@ -695,4 +692,11 @@ def seed():
 
 
 if __name__ == "__main__":
+    import sys
+
+    if "--force" in sys.argv:
+        with app.app_context():
+            db.drop_all()
+            db.create_all()
+            print("Force re-seed: all tables dropped and recreated.")
     seed()
