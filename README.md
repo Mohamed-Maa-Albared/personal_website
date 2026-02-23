@@ -189,8 +189,6 @@ Deployed on [Render](https://render.com) — see `render.yaml`:
 - **Start:** `gunicorn run:app --bind 0.0.0.0:$PORT --workers 2`
 - Auto-deploys on `git push origin main`
 
-For org-specific deployment, refer to **docSpace**.
-Follow the [LSY Security Golden Path](https://github.com/lsy-central/lsy-security-golden-path) for security best practices.
 
 ## Testing
 
