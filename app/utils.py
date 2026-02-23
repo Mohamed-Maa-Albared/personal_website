@@ -149,9 +149,11 @@ def _send_via_resend(
 
     Docs: https://resend.com/docs/api-reference/emails/send-email
     """
-    from_email = os.environ.get(
-        "RESEND_FROM", "Portfolio <onboarding@resend.dev>"
-    ).strip()
+    from_email = os.environ.get("RESEND_FROM", "").strip()
+    if not from_email:
+        # Use bare address for test sender — display-name wrapper can
+        # cause 403/1010 on some Resend account tiers.
+        from_email = "onboarding@resend.dev"
 
     payload = json.dumps(
         {
@@ -162,6 +164,13 @@ def _send_via_resend(
             "text": text_body,
         }
     ).encode()
+
+    logger.info(
+        "Resend request: from=%s, to=%s, subject=%s",
+        from_email,
+        to_email,
+        subject,
+    )
 
     req = urllib.request.Request(
         "https://api.resend.com/emails",
@@ -190,10 +199,12 @@ def _send_via_resend(
         if "1010" in str(msg) or exc.code == 403:
             detail = (
                 f"Resend API error {exc.code}: {msg}. "
-                "With the free test sender (onboarding@resend.dev) you can only send "
-                "to the SAME email you signed up for Resend with. Fix: set NOTIFICATION_EMAIL "
-                "to your Resend signup email, OR verify your own domain at resend.com/domains "
-                "and set RESEND_FROM to an address on that domain."
+                f"Attempted: from={from_email}, to={to_email}. "
+                "With the free test sender (onboarding@resend.dev) the 'to' address "
+                "MUST exactly match the email you signed up for Resend with. "
+                "Check for typos/spaces in NOTIFICATION_EMAIL. "
+                "If it already matches, redeploy the Render service to pick up "
+                "the new env var, OR verify a custom domain at resend.com/domains."
             )
         else:
             detail = f"Resend API error {exc.code}: {msg}"
