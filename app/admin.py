@@ -140,7 +140,7 @@ def test_email():
         flash(f"Email not configured — missing: {', '.join(missing)}", "error")
         return redirect(url_for("admin.dashboard") + "#tab-messages")
 
-    success = send_notification_email(
+    success, detail = send_notification_email(
         "Test Sender",
         os.environ.get("NOTIFICATION_EMAIL", "test@test.com"),
         "Test Email from Portfolio Admin",
@@ -150,11 +150,7 @@ def test_email():
     if success:
         flash("Test email sent successfully! Check your inbox.", "success")
     else:
-        flash(
-            "Failed to send test email. Check your SMTP credentials — "
-            "for Gmail, make sure you're using an App Password (not your regular password).",
-            "error",
-        )
+        flash(f"Email failed: {detail}", "error")
     return redirect(url_for("admin.dashboard") + "#tab-messages")
 
 
@@ -174,108 +170,137 @@ def dashboard():
     skill_clusters = SkillCluster.query.order_by(SkillCluster.sort_order).all()
     language_items = LanguageItem.query.order_by(LanguageItem.sort_order).all()
 
-    # ── Analytics ──
-    total_visits = PageVisit.query.count()
-
-    today_start = datetime.now(timezone.utc).replace(
-        hour=0, minute=0, second=0, microsecond=0
-    )
-    today_visits = PageVisit.query.filter(PageVisit.visited_at >= today_start).count()
-
-    unique_visitors = (
-        db.session.query(func.count(func.distinct(PageVisit.ip_hash))).scalar() or 0
-    )
-
-    top_pages = (
-        db.session.query(PageVisit.path, func.count(PageVisit.id).label("count"))
-        .group_by(PageVisit.path)
-        .order_by(func.count(PageVisit.id).desc())
-        .limit(10)
-        .all()
-    )
-
-    top_referrers = (
-        db.session.query(PageVisit.referrer, func.count(PageVisit.id).label("count"))
-        .filter(PageVisit.referrer.isnot(None), PageVisit.referrer != "")
-        .group_by(PageVisit.referrer)
-        .order_by(func.count(PageVisit.id).desc())
-        .limit(10)
-        .all()
-    )
-
-    # Parse locale tags into readable names
-    raw_countries = (
-        db.session.query(PageVisit.country, func.count(PageVisit.id).label("count"))
-        .filter(PageVisit.country.isnot(None), PageVisit.country != "")
-        .group_by(PageVisit.country)
-        .order_by(func.count(PageVisit.id).desc())
-        .limit(20)
-        .all()
-    )
-    top_countries = [(parse_locale(c.country), c.count) for c in raw_countries]
-
-    recent_visits = (
-        PageVisit.query.order_by(PageVisit.visited_at.desc()).limit(20).all()
-    )
-
-    # ── Enhanced Analytics ──
-
-    # Visits per day (last 30 days)
-    thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
-    daily_visits_raw = (
-        db.session.query(
-            func.date(PageVisit.visited_at).label("day"),
-            func.count(PageVisit.id).label("count"),
-        )
-        .filter(PageVisit.visited_at >= thirty_days_ago)
-        .group_by(func.date(PageVisit.visited_at))
-        .order_by(func.date(PageVisit.visited_at))
-        .all()
-    )
-    # Build full 30-day series (fill gaps with 0)
+    # ── Analytics (wrapped so a DB issue doesn't crash the whole dashboard) ──
+    total_visits = 0
+    today_visits = 0
+    unique_visitors = 0
+    top_pages = []
+    top_referrers = []
+    top_countries = []
+    recent_visits = []
     daily_labels = []
     daily_counts = []
-    visits_by_day = {str(row.day): row.count for row in daily_visits_raw}
-    for i in range(30):
-        d = (datetime.now(timezone.utc) - timedelta(days=29 - i)).strftime("%Y-%m-%d")
-        daily_labels.append(d)
-        daily_counts.append(visits_by_day.get(d, 0))
+    top_browsers = []
+    top_os = []
+    device_breakdown = []
+    avg_pages = 0
+    bounce_rate = 0
 
-    # Browser stats
-    all_uas = (
-        db.session.query(PageVisit.user_agent)
-        .filter(PageVisit.user_agent.isnot(None), PageVisit.user_agent != "")
-        .all()
-    )
-    browser_counts = {}
-    os_counts = {}
-    device_counts = {}
-    for (ua_str,) in all_uas:
-        parsed = parse_user_agent_short(ua_str)
-        browser_counts[parsed["browser"]] = browser_counts.get(parsed["browser"], 0) + 1
-        os_counts[parsed["os"]] = os_counts.get(parsed["os"], 0) + 1
-        device_counts[parsed["device"]] = device_counts.get(parsed["device"], 0) + 1
+    try:
+        total_visits = PageVisit.query.count()
 
-    # Sort by count, take top 6
-    top_browsers = sorted(browser_counts.items(), key=lambda x: -x[1])[:6]
-    top_os = sorted(os_counts.items(), key=lambda x: -x[1])[:6]
-    device_breakdown = sorted(device_counts.items(), key=lambda x: -x[1])
+        today_start = datetime.now(timezone.utc).replace(
+            hour=0, minute=0, second=0, microsecond=0
+        )
+        today_visits = PageVisit.query.filter(
+            PageVisit.visited_at >= today_start
+        ).count()
 
-    # Avg pages per unique visitor
-    avg_pages = round(total_visits / unique_visitors, 1) if unique_visitors else 0
+        unique_visitors = (
+            db.session.query(func.count(func.distinct(PageVisit.ip_hash))).scalar() or 0
+        )
 
-    # Bounce rate (visitors who only viewed 1 page)
-    visitor_page_counts = (
-        db.session.query(PageVisit.ip_hash, func.count(PageVisit.id).label("pages"))
-        .group_by(PageVisit.ip_hash)
-        .all()
-    )
-    single_page_visitors = sum(1 for _, pages in visitor_page_counts if pages == 1)
-    bounce_rate = (
-        round(single_page_visitors / len(visitor_page_counts) * 100, 1)
-        if visitor_page_counts
-        else 0
-    )
+        top_pages = (
+            db.session.query(PageVisit.path, func.count(PageVisit.id).label("count"))
+            .group_by(PageVisit.path)
+            .order_by(func.count(PageVisit.id).desc())
+            .limit(10)
+            .all()
+        )
+
+        top_referrers = (
+            db.session.query(
+                PageVisit.referrer, func.count(PageVisit.id).label("count")
+            )
+            .filter(PageVisit.referrer.isnot(None), PageVisit.referrer != "")
+            .group_by(PageVisit.referrer)
+            .order_by(func.count(PageVisit.id).desc())
+            .limit(10)
+            .all()
+        )
+
+        # Parse locale tags into readable names
+        raw_countries = (
+            db.session.query(PageVisit.country, func.count(PageVisit.id).label("count"))
+            .filter(PageVisit.country.isnot(None), PageVisit.country != "")
+            .group_by(PageVisit.country)
+            .order_by(func.count(PageVisit.id).desc())
+            .limit(20)
+            .all()
+        )
+        top_countries = [(parse_locale(c.country), c.count) for c in raw_countries]
+
+        recent_visits = (
+            PageVisit.query.order_by(PageVisit.visited_at.desc()).limit(20).all()
+        )
+
+        # ── Enhanced Analytics ──
+
+        # Visits per day (last 30 days) — use cast for PostgreSQL compat
+        thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
+
+        from sqlalchemy import Date, cast
+
+        daily_visits_raw = (
+            db.session.query(
+                cast(PageVisit.visited_at, Date).label("day"),
+                func.count(PageVisit.id).label("count"),
+            )
+            .filter(PageVisit.visited_at >= thirty_days_ago)
+            .group_by(cast(PageVisit.visited_at, Date))
+            .order_by(cast(PageVisit.visited_at, Date))
+            .all()
+        )
+        # Build full 30-day series (fill gaps with 0)
+        visits_by_day = {str(row.day): row.count for row in daily_visits_raw}
+        for i in range(30):
+            d = (datetime.now(timezone.utc) - timedelta(days=29 - i)).strftime(
+                "%Y-%m-%d"
+            )
+            daily_labels.append(d)
+            daily_counts.append(visits_by_day.get(d, 0))
+
+        # Browser stats
+        all_uas = (
+            db.session.query(PageVisit.user_agent)
+            .filter(PageVisit.user_agent.isnot(None), PageVisit.user_agent != "")
+            .all()
+        )
+        browser_counts = {}
+        os_counts = {}
+        device_counts = {}
+        for (ua_str,) in all_uas:
+            parsed = parse_user_agent_short(ua_str)
+            browser_counts[parsed["browser"]] = (
+                browser_counts.get(parsed["browser"], 0) + 1
+            )
+            os_counts[parsed["os"]] = os_counts.get(parsed["os"], 0) + 1
+            device_counts[parsed["device"]] = device_counts.get(parsed["device"], 0) + 1
+
+        # Sort by count, take top 6
+        top_browsers = sorted(browser_counts.items(), key=lambda x: -x[1])[:6]
+        top_os = sorted(os_counts.items(), key=lambda x: -x[1])[:6]
+        device_breakdown = sorted(device_counts.items(), key=lambda x: -x[1])
+
+        # Avg pages per unique visitor
+        avg_pages = round(total_visits / unique_visitors, 1) if unique_visitors else 0
+
+        # Bounce rate (visitors who only viewed 1 page)
+        visitor_page_counts = (
+            db.session.query(PageVisit.ip_hash, func.count(PageVisit.id).label("pages"))
+            .group_by(PageVisit.ip_hash)
+            .all()
+        )
+        single_page_visitors = sum(1 for _, pages in visitor_page_counts if pages == 1)
+        bounce_rate = (
+            round(single_page_visitors / len(visitor_page_counts) * 100, 1)
+            if visitor_page_counts
+            else 0
+        )
+
+    except Exception:
+        logger.exception("Analytics query failed — dashboard will show zeroes")
+        db.session.rollback()
 
     return render_template(
         "admin/dashboard.html",

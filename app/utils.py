@@ -9,6 +9,7 @@ import logging
 import os
 import re
 import smtplib
+import ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -155,18 +156,29 @@ def get_email_config_status() -> dict:
     return status
 
 
-def send_notification_email(name: str, email: str, subject: str, message: str) -> bool:
+def send_notification_email(
+    name: str, email: str, subject: str, message: str
+) -> tuple[bool, str]:
     """Send an email notification when a contact form is submitted.
 
     Requires environment variables:
         MAIL_SERVER, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, NOTIFICATION_EMAIL
-    Returns True if email was sent successfully, False otherwise.
+
+    Supports port 587 (STARTTLS) and port 465 (SSL).
+
+    Returns (success: bool, detail: str) — detail contains a human-readable
+    diagnostic message for admin display.
     """
-    mail_server = os.environ.get("MAIL_SERVER")
-    mail_port = int(os.environ.get("MAIL_PORT", "587"))
-    mail_username = os.environ.get("MAIL_USERNAME")
-    mail_password = os.environ.get("MAIL_PASSWORD")
-    notification_email = os.environ.get("NOTIFICATION_EMAIL")
+    mail_server = os.environ.get("MAIL_SERVER", "").strip()
+    mail_username = os.environ.get("MAIL_USERNAME", "").strip()
+    mail_password = os.environ.get("MAIL_PASSWORD", "").strip()
+    notification_email = os.environ.get("NOTIFICATION_EMAIL", "").strip()
+
+    # Safe port parsing
+    try:
+        mail_port = int(os.environ.get("MAIL_PORT", "587"))
+    except (ValueError, TypeError):
+        mail_port = 587
 
     if not all([mail_server, mail_username, mail_password, notification_email]):
         missing = [
@@ -177,12 +189,11 @@ def send_notification_email(name: str, email: str, subject: str, message: str) -
                 "MAIL_PASSWORD",
                 "NOTIFICATION_EMAIL",
             ]
-            if not os.environ.get(k)
+            if not os.environ.get(k, "").strip()
         ]
-        logger.warning(
-            "Email notification skipped — missing env vars: %s", ", ".join(missing)
-        )
-        return False
+        detail = f"Missing env vars: {', '.join(missing)}"
+        logger.warning("Email notification skipped — %s", detail)
+        return False, detail
 
     msg = MIMEMultipart("alternative")
     msg["Subject"] = f"[Portfolio Contact] {subject}"
@@ -228,28 +239,51 @@ def send_notification_email(name: str, email: str, subject: str, message: str) -
     msg.attach(MIMEText(html_body, "html"))
 
     try:
-        with smtplib.SMTP(mail_server, mail_port, timeout=10) as server:
+        if mail_port == 465:
+            # Port 465 uses implicit SSL
+            context = ssl.create_default_context()
+            server = smtplib.SMTP_SSL(
+                mail_server, mail_port, timeout=15, context=context
+            )
+        else:
+            # Port 587 (or other) uses STARTTLS
+            server = smtplib.SMTP(mail_server, mail_port, timeout=15)
             server.ehlo()
-            server.starttls()
+            server.starttls(context=ssl.create_default_context())
             server.ehlo()
+
+        with server:
             server.login(mail_username, mail_password)
             server.send_message(msg)
+
         logger.info("Email notification sent for contact from %s", email)
-        return True
-    except smtplib.SMTPAuthenticationError:
-        logger.error(
-            "Email authentication failed — check MAIL_USERNAME and MAIL_PASSWORD. "
-            "For Gmail, use an App Password (not your regular password)."
+        return True, "Email sent successfully"
+
+    except smtplib.SMTPAuthenticationError as exc:
+        detail = (
+            f"SMTP authentication failed (server said: {exc.smtp_code} {exc.smtp_error!r}). "
+            f"For Gmail: 1) Enable 2-Step Verification at myaccount.google.com/security, "
+            f"2) Generate an App Password at myaccount.google.com/apppasswords, "
+            f"3) Use that 16-character App Password as MAIL_PASSWORD (not your Gmail login password)."
         )
-        return False
-    except smtplib.SMTPConnectError:
-        logger.error(
-            "Could not connect to MAIL_SERVER=%s on port %s", mail_server, mail_port
-        )
-        return False
-    except Exception:
+        logger.error(detail)
+        return False, detail
+    except smtplib.SMTPRecipientsRefused as exc:
+        detail = f"Recipient rejected: {notification_email} — check NOTIFICATION_EMAIL."
+        logger.error(detail)
+        return False, detail
+    except (smtplib.SMTPConnectError, ConnectionRefusedError, OSError) as exc:
+        detail = f"Could not connect to {mail_server}:{mail_port} — {type(exc).__name__}: {exc}"
+        logger.error(detail)
+        return False, detail
+    except smtplib.SMTPException as exc:
+        detail = f"SMTP error: {type(exc).__name__}: {exc}"
+        logger.error(detail)
+        return False, detail
+    except Exception as exc:
+        detail = f"Unexpected error: {type(exc).__name__}: {exc}"
         logger.exception("Failed to send email notification")
-        return False
+        return False, detail
 
 
 # ---------------------------------------------------------------------------
