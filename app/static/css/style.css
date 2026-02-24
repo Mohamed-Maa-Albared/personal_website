@@ -1573,11 +1573,11 @@ strong {
 }
 
 [data-theme="light"] .timeline-highlights li em {
-    color: var(--accent);
+    color: var(--accent-cyan);
 }
 
 [data-theme="light"] .timeline-highlights li .accent-hl {
-    color: var(--accent);
+    color: var(--accent-cyan);
     font-weight: 600;
 }
 
