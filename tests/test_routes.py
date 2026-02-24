@@ -33,6 +33,27 @@ class TestIndex:
         assert "form-action 'self'" in csp
 
 
+class TestDynamicIndex:
+    """Tests that index renders dynamic content from the database."""
+
+    def test_index_renders_experience(self, client, sample_experience):
+        """Experience entries from the DB should appear on the homepage."""
+        resp = client.get("/")
+        assert b"Data Scientist" in resp.data
+        assert b"Test Corp" in resp.data
+
+    def test_index_renders_project(self, client, sample_project):
+        """Project entries from the DB should appear on the homepage."""
+        resp = client.get("/")
+        assert b"Test Project" in resp.data
+        assert b"Short desc" in resp.data
+
+    def test_index_renders_experience_description(self, client, sample_experience):
+        """Experience description field should be visible on the homepage."""
+        resp = client.get("/")
+        assert b"Test role" in resp.data
+
+
 class TestProjectDetail:
     """Tests for the project detail page."""
 

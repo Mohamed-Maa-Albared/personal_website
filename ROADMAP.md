@@ -12,6 +12,9 @@
 - Blog section with 4 articles (AI, neuroscience, art, recommendation systems)
 - Blog listing with category filtering + blog preview on homepage
 - Experience timeline
+- Dynamic experience timeline — rendered from database (description + highlights), editable from admin
+- Dynamic projects grid — rendered from database with category filters, tech tags, and case study links
+- Admin tab persistence — cancel/back links return to the correct tab via URL hashes
 - Contact form with honeypot spam protection
 - Admin panel at `/admin` with 6-tab dashboard (Analytics, Site Content, Projects, Experience, Blog, Messages)
 - Visitor analytics — page views, top pages, referrers, locales, unique visitors (privacy-safe: IPs hashed)
@@ -19,8 +22,8 @@
 - Dynamic impact cards — add/edit/delete impact metrics from admin panel
 - Dynamic skill clusters — manage skills & capabilities from admin (no HTML needed)
 - Dynamic language items — manage spoken languages from admin
-- Rich text toolbar — format blog content (bold, italic, headings, links, images) without writing HTML
-- HTML/Visual toggle — switch between WYSIWYG visual editor and raw HTML source in blog editor
+- Rich text toolbar — format blog and case study content (bold, italic, headings, links, images) without writing HTML
+- HTML/Visual toggle — switch between WYSIWYG visual editor and raw HTML source in blog and case study editors
 - Local image upload — upload blog cover images from your computer (stored in static/uploads/)
 - Enhanced analytics — daily visits chart (Chart.js), browser/device/OS breakdown, bounce rate, avg pages per visit, readable locale names
 - Email notifications — Resend HTTP API (recommended) with SMTP fallback, configurable via env vars
@@ -134,7 +137,7 @@ personal_website/
 │   ├── utils.py             # Shared helpers (sanitize, validate, email notifications with diagnostics, locale/UA parsing)
 │   ├── templates/           # Jinja2 HTML templates
 │   │   ├── base.html        # Base layout (CDN libs with SRI, dark/light toggle)
-│   │   ├── index.html       # Single-page + blog preview
+│   │   ├── index.html       # Dynamic single-page (Jinja2 loops for experiences + projects) + blog preview
 │   │   ├── blog.html        # Blog listing
 │   │   ├── blog_detail.html # Blog post
 │   │   ├── case_study.html  # Case study
@@ -145,7 +148,7 @@ personal_website/
 │   │   ├── project_detail.html
 │   │   └── admin/           # Admin panel templates (dashboard, forms)
 │   └── static/
-│       ├── css/style.css    # All styles (~2312 lines, dark + light themes)
+│       ├── css/style.css    # All styles (~2319 lines, dark + light themes)
 │       ├── js/main.js       # All interactions (~403 lines, GSAP, dark mode, ripples)
 │       ├── js/admin.js      # Admin UI (~480 lines, WYSIWYG + HTML toggle, upload, charts)
 │       ├── images/          # Logo, profile photo

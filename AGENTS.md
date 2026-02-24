@@ -1,6 +1,6 @@
 # AGENTS.md — AI Agent Instructions for personal_website
 
-> Last updated: 2026-02-23
+> Last updated: 2026-02-24
 
 ## Project Overview
 
@@ -44,7 +44,7 @@ personal_website/
 │   ├── utils.py                 # Shared helpers: sanitize, validate, email notifications (with diagnostics), locale/UA parsing, generate_slug
 │   ├── templates/
 │   │   ├── base.html            # Base layout (CDN libs, dark/light toggle, scroll progress bar, nav)
-│   │   ├── index.html           # Single-page: Hero, About, Impact, Timeline, Projects, Skills, Blog Preview, Contact
+│   │   ├── index.html           # Single-page: Hero, About, Impact, Timeline (dynamic), Projects (dynamic), Skills, Blog Preview, Contact
 │   │   ├── project_detail.html  # Individual project detail page
 │   │   ├── blog.html            # Blog listing with category filtering
 │   │   ├── blog_detail.html     # Individual blog post (OG tags, author card, related posts)
@@ -57,13 +57,13 @@ personal_website/
 │   │       ├── base.html        # Admin layout + tab/config CSS
 │   │       ├── login.html       # Admin login form
 │   │       ├── dashboard.html   # Admin dashboard (6 tabs: Analytics, Site Content, Projects, Experience, Blog, Messages)
-│   │       ├── project_form.html      # Create/edit project form
+│   │       ├── project_form.html      # Create/edit project form (URL fields are text, not url-validated)
 │   │       ├── experience_form.html   # Create/edit experience form
-│   │       ├── blog_form.html         # Create/edit blog post form
-│   │       ├── case_study_form.html   # Edit case study for a project
+│   │       ├── blog_form.html         # Create/edit blog post form (WYSIWYG toolbar)
+│   │       ├── case_study_form.html   # Edit case study for a project (WYSIWYG toolbar)
 │   │       └── message_detail.html    # View contact message
 │   └── static/
-│       ├── css/style.css        # ~2250 lines, dark/light themes, blog, case study, skeleton screens
+│       ├── css/style.css        # ~2319 lines, dark/light themes, blog, case study, skeleton screens
 │       ├── js/
 │       │   ├── main.js          # ~403 lines: neural canvas, GSAP parallax, dark mode, ripples
 │       │   └── admin.js         # ~480 lines: rich text toolbar + HTML toggle, image upload, Chart.js init
@@ -144,6 +144,8 @@ personal_website/
 
 ### Frontend
 - **Single-page layout** — all public content in `index.html` with anchor navigation (`#about`, `#experience`, `#projects`, `#skills`, `#blog`, `#contact`)
+- **Dynamic experience timeline** — rendered from database via Jinja2 loop over `experiences`; description + highlights displayed per entry
+- **Dynamic projects grid** — rendered from database via Jinja2 loop over `all_projects`; category filters, tech tags, and case study links generated automatically
 - **Neural canvas** — animated particle network in hero section (80 nodes, vanilla Canvas API, mouse-reactive connections)
 - **Dark/Light mode** — toggle button in nav, persisted via `localStorage`, CSS variables swap via `[data-theme="light"]`
 - **GSAP ScrollTrigger** — hero parallax fade, timeline marker dot scale animations
@@ -156,12 +158,13 @@ personal_website/
 - **Skeleton screens** — shimmer loading animation for blog card images
 - **Button ripple effect** — click micro-interaction on all buttons
 - **Contact form** — AJAX POST with honeypot spam field, client-side validation
-- **Rich text toolbar** — admin blog editor toolbar (bold, italic, headings, links, images, lists) — no HTML typing needed
-- **HTML/Visual toggle** — switch between WYSIWYG visual editor and raw HTML source in blog editor
+- **Rich text toolbar** — admin blog editor and case study editor toolbar (bold, italic, headings, links, images, lists) — no HTML typing needed
+- **HTML/Visual toggle** — switch between WYSIWYG visual editor and raw HTML source in blog and case study editors
 - **Chart.js analytics** — daily visits line chart, browser/device doughnut charts in admin dashboard
 - **Email diagnostics** — email config status panel in admin dashboard, test email button with error feedback
 - **Dual email providers** — Resend HTTP API (recommended for Render free tier) with SMTP fallback
 - **Image upload** — local file upload for blog cover images (stored in static/uploads/, validated with extension + MIME + Pillow magic bytes)
+- **Admin tab persistence** — cancel/back links and post-CRUD redirects include `#tab-*` URL hashes so users return to the correct tab
 
 ---
 
@@ -299,7 +302,7 @@ flask shell
 
 ## Testing
 
-70 pytest tests covering routes, admin CRUD, security, and utility functions.
+80 pytest tests covering routes, admin CRUD, security, and utility functions.
 
 ```bash
 # Install dev dependencies
@@ -324,20 +327,20 @@ Test files:
 
 | File                   | Lines | Purpose                                                     |
 | ---------------------- | ----- | ----------------------------------------------------------- |
-| `style.css`            | ~2312 | All styles (dark + light themes)                            |
+| `style.css`            | ~2319 | All styles (dark + light themes)                            |
 | `admin.py`             | ~838  | Admin CRUD + analytics + email diagnostics + image upload   |
 | `admin/base.html`      | ~841  | Admin layout + tab/config CSS                               |
-| `admin/dashboard.html` | ~726  | Admin dashboard (6 tabs, charts, email config, inline CRUD) |
-| `seed.py`              | ~702  | Data seeder (projects, blog, site config)                   |
-| `index.html`           | ~587  | Full single-page + blog preview                             |
-| `utils.py`             | ~498  | Sanitisation, validation, email diagnostics, locale/UA      |
+| `admin/dashboard.html` | ~738  | Admin dashboard (6 tabs, charts, email config, inline CRUD) |
+| `seed.py`              | ~701  | Data seeder (projects, blog, site config)                   |
+| `index.html`           | ~352  | Dynamic single-page (Jinja2 loops) + blog preview           |
+| `utils.py`             | ~603  | Sanitisation, validation, email diagnostics, locale/UA      |
 | `admin.js`             | ~480  | Rich text + HTML toggle, image upload, Chart.js             |
 | `main.js`              | ~403  | Canvas, GSAP parallax, dark mode toggle                     |
 | `routes.py`            | ~339  | Public + blog + privacy + SEO routes                        |
 | `models.py`            | ~321  | 9 database models                                           |
 | `__init__.py`          | ~150  | App factory + HMAC visitor tracking + error handlers        |
 | `blog_form.html`       | ~132  | Blog editor with WYSIWYG toolbar + HTML toggle              |
-| `case_study.html`      | ~102  | Case study template                                         |
+| `case_study_form.html` | ~59   | Case study editor with WYSIWYG toolbar                      |
 | `base.html`            | ~99   | Base layout + CDN scripts with SRI                          |
 | `blog_detail.html`     | ~87   | Blog post template                                          |
 | `config.py`            | ~82   | Configuration + production enforcement                      |

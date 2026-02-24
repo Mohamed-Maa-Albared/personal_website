@@ -131,12 +131,105 @@ class TestExperienceCRUD:
         )
         assert resp.status_code == 200
 
+    def test_experience_edit(self, auth_client, sample_experience):
+        resp = auth_client.get(f"/admin/experience/{sample_experience.id}/edit")
+        assert resp.status_code == 200
+
+    def test_experience_update(self, auth_client, sample_experience, app, db):
+        """Editing an experience should persist changes to the DB."""
+        resp = auth_client.post(
+            f"/admin/experience/{sample_experience.id}/edit",
+            data={
+                "role": "Senior Data Scientist",
+                "company": "Updated Corp",
+                "location": "Munich",
+                "date_range": "Jan 2024 \u2013 Present",
+                "description": "Updated role desc",
+                "sort_order": "1",
+            },
+            follow_redirects=True,
+        )
+        assert resp.status_code == 200
+        with app.app_context():
+            from app.models import Experience
+
+            exp = Experience.query.get(sample_experience.id)
+            assert exp.role == "Senior Data Scientist"
+            assert exp.company == "Updated Corp"
+
     def test_experience_delete(self, auth_client, sample_experience):
         resp = auth_client.post(
             f"/admin/experience/{sample_experience.id}/delete",
             follow_redirects=True,
         )
         assert resp.status_code == 200
+
+
+class TestTabPersistence:
+    """Tests that admin redirects include the correct #tab-* hash."""
+
+    def test_project_create_redirects_to_projects_tab(self, auth_client):
+        resp = auth_client.post(
+            "/admin/project/new",
+            data={
+                "title": "Tab Test Project",
+                "description": "Desc",
+                "category": "NLP",
+                "technologies": "Python",
+                "sort_order": "1",
+            },
+            follow_redirects=False,
+        )
+        assert resp.status_code == 302
+        assert "#tab-projects" in resp.headers["Location"]
+
+    def test_experience_create_redirects_to_experience_tab(self, auth_client):
+        resp = auth_client.post(
+            "/admin/experience/new",
+            data={
+                "role": "Engineer",
+                "company": "Co",
+                "date_range": "2024",
+                "sort_order": "0",
+            },
+            follow_redirects=False,
+        )
+        assert resp.status_code == 302
+        assert "#tab-experience" in resp.headers["Location"]
+
+    def test_blog_create_redirects_to_blog_tab(self, auth_client):
+        resp = auth_client.post(
+            "/admin/blog/new",
+            data={
+                "title": "Tab Test Blog",
+                "content": "<p>Content</p>",
+                "category": "AI",
+                "read_time": "3",
+            },
+            follow_redirects=False,
+        )
+        assert resp.status_code == 302
+        assert "#tab-blog" in resp.headers["Location"]
+
+    def test_project_delete_redirects_to_projects_tab(
+        self, auth_client, sample_project
+    ):
+        resp = auth_client.post(
+            f"/admin/project/{sample_project.id}/delete",
+            follow_redirects=False,
+        )
+        assert resp.status_code == 302
+        assert "#tab-projects" in resp.headers["Location"]
+
+
+class TestCaseStudyForm:
+    """Tests for the case study editor."""
+
+    def test_case_study_form_has_wysiwyg(self, auth_client, sample_project):
+        """Case study form textareas should have data-wysiwyg for rich text editing."""
+        resp = auth_client.get(f"/admin/project/{sample_project.id}/case-study")
+        assert resp.status_code == 200
+        assert b"data-wysiwyg" in resp.data
 
 
 class TestAdminSecurity:

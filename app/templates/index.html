@@ -111,103 +111,31 @@
         <h2 class="section-heading reveal-up">The Journey<span class="accent">.</span></h2>
 
         <div class="timeline">
-            <!-- zeroG -->
+            {% for exp in experiences %}
             <div class="timeline-item reveal-up">
                 <div class="timeline-marker">
                     <div class="marker-dot"></div>
-                    <div class="marker-line"></div>
+                    {% if not loop.last %}<div class="marker-line"></div>{% endif %}
                 </div>
                 <div class="timeline-content">
-                    <span class="timeline-date">Dec 2022 – Present</span>
-                    <h3 class="timeline-role">Data Scientist</h3>
-                    <h4 class="timeline-company">zeroG — AI in Aviation (Lufthansa Group) <span
-                            class="timeline-loc">Frankfurt, Germany</span></h4>
+                    <span class="timeline-date">{{ exp.date_range }}</span>
+                    <h3 class="timeline-role">{{ exp.role }}</h3>
+                    <h4 class="timeline-company">{{ exp.company }}{% if exp.location %} <span class="timeline-loc">{{
+                            exp.location }}</span>{% endif %}</h4>
+                    {% if exp.description %}
+                    <p class="timeline-desc">{{ exp.description }}</p>
+                    {% endif %}
+                    {% set highlights = exp.highlights | from_json %}
+                    {% if highlights %}
                     <ul class="timeline-highlights">
-                        <li>Spearheaded keynote on Agentic AI with a <strong>live multi-agent system demo</strong>
-                            processing voice commands in real-time</li>
-                        <li>Engineered ancillary recommendation system driving <strong>3–15% increase in
-                                purchases</strong></li>
-                        <li>Achieved <strong>2x and 20x performance gains</strong> on destination and ancillary
-                            recommender APIs</li>
-                        <li>Built comprehensive <strong>AB testing pipeline</strong> that led to creation of a new
-                            Performance Measurement team</li>
-                        <li>Pioneered first generative AI model for city destination recommendations</li>
+                        {% for h in highlights %}
+                        <li>{{ h }}</li>
+                        {% endfor %}
                     </ul>
+                    {% endif %}
                 </div>
             </div>
-
-            <!-- Freelance -->
-            <div class="timeline-item reveal-up">
-                <div class="timeline-marker">
-                    <div class="marker-dot"></div>
-                    <div class="marker-line"></div>
-                </div>
-                <div class="timeline-content">
-                    <span class="timeline-date">Apr 2021 – Oct 2022</span>
-                    <h3 class="timeline-role">Artificial Intelligence Engineer</h3>
-                    <h4 class="timeline-company">Freelance</h4>
-                    <ul class="timeline-highlights">
-                        <li>Delivered end-to-end AI solutions including <strong>"Virtual Patient"</strong> simulation
-                            for medical training</li>
-                        <li>Built automated <strong>Dark Web Auto-Labelling & Classification</strong> system achieving
-                            95% accuracy</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Lecturer -->
-            <div class="timeline-item reveal-up">
-                <div class="timeline-marker">
-                    <div class="marker-dot"></div>
-                    <div class="marker-line"></div>
-                </div>
-                <div class="timeline-content">
-                    <span class="timeline-date">Feb 2022 – Jun 2022</span>
-                    <h3 class="timeline-role">Engineering Lecturer (Part-Time)</h3>
-                    <h4 class="timeline-company">Arab International University <span class="timeline-loc">Damascus,
-                            Syria</span></h4>
-                    <ul class="timeline-highlights">
-                        <li>Led <strong>Algorithms & Data Structures</strong> lab, developing curriculum and mentoring
-                            undergraduates</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Startup -->
-            <div class="timeline-item reveal-up">
-                <div class="timeline-marker">
-                    <div class="marker-dot"></div>
-                    <div class="marker-line"></div>
-                </div>
-                <div class="timeline-content">
-                    <span class="timeline-date">Apr 2020 – Jun 2021</span>
-                    <h3 class="timeline-role">Data Scientist</h3>
-                    <h4 class="timeline-company">Start-Up <span class="timeline-loc">Damascus, Syria</span></h4>
-                    <ul class="timeline-highlights">
-                        <li>Engineered time-series model for <strong>Foreign Exchange Forecasting</strong> (JPY/CAD)
-                        </li>
-                        <li>Built deep learning classifier for <strong>emotion prediction from voice</strong></li>
-                        <li>Developed <strong>Arabic Tweets Classifier</strong> for sentiment analysis using BERT</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Education -->
-            <div class="timeline-item reveal-up">
-                <div class="timeline-marker">
-                    <div class="marker-dot"></div>
-                </div>
-                <div class="timeline-content">
-                    <span class="timeline-date">Sep 2015 – Mar 2021</span>
-                    <h3 class="timeline-role">BSc Informatics Engineering, AI Major</h3>
-                    <h4 class="timeline-company">Arab International University <span class="timeline-loc">Damascus,
-                            Syria</span></h4>
-                    <ul class="timeline-highlights">
-                        <li>Thesis: <strong>Human Behavior Simulation</strong>, combining voice cloning, 3D avatar
-                            reconstruction, and deep RL agent training</li>
-                    </ul>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </section>
@@ -230,159 +158,29 @@
         </div>
 
         <div class="projects-grid">
-            <!-- Agentic AI Demo -->
-            <div class="project-card reveal-up" data-category="genai">
-                <div class="card-number">01</div>
+            {% for project in all_projects %}
+            <div class="project-card reveal-up" data-category="{{ project.category }}" {% if not loop.first
+                %}style="--delay:{{ (loop.index0 % 3) * 0.05 }}s" {% endif %}>
+                <div class="card-number">{{ '%02d' % loop.index }}</div>
                 <div class="card-content">
-                    <span class="card-category">Generative & Agentic AI</span>
-                    <h3 class="card-title">Multi-Agent Voice System</h3>
-                    <p class="card-desc">Voice-activated orchestrator that transcribes commands and delegates tasks to
-                        specialized search and data analysis agents, solving business queries in real-time.</p>
+                    <span class="card-category">{{ project.category | upper }}</span>
+                    <h3 class="card-title">{{ project.title }}</h3>
+                    <p class="card-desc">{{ project.short_description or project.description[:200] }}</p>
+                    {% if project.technologies %}
                     <div class="card-tech">
-                        <span>LLM Orchestration</span><span>Voice AI</span><span>Multi-Agent</span><span>RAG</span>
+                        {% for tech in project.technologies.split(',')[:4] %}
+                        <span>{{ tech.strip() }}</span>
+                        {% endfor %}
                     </div>
-                    <a href="/case-study/1" class="card-case-study-link">View Case Study →</a>
+                    {% endif %}
+                    {% if project.has_case_study %}
+                    <a href="{{ url_for('main.case_study', project_id=project.id) }}" class="card-case-study-link">View
+                        Case Study →</a>
+                    {% endif %}
                 </div>
                 <div class="card-glow"></div>
             </div>
-
-            <!-- Recommendation System -->
-            <div class="project-card reveal-up" data-category="recsys" style="--delay:.1s">
-                <div class="card-number">02</div>
-                <div class="card-content">
-                    <span class="card-category">Recommendation Systems</span>
-                    <h3 class="card-title">Ancillary Recommender Engine</h3>
-                    <p class="card-desc">Production recommendation system deployed across multiple airline partners,
-                        driving 3–15% increase in purchases with 20x API performance optimization.</p>
-                    <div class="card-tech">
-                        <span>Python</span><span>Azure ML</span><span>API Design</span><span>AB Testing</span>
-                    </div>
-                    <a href="/case-study/2" class="card-case-study-link">View Case Study →</a>
-                </div>
-                <div class="card-glow"></div>
-            </div>
-
-            <!-- AB Testing Pipeline -->
-            <div class="project-card reveal-up" data-category="recsys" style="--delay:.05s">
-                <div class="card-number">03</div>
-                <div class="card-content">
-                    <span class="card-category">Causal Inference</span>
-                    <h3 class="card-title">AB Testing Framework</h3>
-                    <p class="card-desc">Comprehensive causal inference pipeline with CATE framework, five
-                        meta-learners, SHAP-based archetype discovery, and automated dual-reporting.</p>
-                    <div class="card-tech">
-                        <span>Causal Inference</span><span>SHAP</span><span>Meta-Learners</span><span>Statistical
-                            Testing</span>
-                    </div>
-                </div>
-                <div class="card-glow"></div>
-            </div>
-
-            <!-- Human Behavior Simulation -->
-            <div class="project-card reveal-up" data-category="rl cv" style="--delay:.1s">
-                <div class="card-number">04</div>
-                <div class="card-content">
-                    <span class="card-category">Deep RL &bull; Computer Vision</span>
-                    <h3 class="card-title">Human Behavior Simulation</h3>
-                    <p class="card-desc">Multi-modal AI combining zero-shot voice cloning from 5-20s audio, 3D avatar
-                        reconstruction from a single image (PIFu), and teaching avatars to walk with Deep RL (PPO).</p>
-                    <div class="card-tech">
-                        <span>PPO</span><span>PIFu</span><span>Voice Cloning</span><span>Unity/Blender</span>
-                    </div>
-                </div>
-                <div class="card-glow"></div>
-            </div>
-
-            <!-- Virtual Patient -->
-            <div class="project-card reveal-up" data-category="nlp" style="--delay:.15s">
-                <div class="card-number">05</div>
-                <div class="card-content">
-                    <span class="card-category">NLP</span>
-                    <h3 class="card-title">Virtual Patient Chatbot</h3>
-                    <p class="card-desc">Interactive medical training chatbot simulating five different lung and chest
-                        disease cases for testing medical students on diagnosis skills.</p>
-                    <div class="card-tech">
-                        <span>NLP</span><span>SGD</span><span>Classification</span><span>Medical AI</span>
-                    </div>
-                </div>
-                <div class="card-glow"></div>
-            </div>
-
-            <!-- Dark Web -->
-            <div class="project-card reveal-up" data-category="nlp" style="--delay:.1s">
-                <div class="card-number">06</div>
-                <div class="card-content">
-                    <span class="card-category">NLP &bull; Classification</span>
-                    <h3 class="card-title">Dark Web Classification</h3>
-                    <p class="card-desc">Automated labelling and classification of dark web websites using SVM and Naïve
-                        Bayes (95% accuracy) with a custom smart scoring algorithm (85% accuracy).</p>
-                    <div class="card-tech">
-                        <span>SVM</span><span>Naïve Bayes</span><span>Auto-Labelling</span><span>Web Scraping</span>
-                    </div>
-                </div>
-                <div class="card-glow"></div>
-            </div>
-
-            <!-- Emotion from Voice -->
-            <div class="project-card reveal-up" data-category="cv" style="--delay:.15s">
-                <div class="card-number">07</div>
-                <div class="card-content">
-                    <span class="card-category">Deep Learning</span>
-                    <h3 class="card-title">Emotion Prediction from Voice</h3>
-                    <p class="card-desc">Deep learning classifier predicting human emotions (happy, sad, angry, fearful,
-                        surprised, disgusted) from audio using Inception networks on mel-spectrograms.</p>
-                    <div class="card-tech">
-                        <span>Inception</span><span>Mel-Spectrogram</span><span>Audio ML</span>
-                    </div>
-                </div>
-                <div class="card-glow"></div>
-            </div>
-
-            <!-- Forex -->
-            <div class="project-card reveal-up" data-category="nlp" style="--delay:.05s">
-                <div class="card-number">08</div>
-                <div class="card-content">
-                    <span class="card-category">Time-Series &bull; NLP</span>
-                    <h3 class="card-title">FX Forecasting (JPY/CAD)</h3>
-                    <p class="card-desc">Predicting exchange rates using 20 years of scraped economic data and Reuters
-                        news, combining macroeconomic features with deep neural networks.</p>
-                    <div class="card-tech">
-                        <span>Time-Series</span><span>Web Scraping</span><span>Reuters NLP</span><span>Deep NN</span>
-                    </div>
-                </div>
-                <div class="card-glow"></div>
-            </div>
-
-            <!-- Arabic Tweets -->
-            <div class="project-card reveal-up" data-category="nlp" style="--delay:.1s">
-                <div class="card-number">09</div>
-                <div class="card-content">
-                    <span class="card-category">NLP</span>
-                    <h3 class="card-title">Arabic Tweets Classifier</h3>
-                    <p class="card-desc">Kaggle competition: sentiment analysis classifying Arabic tweets into
-                        positive, negative, and neutral classes using BERT with extensive Arabic language processing.
-                    </p>
-                    <div class="card-tech">
-                        <span>BERT</span><span>Arabic NLP</span><span>Sentiment Analysis</span><span>Kaggle</span>
-                    </div>
-                </div>
-                <div class="card-glow"></div>
-            </div>
-
-            <!-- Photo Creation -->
-            <div class="project-card reveal-up" data-category="cv" style="--delay:.15s">
-                <div class="card-number">10</div>
-                <div class="card-content">
-                    <span class="card-category">Computer Vision</span>
-                    <h3 class="card-title">Photo Creation System</h3>
-                    <p class="card-desc">Flutter app and website using GANs and CNNs to alter photos. Automatic
-                        age/gender detection and transformation powered by deep generative models.</p>
-                    <div class="card-tech">
-                        <span>GAN</span><span>CNN</span><span>Flutter</span><span>Age/Gender</span>
-                    </div>
-                </div>
-                <div class="card-glow"></div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </section>
