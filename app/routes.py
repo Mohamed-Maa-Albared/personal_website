@@ -258,11 +258,25 @@ def sitemap():
         {
             "loc": url_for("main.index", _external=True),
             "lastmod": now,
+            "changefreq": "weekly",
             "priority": "1.0",
         }
     )
     pages.append(
-        {"loc": url_for("main.blog", _external=True), "lastmod": now, "priority": "0.8"}
+        {
+            "loc": url_for("main.blog", _external=True),
+            "lastmod": now,
+            "changefreq": "weekly",
+            "priority": "0.8",
+        }
+    )
+    pages.append(
+        {
+            "loc": url_for("main.privacy", _external=True),
+            "lastmod": now,
+            "changefreq": "yearly",
+            "priority": "0.3",
+        }
     )
 
     # Blog posts
@@ -274,6 +288,7 @@ def sitemap():
                 "lastmod": (
                     post.updated_at.strftime("%Y-%m-%d") if post.updated_at else now
                 ),
+                "changefreq": "monthly",
                 "priority": "0.7",
             }
         )
@@ -291,6 +306,7 @@ def sitemap():
                     if project.updated_at
                     else now
                 ),
+                "changefreq": "monthly",
                 "priority": "0.6",
             }
         )
@@ -302,6 +318,7 @@ def sitemap():
             {
                 "loc": url_for("main.case_study", project_id=cs.id, _external=True),
                 "lastmod": cs.updated_at.strftime("%Y-%m-%d") if cs.updated_at else now,
+                "changefreq": "monthly",
                 "priority": "0.7",
             }
         )

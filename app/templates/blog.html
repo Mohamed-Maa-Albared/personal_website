@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Blog — Mohamed Maa Albared{% endblock %}
+{% block title %}Blog — Mohamed Maa Albared | AI & Data Science Insights{% endblock %}
+{% block meta_description %}Read articles by Mohamed Maa Albared on Generative AI, Machine Learning, Data Science,
+Neuroscience, and building intelligent systems.{% endblock %}
+{% block canonical_url %}{{ url_for('main.blog', _external=True) }}{% endblock %}
+{% block og_title %}Blog — Mohamed Maa Albared{% endblock %}
+{% block og_description %}Articles on AI, Machine Learning, Neuroscience, and Data Science by Mohamed Maa Albared.{%
+endblock %}
+{% block og_url %}{{ url_for('main.blog', _external=True) }}{% endblock %}
 
 {% block content %}
 <section class="section blog-hero-section">

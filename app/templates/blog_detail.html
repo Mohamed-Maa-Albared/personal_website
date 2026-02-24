@@ -1,19 +1,53 @@
 {% extends "base.html" %}
 
 {% block title %}{{ post.title }} — Mohamed Maa Albared{% endblock %}
+{% block meta_description %}{{ post.excerpt[:160] }}{% endblock %}
+{% block meta_keywords %}{{ post.tags }}, Mohamed Maa Albared, Data Science, AI{% endblock %}
+{% block canonical_url %}{{ url_for('main.blog_detail', slug=post.slug, _external=True) }}{% endblock %}
+{% block og_title %}{{ post.title }}{% endblock %}
+{% block og_description %}{{ post.excerpt }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_url %}{{ url_for('main.blog_detail', slug=post.slug, _external=True) }}{% endblock %}
+{% if post.cover_image %}{% block og_image %}{{ post.cover_image }}{% endblock %}{% endif %}
+{% block twitter_title %}{{ post.title }}{% endblock %}
+{% block twitter_description %}{{ post.excerpt }}{% endblock %}
+{% if post.cover_image %}{% block twitter_image %}{{ post.cover_image }}{% endblock %}{% endif %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "{{ post.title }}",
+  "description": "{{ post.excerpt[:200] }}",
+  "author": {
+    "@type": "Person",
+    "name": "Mohamed Maa Albared",
+    "url": "{{ url_for('main.index', _external=True) }}"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Mohamed Maa Albared",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ url_for('static', filename='images/logo.png', _external=True) }}"
+    }
+  },
+  "datePublished": "{{ post.created_at.strftime('%Y-%m-%dT%H:%M:%S+00:00') }}",
+  {% if post.updated_at %}"dateModified": "{{ post.updated_at.strftime('%Y-%m-%dT%H:%M:%S+00:00') }}",{% endif %}
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ url_for('main.blog_detail', slug=post.slug, _external=True) }}"
+  },
+  {% if post.cover_image %}"image": "{{ post.cover_image }}",{% endif %}
+  "articleSection": "{{ post.category }}",
+  "inLanguage": "en-US",
+  "url": "{{ url_for('main.blog_detail', slug=post.slug, _external=True) }}"
+}
+</script>
+{% endblock %}
 
 {% block extra_css %}
-<meta property="og:title" content="{{ post.title }}">
-<meta property="og:description" content="{{ post.excerpt }}">
-<meta property="og:type" content="article">
-<meta property="og:url" content="{{ url_for('main.blog_detail', slug=post.slug, _external=True) }}">
-{% if post.cover_image %}
-<meta property="og:image" content="{{ post.cover_image }}">
-{% endif %}
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{ post.title }}">
-<meta name="twitter:description" content="{{ post.excerpt }}">
-<link rel="alternate" type="application/rss+xml" title="Blog RSS" href="{{ url_for('main.rss_feed') }}">
 {% endblock %}
 
 {% block content %}

@@ -5,16 +5,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Mohamed Maa Albared — Data Scientist & AI Engineer. Architecting intelligent systems at the intersection of art and neuroscience.">
+        content="{% block meta_description %}Mohamed Maa Albared — Data Scientist & AI Engineer at zeroG (Lufthansa Group). Specializing in Generative AI, Recommendation Systems, LLM Orchestration, and Autonomous Agents.{% endblock %}">
+    <meta name="keywords"
+        content="{% block meta_keywords %}Mohamed Maa Albared, Data Scientist, AI Engineer, Machine Learning, Generative AI, LLM, Recommendation Systems, zeroG, Lufthansa, Deep Learning, NLP, Computer Vision{% endblock %}">
     <meta name="author" content="Mohamed Maa Albared">
-    <meta property="og:title" content="Mohamed Maa Albared — Architecting Intelligence">
+    <meta name="robots" content="index, follow">
+    <!-- Google Search Console verification — replace YOUR_VERIFICATION_CODE after registering -->
+    <meta name="google-site-verification" content="naWs-esKEPHls2CHCK59kHkpXlgLU6B5_bUTy9mJkwg">
+    <link rel="canonical" href="{% block canonical_url %}{{ request.url }}{% endblock %}">
+    <!-- Open Graph -->
+    <meta property="og:title"
+        content="{% block og_title %}Mohamed Maa Albared — Data Scientist & AI Engineer{% endblock %}">
     <meta property="og:description"
-        content="Data Scientist & AI Engineer specializing in Generative AI, Recommendation Systems, and Autonomous Agents.">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="{{ url_for('static', filename='images/logo.png', _external=True) }}">
+        content="{% block og_description %}Data Scientist & AI Engineer specializing in Generative AI, Recommendation Systems, and Autonomous Agents at zeroG (Lufthansa Group).{% endblock %}">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:url" content="{% block og_url %}{{ request.url }}{% endblock %}">
+    <meta property="og:image"
+        content="{% block og_image %}{{ url_for('static', filename='images/profile.png', _external=True) }}{% endblock %}">
+    <meta property="og:site_name" content="Mohamed Maa Albared">
+    <meta property="og:locale" content="en_US">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="{% block twitter_card %}summary_large_image{% endblock %}">
+    <meta name="twitter:title"
+        content="{% block twitter_title %}Mohamed Maa Albared — Data Scientist & AI Engineer{% endblock %}">
+    <meta name="twitter:description"
+        content="{% block twitter_description %}Data Scientist & AI Engineer specializing in Generative AI, Recommendation Systems, and Autonomous Agents.{% endblock %}">
+    <meta name="twitter:image"
+        content="{% block twitter_image %}{{ url_for('static', filename='images/profile.png', _external=True) }}{% endblock %}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
     <link rel="alternate" type="application/rss+xml" title="Blog RSS" href="{{ url_for('main.rss_feed') }}">
-    <title>{% block title %}Mohamed Maa Albared — Architecting Intelligence{% endblock %}</title>
+    <title>{% block title %}Mohamed Maa Albared — Data Scientist & AI Engineer | Portfolio{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -95,6 +115,7 @@
         crossorigin="anonymous"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     {% block extra_js %}{% endblock %}
+    {% block structured_data %}{% endblock %}
 </body>
 
 </html>

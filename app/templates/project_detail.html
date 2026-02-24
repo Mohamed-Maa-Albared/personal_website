@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block title %}{{ project.title }} — Mohamed Maa Albared{% endblock %}
+{% block meta_description %}{{ project.short_description or project.description[:160] }}{% endblock %}
+{% block canonical_url %}{{ url_for('main.project_detail', project_id=project.id, _external=True) }}{% endblock %}
+{% block og_title %}{{ project.title }} — Mohamed Maa Albared{% endblock %}
+{% block og_description %}{{ project.short_description or project.description[:200] }}{% endblock %}
+{% block og_url %}{{ url_for('main.project_detail', project_id=project.id, _external=True) }}{% endblock %}
 
 {% block content %}
 <section class="section project-detail-section">
