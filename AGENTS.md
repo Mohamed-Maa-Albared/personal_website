@@ -302,7 +302,7 @@ flask shell
 
 ## Testing
 
-82 pytest tests covering routes, admin CRUD, security, and utility functions.
+85 pytest tests covering routes, admin CRUD, security, and utility functions.
 
 ```bash
 # Install dev dependencies

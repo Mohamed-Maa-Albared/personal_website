@@ -53,8 +53,8 @@ class TestDynamicIndex:
         resp = client.get("/")
         assert b"Test role" in resp.data
 
-    def test_index_renders_highlight_pills(self, client, app, db):
-        """Experience highlights should render as colourful pills, not plain bullets."""
+    def test_index_renders_highlights_with_rich_text(self, client, app, db):
+        """Experience highlights should render with HTML formatting (bold, italic)."""
         import json
 
         from app.models import Experience
@@ -64,14 +64,43 @@ class TestDynamicIndex:
                 role="ML Engineer",
                 company="Acme",
                 date_range="2024",
-                highlights=json.dumps(["Built ML pipeline", "Deployed to prod"]),
+                highlights=json.dumps(
+                    [
+                        "<strong>Built ML pipeline</strong> for production",
+                        "Deployed to <em>prod</em>",
+                    ]
+                ),
                 sort_order=0,
             )
             db.session.add(exp)
             db.session.commit()
         resp = client.get("/")
-        assert b"highlight-pill" in resp.data
-        assert b"Built ML pipeline" in resp.data
+        assert b"timeline-highlights" in resp.data
+        assert b"<strong>Built ML pipeline</strong>" in resp.data
+        assert b"<em>prod</em>" in resp.data
+
+    def test_index_highlights_use_bullet_list_not_pills(self, client, app, db):
+        """Highlights must render as <ul>/<li> list items, NOT as pill/chip spans."""
+        import json
+
+        from app.models import Experience
+
+        with app.app_context():
+            exp = Experience(
+                role="Tester",
+                company="TestCo",
+                date_range="2024",
+                highlights=json.dumps(["A highlight"]),
+                sort_order=0,
+            )
+            db.session.add(exp)
+            db.session.commit()
+        resp = client.get("/")
+        html = resp.data.decode()
+        # Must use <ul>/<li>, not span pills
+        assert '<ul class="timeline-highlights">' in html
+        assert "<li>" in html
+        assert "highlight-pill" not in html
 
 
 class TestProjectDetail:

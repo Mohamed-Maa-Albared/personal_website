@@ -33,11 +33,11 @@ EXPERIENCES = [
         ),
         "highlights": json.dumps(
             [
-                "Keynote on Agentic AI with live multi-agent system demo at Data Community Day",
-                "Pioneered first generative AI 'categories model' for city destination scoring",
-                "Engineered ancillary recommender driving 3-15% purchase increase across airlines",
-                "Optimised recommender APIs for up to 20x performance gain",
-                "Built comprehensive AB testing pipeline from scratch for rigorous model validation",
+                "<strong>Keynote on Agentic AI</strong> with live multi-agent system demo at Data Community Day",
+                "Pioneered first <strong>generative AI 'categories model'</strong> for city destination scoring",
+                "Engineered <strong>ancillary recommender</strong> driving <strong>3-15% purchase increase</strong> across airlines",
+                "Optimised recommender APIs for up to <strong>20x performance gain</strong>",
+                "Built comprehensive <strong>AB testing pipeline</strong> from scratch for rigorous model validation",
             ]
         ),
         "sort_order": 1,
@@ -53,8 +53,8 @@ EXPERIENCES = [
         ),
         "highlights": json.dumps(
             [
-                "'Virtual Patient' simulation for interactive medical training",
-                "Automated Dark Web Auto-Labelling & Classification system",
+                "<strong>'Virtual Patient'</strong> simulation for interactive medical training",
+                "Automated <strong>Dark Web Auto-Labelling & Classification</strong> system",
             ]
         ),
         "sort_order": 2,
@@ -70,8 +70,8 @@ EXPERIENCES = [
         ),
         "highlights": json.dumps(
             [
-                "Algorithms & Data Structures lab instructor",
-                "Delivered Reinforcement Learning workshop (Smart Tech Institute, 2021)",
+                "<strong>Algorithms & Data Structures</strong> lab instructor",
+                "Delivered <strong>Reinforcement Learning</strong> workshop (Smart Tech Institute, 2021)",
             ]
         ),
         "sort_order": 3,
@@ -87,9 +87,9 @@ EXPERIENCES = [
         ),
         "highlights": json.dumps(
             [
-                "Foreign Exchange Forecasting (JPY/CAD) – time-series model",
-                "Emotion Prediction from Voice – deep learning classifier",
-                "Arabic Tweets Classifier – NLP sentiment analysis",
+                "<strong>Foreign Exchange Forecasting</strong> (JPY/CAD) – time-series model",
+                "<strong>Emotion Prediction from Voice</strong> – deep learning classifier",
+                "<strong>Arabic Tweets Classifier</strong> – NLP sentiment analysis",
             ]
         ),
         "sort_order": 4,
@@ -105,9 +105,9 @@ EXPERIENCES = [
         ),
         "highlights": json.dumps(
             [
-                "Voice Cloning via Zero-Shot Learning from 5-20s audio samples",
-                "3D Avatar Reconstruction using Facebook's PIFu from a single image",
-                "RL Agent trained to walk in Blender/Unity via PPO",
+                "<strong>Voice Cloning</strong> via Zero-Shot Learning from 5-20s audio samples",
+                "<strong>3D Avatar Reconstruction</strong> using Facebook's PIFu from a single image",
+                "<strong>RL Agent</strong> trained to walk in Blender/Unity via PPO",
             ]
         ),
         "sort_order": 5,

@@ -127,11 +127,11 @@
                     {% endif %}
                     {% set highlights = exp.highlights | from_json %}
                     {% if highlights %}
-                    <div class="timeline-highlights">
+                    <ul class="timeline-highlights">
                         {% for h in highlights %}
-                        <span class="highlight-pill">{{ h }}</span>
+                        <li>{{ h | safe }}</li>
                         {% endfor %}
-                    </div>
+                    </ul>
                     {% endif %}
                 </div>
             </div>

@@ -50,26 +50,20 @@
 
         <div class="form-group">
             <label>Key Highlights</label>
-            <div class="highlight-editor" id="highlightEditor">
-                <div class="highlight-chips" id="highlightChips">
-                    {% if experience and experience.highlights %}
-                    {% for h in experience.highlights|from_json %}
-                    <span class="highlight-chip">
-                        <span class="chip-text">{{ h }}</span>
-                        <button type="button" class="chip-remove" title="Remove">&times;</button>
-                    </span>
-                    {% endfor %}
-                    {% endif %}
+            <div class="highlight-list-editor" id="highlightListEditor">
+                {% if experience and experience.highlights %}
+                {% for h in experience.highlights|from_json %}
+                <div class="hl-item">
+                    <textarea class="hl-source" data-wysiwyg="mini" rows="2">{{ h }}</textarea>
+                    <button type="button" class="hl-remove" title="Remove this highlight">&times;</button>
                 </div>
-                <div class="highlight-input-row">
-                    <input type="text" id="highlightInput" class="highlight-input"
-                        placeholder="Type a highlight and press Enter or click Add">
-                    <button type="button" id="addHighlightBtn" class="btn-add-highlight">+ Add</button>
-                </div>
+                {% endfor %}
+                {% endif %}
             </div>
-            <textarea id="highlights" name="highlights" rows="1" style="display:none;">{% if experience and experience.highlights %}{% for h in experience.highlights|from_json %}{{ h }}
-{% endfor %}{% endif %}</textarea>
-            <div class="form-hint">Add key accomplishments as colourful pills. They appear on the public timeline.</div>
+            <button type="button" id="addHighlightBtn" class="btn-add-highlight">+ Add Highlight</button>
+            <textarea id="highlights" name="highlights" rows="1" style="display:none;"></textarea>
+            <div class="form-hint">Each highlight gets its own rich-text editor. Use <strong>Bold</strong> /
+                <em>Italic</em> to emphasise key phrases &mdash; just like the bio text.</div>
         </div>
 
         <div class="form-actions">

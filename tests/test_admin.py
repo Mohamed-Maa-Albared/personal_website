@@ -119,11 +119,24 @@ class TestExperienceCRUD:
         assert resp.status_code == 200
 
     def test_experience_form_has_highlight_editor(self, auth_client):
-        """Experience form should have the chip-based highlight editor."""
+        """Experience form should have the list-based WYSIWYG highlight editor."""
         resp = auth_client.get("/admin/experience/new")
-        assert b"highlightEditor" in resp.data
-        assert b"highlightInput" in resp.data
-        assert b"addHighlightBtn" in resp.data
+        html = resp.data.decode()
+        # Core list editor elements
+        assert "highlightListEditor" in html
+        assert "addHighlightBtn" in html
+        # Hidden textarea for form submission
+        assert 'id="highlights"' in html
+        # No old chip/pill elements
+        assert "highlightChips" not in html
+        assert "highlightInput" not in html
+
+    def test_experience_form_has_no_pill_chip_colors(self, auth_client):
+        """Admin chip editor should NOT use pill-style coloured chips."""
+        resp = auth_client.get("/admin/experience/new")
+        html = resp.data.decode()
+        # The chip container should not have rotating colour classes
+        assert "highlight-pill" not in html
 
     def test_experience_create(self, auth_client):
         resp = auth_client.post(
@@ -141,6 +154,35 @@ class TestExperienceCRUD:
     def test_experience_edit(self, auth_client, sample_experience):
         resp = auth_client.get(f"/admin/experience/{sample_experience.id}/edit")
         assert resp.status_code == 200
+
+    def test_experience_edit_renders_highlight_editors(self, auth_client, app, db):
+        """Edit form for an experience with highlights should render a WYSIWYG textarea per highlight."""
+        import json
+
+        from app.models import Experience
+
+        with app.app_context():
+            exp = Experience(
+                role="ML Lead",
+                company="Highlight Corp",
+                date_range="2024 - Present",
+                highlights=json.dumps(
+                    [
+                        "<strong>Led</strong> cross-functional team",
+                        "Deployed <em>ML pipeline</em>",
+                    ]
+                ),
+                sort_order=99,
+            )
+            db.session.add(exp)
+            db.session.commit()
+            exp_id = exp.id
+        resp = auth_client.get(f"/admin/experience/{exp_id}/edit")
+        html = resp.data.decode()
+        assert "highlightListEditor" in html
+        assert html.count("data-wysiwyg") >= 2  # one per highlight
+        assert "Led" in html
+        assert "ML pipeline" in html
 
     def test_experience_update(self, auth_client, sample_experience, app, db):
         """Editing an experience should persist changes to the DB."""
@@ -163,6 +205,30 @@ class TestExperienceCRUD:
             exp = Experience.query.get(sample_experience.id)
             assert exp.role == "Senior Data Scientist"
             assert exp.company == "Updated Corp"
+
+    def test_experience_highlights_preserve_html(self, auth_client, app, db):
+        """Experience highlights should preserve <strong>/<em> tags (sanitize_html)."""
+        resp = auth_client.post(
+            "/admin/experience/new",
+            data={
+                "role": "Engineer",
+                "company": "Co",
+                "date_range": "2024",
+                "sort_order": "0",
+                "highlights": "<strong>Built ML pipeline</strong>\n<em>Deployed</em> to prod",
+            },
+            follow_redirects=True,
+        )
+        assert resp.status_code == 200
+        import json
+
+        from app.models import Experience
+
+        with app.app_context():
+            exp = Experience.query.filter_by(role="Engineer").first()
+            highlights = json.loads(exp.highlights)
+            assert "<strong>" in highlights[0]
+            assert "<em>" in highlights[1]
 
     def test_experience_delete(self, auth_client, sample_experience):
         resp = auth_client.post(

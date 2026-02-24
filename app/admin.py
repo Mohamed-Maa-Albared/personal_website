@@ -447,7 +447,7 @@ def experience_new():
     if request.method == "POST":
         highlights_raw = request.form.get("highlights", "")
         highlights = json.dumps(
-            [sanitize_input(h, 500) for h in highlights_raw.split("\n") if h.strip()]
+            [sanitize_html(h, 500) for h in highlights_raw.split("\n") if h.strip()]
         )
         experience = Experience(
             role=sanitize_input(request.form["role"], 200),
@@ -472,7 +472,7 @@ def experience_edit(exp_id):
     if request.method == "POST":
         highlights_raw = request.form.get("highlights", "")
         highlights = json.dumps(
-            [sanitize_input(h, 500) for h in highlights_raw.split("\n") if h.strip()]
+            [sanitize_html(h, 500) for h in highlights_raw.split("\n") if h.strip()]
         )
         experience.role = sanitize_input(request.form["role"], 200)
         experience.company = sanitize_input(request.form["company"], 200)

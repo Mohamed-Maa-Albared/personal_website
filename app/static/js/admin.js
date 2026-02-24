@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
     /* ── 2. WYSIWYG Editors ──────────────────────────────────── */
     initWysiwygEditors();
 
-    /* ── 2b. Highlight Chip Editor ───────────────────────────── */
+    /* ── 2b. Highlight List Editor ───────────────────────────── */
     initHighlightEditor();
 
     /* ── 3. Image Upload ─────────────────────────────────────── */
@@ -217,6 +217,7 @@ function buildToolbar(mini) {
         bar.innerHTML =
             '<button type="button" class="toolbar-btn" data-cmd="bold" title="Bold"><strong>B</strong></button>' +
             '<button type="button" class="toolbar-btn" data-cmd="italic" title="Italic"><em>I</em></button>' +
+            '<button type="button" class="toolbar-btn toolbar-btn-accent" data-cmd="accentColor" title="Accent Color"><span style="color:#00e5ff;font-weight:700">A</span></button>' +
             '<span class="toolbar-sep"></span>' +
             '<button type="button" class="toolbar-btn" data-cmd="link" title="Insert Link">&#128279;</button>' +
             '<button type="button" class="toolbar-btn" data-cmd="removeFormat" title="Clear Formatting">&#10005;</button>';
@@ -282,10 +283,59 @@ function execToolbarCmd(cmd) {
         case 'p':
             document.execCommand('formatBlock', false, '<p>');
             break;
+        case 'accentColor':
+            wrapSelectionWithAccent();
+            break;
         case 'removeFormat':
             document.execCommand('removeFormat', false);
+            // Also strip accent-hl spans
+            var editor = document.querySelector('.wysiwyg-editor:focus');
+            if (editor) {
+                editor.querySelectorAll('.accent-hl').forEach(function (span) {
+                    var parent = span.parentNode;
+                    while (span.firstChild) parent.insertBefore(span.firstChild, span);
+                    parent.removeChild(span);
+                });
+            }
             break;
     }
+}
+
+/**
+ * Wrap the current selection in a <span class="accent-hl"> for accent-colored text.
+ * If the selection is already inside an .accent-hl span, unwrap it (toggle).
+ */
+function wrapSelectionWithAccent() {
+    var sel = window.getSelection();
+    if (!sel.rangeCount || sel.isCollapsed) return;
+
+    var range = sel.getRangeAt(0);
+
+    // Check if already inside an accent-hl span — if so, unwrap
+    var parent = range.commonAncestorContainer;
+    if (parent.nodeType === 3) parent = parent.parentNode;
+    var existing = parent.closest ? parent.closest('.accent-hl') : null;
+    if (existing) {
+        var p = existing.parentNode;
+        while (existing.firstChild) p.insertBefore(existing.firstChild, existing);
+        p.removeChild(existing);
+        return;
+    }
+
+    var span = document.createElement('span');
+    span.className = 'accent-hl';
+    try {
+        range.surroundContents(span);
+    } catch (e) {
+        // If range crosses element boundaries, extract and wrap
+        var frag = range.extractContents();
+        span.appendChild(frag);
+        range.insertNode(span);
+    }
+    sel.removeAllRanges();
+    var newRange = document.createRange();
+    newRange.selectNodeContents(span);
+    sel.addRange(newRange);
 }
 
 
@@ -483,72 +533,123 @@ function initCharts() {
 }
 
 
-/* ── Highlight Chip Editor ───────────────────────────────────── */
+/* ── Highlight List Editor ────────────────────────────────────── */
 function initHighlightEditor() {
-    var container = document.getElementById('highlightChips');
-    var input = document.getElementById('highlightInput');
+    var list = document.getElementById('highlightListEditor');
     var addBtn = document.getElementById('addHighlightBtn');
     var hidden = document.getElementById('highlights');
-    if (!container || !input || !addBtn || !hidden) return;
+    if (!list || !addBtn || !hidden) return;
 
+    /** Collect all highlight editors' HTML into the hidden textarea (one per line). */
     function syncHidden() {
-        var chips = container.querySelectorAll('.chip-text');
+        var items = list.querySelectorAll('.hl-item');
         var lines = [];
-        chips.forEach(function (c) { lines.push(c.textContent.trim()); });
+        items.forEach(function (item) {
+            var ta = item.querySelector('.hl-source');
+            // The WYSIWYG init may have replaced the textarea — sync from editor first
+            var ed = ta.nextElementSibling;
+            if (ed && ed.classList.contains('wysiwyg-editor')) {
+                ta.value = ed.innerHTML;
+            }
+            var src = item.querySelector('.wysiwyg-source');
+            if (src && src.style.display !== 'none') {
+                ta.value = src.value;
+            }
+            var val = ta.value.trim();
+            if (val) lines.push(val);
+        });
         hidden.value = lines.join('\n');
     }
 
-    function addChip(text) {
-        text = text.trim();
-        if (!text) return;
-        var chip = document.createElement('span');
-        chip.className = 'highlight-chip';
-        chip.innerHTML = '<span class="chip-text">' + escapeHtml(text) + '</span>' +
-            '<button type="button" class="chip-remove" title="Remove">&times;</button>';
-        chip.querySelector('.chip-remove').addEventListener('click', function () {
-            chip.style.transform = 'scale(.7)';
-            chip.style.opacity = '0';
-            setTimeout(function () { chip.remove(); syncHidden(); }, 150);
-        });
-        container.appendChild(chip);
-        syncHidden();
-    }
-
-    function escapeHtml(str) {
-        var div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-    }
-
-    // Wire Add button
-    addBtn.addEventListener('click', function () {
-        addChip(input.value);
-        input.value = '';
-        input.focus();
-    });
-
-    // Enter key adds a chip
-    input.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            addChip(input.value);
-            input.value = '';
-        }
-    });
-
-    // Wire existing remove buttons (from server-rendered chips)
-    container.querySelectorAll('.chip-remove').forEach(function (btn) {
+    /** Wire a remove button. */
+    function wireRemoveBtn(btn) {
         btn.addEventListener('click', function () {
-            var chip = btn.closest('.highlight-chip');
-            chip.style.transform = 'scale(.7)';
-            chip.style.opacity = '0';
-            setTimeout(function () { chip.remove(); syncHidden(); }, 150);
+            var item = btn.closest('.hl-item');
+            item.style.opacity = '0';
+            item.style.transform = 'scale(.95)';
+            setTimeout(function () { item.remove(); syncHidden(); }, 150);
         });
+    }
+
+    /** Create a new highlight item with a WYSIWYG mini editor. */
+    function addItem(initialHtml) {
+        var item = document.createElement('div');
+        item.className = 'hl-item';
+
+        var ta = document.createElement('textarea');
+        ta.className = 'hl-source';
+        ta.setAttribute('data-wysiwyg', 'mini');
+        ta.rows = 2;
+        ta.value = initialHtml || '';
+
+        var removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'hl-remove';
+        removeBtn.title = 'Remove this highlight';
+        removeBtn.innerHTML = '&times;';
+
+        item.appendChild(ta);
+        item.appendChild(removeBtn);
+        list.appendChild(item);
+
+        wireRemoveBtn(removeBtn);
+
+        // Initialize the WYSIWYG editor on this new textarea
+        initSingleWysiwyg(ta);
+
+        // Focus the new editor
+        var ed = ta.nextElementSibling;
+        if (ed && ed.classList.contains('wysiwyg-editor')) {
+            ed.focus();
+        }
+    }
+
+    // Wire existing remove buttons
+    list.querySelectorAll('.hl-remove').forEach(wireRemoveBtn);
+
+    // Add button
+    addBtn.addEventListener('click', function () {
+        addItem('');
     });
 
     // Sync on form submit
     var form = hidden.closest('form');
     if (form) {
-        form.addEventListener('submit', syncHidden);
+        form.addEventListener('submit', function () {
+            syncHidden();
+        });
     }
+}
+
+/**
+ * Initialize a single WYSIWYG mini editor on a textarea element.
+ * Reuses the existing buildToolbar / execToolbarCmd infrastructure.
+ */
+function initSingleWysiwyg(textarea) {
+    var toolbar = buildToolbar(true); // mini toolbar
+    textarea.parentNode.insertBefore(toolbar, textarea);
+
+    var editor = document.createElement('div');
+    editor.className = 'wysiwyg-editor';
+    editor.setAttribute('contenteditable', 'true');
+    editor.innerHTML = textarea.value || '';
+
+    var rows = parseInt(textarea.getAttribute('rows')) || 2;
+    editor.style.minHeight = (rows * 1.6) + 'em';
+
+    textarea.style.display = 'none';
+    textarea.parentNode.insertBefore(editor, textarea.nextSibling);
+
+    toolbar.addEventListener('click', function (e) {
+        var btn = e.target.closest('.toolbar-btn');
+        if (!btn) return;
+        e.preventDefault();
+        editor.focus();
+        execToolbarCmd(btn.getAttribute('data-cmd'));
+        textarea.value = editor.innerHTML;
+    });
+
+    editor.addEventListener('input', function () {
+        textarea.value = editor.innerHTML;
+    });
 }
