@@ -53,6 +53,26 @@ class TestDynamicIndex:
         resp = client.get("/")
         assert b"Test role" in resp.data
 
+    def test_index_renders_highlight_pills(self, client, app, db):
+        """Experience highlights should render as colourful pills, not plain bullets."""
+        import json
+
+        from app.models import Experience
+
+        with app.app_context():
+            exp = Experience(
+                role="ML Engineer",
+                company="Acme",
+                date_range="2024",
+                highlights=json.dumps(["Built ML pipeline", "Deployed to prod"]),
+                sort_order=0,
+            )
+            db.session.add(exp)
+            db.session.commit()
+        resp = client.get("/")
+        assert b"highlight-pill" in resp.data
+        assert b"Built ML pipeline" in resp.data
+
 
 class TestProjectDetail:
     """Tests for the project detail page."""

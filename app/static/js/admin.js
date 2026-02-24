@@ -34,6 +34,9 @@ document.addEventListener('DOMContentLoaded', function () {
     /* ── 2. WYSIWYG Editors ──────────────────────────────────── */
     initWysiwygEditors();
 
+    /* ── 2b. Highlight Chip Editor ───────────────────────────── */
+    initHighlightEditor();
+
     /* ── 3. Image Upload ─────────────────────────────────────── */
     initImageUpload();
 
@@ -476,5 +479,76 @@ function initCharts() {
                 }
             }
         });
+    }
+}
+
+
+/* ── Highlight Chip Editor ───────────────────────────────────── */
+function initHighlightEditor() {
+    var container = document.getElementById('highlightChips');
+    var input = document.getElementById('highlightInput');
+    var addBtn = document.getElementById('addHighlightBtn');
+    var hidden = document.getElementById('highlights');
+    if (!container || !input || !addBtn || !hidden) return;
+
+    function syncHidden() {
+        var chips = container.querySelectorAll('.chip-text');
+        var lines = [];
+        chips.forEach(function (c) { lines.push(c.textContent.trim()); });
+        hidden.value = lines.join('\n');
+    }
+
+    function addChip(text) {
+        text = text.trim();
+        if (!text) return;
+        var chip = document.createElement('span');
+        chip.className = 'highlight-chip';
+        chip.innerHTML = '<span class="chip-text">' + escapeHtml(text) + '</span>' +
+            '<button type="button" class="chip-remove" title="Remove">&times;</button>';
+        chip.querySelector('.chip-remove').addEventListener('click', function () {
+            chip.style.transform = 'scale(.7)';
+            chip.style.opacity = '0';
+            setTimeout(function () { chip.remove(); syncHidden(); }, 150);
+        });
+        container.appendChild(chip);
+        syncHidden();
+    }
+
+    function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    // Wire Add button
+    addBtn.addEventListener('click', function () {
+        addChip(input.value);
+        input.value = '';
+        input.focus();
+    });
+
+    // Enter key adds a chip
+    input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            addChip(input.value);
+            input.value = '';
+        }
+    });
+
+    // Wire existing remove buttons (from server-rendered chips)
+    container.querySelectorAll('.chip-remove').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var chip = btn.closest('.highlight-chip');
+            chip.style.transform = 'scale(.7)';
+            chip.style.opacity = '0';
+            setTimeout(function () { chip.remove(); syncHidden(); }, 150);
+        });
+    });
+
+    // Sync on form submit
+    var form = hidden.closest('form');
+    if (form) {
+        form.addEventListener('submit', syncHidden);
     }
 }

@@ -118,6 +118,13 @@ class TestExperienceCRUD:
         resp = auth_client.get("/admin/experience/new")
         assert resp.status_code == 200
 
+    def test_experience_form_has_highlight_editor(self, auth_client):
+        """Experience form should have the chip-based highlight editor."""
+        resp = auth_client.get("/admin/experience/new")
+        assert b"highlightEditor" in resp.data
+        assert b"highlightInput" in resp.data
+        assert b"addHighlightBtn" in resp.data
+
     def test_experience_create(self, auth_client):
         resp = auth_client.post(
             "/admin/experience/new",

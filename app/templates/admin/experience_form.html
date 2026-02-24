@@ -49,10 +49,27 @@
         </div>
 
         <div class="form-group">
-            <label for="highlights">Key Highlights</label>
-            <textarea id="highlights" name="highlights" rows="5" placeholder="One highlight per line">{% if experience and experience.highlights %}{% for h in experience.highlights|from_json %}{{ h }}
+            <label>Key Highlights</label>
+            <div class="highlight-editor" id="highlightEditor">
+                <div class="highlight-chips" id="highlightChips">
+                    {% if experience and experience.highlights %}
+                    {% for h in experience.highlights|from_json %}
+                    <span class="highlight-chip">
+                        <span class="chip-text">{{ h }}</span>
+                        <button type="button" class="chip-remove" title="Remove">&times;</button>
+                    </span>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="highlight-input-row">
+                    <input type="text" id="highlightInput" class="highlight-input"
+                        placeholder="Type a highlight and press Enter or click Add">
+                    <button type="button" id="addHighlightBtn" class="btn-add-highlight">+ Add</button>
+                </div>
+            </div>
+            <textarea id="highlights" name="highlights" rows="1" style="display:none;">{% if experience and experience.highlights %}{% for h in experience.highlights|from_json %}{{ h }}
 {% endfor %}{% endif %}</textarea>
-            <div class="form-hint">Enter one bullet point per line. These appear as timeline highlights.</div>
+            <div class="form-hint">Add key accomplishments as colourful pills. They appear on the public timeline.</div>
         </div>
 
         <div class="form-actions">
