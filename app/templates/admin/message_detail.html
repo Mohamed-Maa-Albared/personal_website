@@ -18,7 +18,7 @@
     <div class="form-actions">
         <a href="mailto:{{ message.email }}?subject=Re: {{ message.subject }}" class="btn-save"
             style="text-decoration:none;">Reply via Email</a>
-        <a href="{{ url_for('admin.dashboard') }}" class="btn-cancel">Back</a>
+        <a href="{{ url_for('admin.dashboard') }}#tab-messages" class="btn-cancel">Back</a>
         <form method="POST" action="{{ url_for('admin.message_delete', msg_id=message.id) }}"
             data-confirm="Delete this message?" style="display:inline;">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

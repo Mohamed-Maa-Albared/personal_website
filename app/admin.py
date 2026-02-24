@@ -398,7 +398,7 @@ def project_new():
         db.session.commit()
         logger.info("Project created: %s", project.title)
         flash(f'Project "{project.title}" created!', "success")
-        return redirect(url_for("admin.dashboard"))
+        return redirect(url_for("admin.dashboard") + "#tab-projects")
     return render_template("admin/project_form.html", project=None)
 
 
@@ -424,7 +424,7 @@ def project_edit(project_id):
         db.session.commit()
         logger.info("Project updated: %s", project.title)
         flash(f'Project "{project.title}" updated!', "success")
-        return redirect(url_for("admin.dashboard"))
+        return redirect(url_for("admin.dashboard") + "#tab-projects")
     return render_template("admin/project_form.html", project=project)
 
 
@@ -437,7 +437,7 @@ def project_delete(project_id):
     db.session.commit()
     logger.info("Project deleted: %s (id=%d)", title, project_id)
     flash(f'Project "{title}" deleted.', "success")
-    return redirect(url_for("admin.dashboard"))
+    return redirect(url_for("admin.dashboard") + "#tab-projects")
 
 
 # ── Experience CRUD ──────────────────────────────
@@ -461,7 +461,7 @@ def experience_new():
         db.session.add(experience)
         db.session.commit()
         flash(f'Experience "{experience.role}" created!', "success")
-        return redirect(url_for("admin.dashboard"))
+        return redirect(url_for("admin.dashboard") + "#tab-experience")
     return render_template("admin/experience_form.html", experience=None)
 
 
@@ -486,7 +486,7 @@ def experience_edit(exp_id):
         db.session.commit()
         logger.info("Experience updated: %s at %s", experience.role, experience.company)
         flash(f'Experience "{experience.role}" updated!', "success")
-        return redirect(url_for("admin.dashboard"))
+        return redirect(url_for("admin.dashboard") + "#tab-experience")
     return render_template("admin/experience_form.html", experience=experience)
 
 
@@ -499,7 +499,7 @@ def experience_delete(exp_id):
     db.session.commit()
     logger.info("Experience deleted: %s (id=%d)", role, exp_id)
     flash(f'Experience "{role}" deleted.', "success")
-    return redirect(url_for("admin.dashboard"))
+    return redirect(url_for("admin.dashboard") + "#tab-experience")
 
 
 # ── Messages ─────────────────────────────────────
@@ -521,7 +521,7 @@ def message_delete(msg_id):
     db.session.commit()
     logger.info("Message deleted: id=%d", msg_id)
     flash("Message deleted.", "success")
-    return redirect(url_for("admin.dashboard"))
+    return redirect(url_for("admin.dashboard") + "#tab-messages")
 
 
 # ── Blog CRUD ────────────────────────────────────
@@ -550,7 +550,7 @@ def blog_new():
         db.session.commit()
         logger.info("Blog post created: %s (slug=%s)", post.title, post.slug)
         flash(f'Blog post "{post.title}" created!', "success")
-        return redirect(url_for("admin.dashboard"))
+        return redirect(url_for("admin.dashboard") + "#tab-blog")
     return render_template("admin/blog_form.html", post=None)
 
 
@@ -576,7 +576,7 @@ def blog_edit(post_id):
         db.session.commit()
         logger.info("Blog post updated: %s (slug=%s)", post.title, post.slug)
         flash(f'Blog post "{post.title}" updated!', "success")
-        return redirect(url_for("admin.dashboard"))
+        return redirect(url_for("admin.dashboard") + "#tab-blog")
     return render_template("admin/blog_form.html", post=post)
 
 
@@ -589,7 +589,7 @@ def blog_delete(post_id):
     db.session.commit()
     logger.info("Blog post deleted: %s (id=%d)", title, post_id)
     flash(f'Blog post "{title}" deleted.', "success")
-    return redirect(url_for("admin.dashboard"))
+    return redirect(url_for("admin.dashboard") + "#tab-blog")
 
 
 # ── Case Study (edit on project) ─────────────────
@@ -606,7 +606,7 @@ def case_study_edit(project_id):
         project.has_case_study = "has_case_study" in request.form
         db.session.commit()
         flash(f'Case study for "{project.title}" updated!', "success")
-        return redirect(url_for("admin.dashboard"))
+        return redirect(url_for("admin.dashboard") + "#tab-projects")
     return render_template("admin/case_study_form.html", project=project)
 
 

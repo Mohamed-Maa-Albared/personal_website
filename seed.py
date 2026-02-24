@@ -35,9 +35,9 @@ EXPERIENCES = [
             [
                 "Keynote on Agentic AI with live multi-agent system demo at Data Community Day",
                 "Pioneered first generative AI 'categories model' for city destination scoring",
-                "Engineered ancillary recommender, driving 3-15% purchase increase across airlines",
-                "Re-factored recommender APIs for up to 20x performance gain",
-                "Built AB testing pipeline from scratch for rigorous model validation",
+                "Engineered ancillary recommender driving 3-15% purchase increase across airlines",
+                "Optimised recommender APIs for up to 20x performance gain",
+                "Built comprehensive AB testing pipeline from scratch for rigorous model validation",
             ]
         ),
         "sort_order": 1,
@@ -82,25 +82,25 @@ EXPERIENCES = [
         "location": "Damascus, Syria",
         "date_range": "Apr 2020 – Jun 2021",
         "description": (
-            "Owned the full data science pipeline from web scraping and cleaning "
+            "Owned the full data science pipeline, from web scraping and cleaning "
             "to modelling and deployment of predictive systems."
         ),
         "highlights": json.dumps(
             [
-                "Foreign Exchange Forecasting (JPY/CAD): time-series model",
-                "Emotion Prediction from Voice: deep learning classifier",
-                "Arabic Tweets Classifier: NLP sentiment analysis",
+                "Foreign Exchange Forecasting (JPY/CAD) – time-series model",
+                "Emotion Prediction from Voice – deep learning classifier",
+                "Arabic Tweets Classifier – NLP sentiment analysis",
             ]
         ),
         "sort_order": 4,
     },
     {
-        "role": "BSc Informatics Engineering, AI Major",
+        "role": "BSc Informatics Engineering – AI Major",
         "company": "Arab International University",
         "location": "Damascus, Syria",
         "date_range": "Sep 2015 – Mar 2021",
         "description": (
-            "Thesis: Human Behavior Simulation. A multi-modal AI system combining "
+            "Thesis: Human Behavior Simulation – a multi-modal AI system combining "
             "voice cloning, 3D avatar reconstruction, and deep RL agent training."
         ),
         "highlights": json.dumps(
@@ -288,7 +288,7 @@ PROJECTS = [
         "short_description": "Comprehensive experimentation pipeline with causal inference.",
         "description": (
             "Led research and development of a comprehensive, generalised AB testing framework. "
-            "Includes covariate balance checking, ATE analysis, and a CATE framework "
+            "Includes covariate balance checking, ATE analysis, and a sophisticated CATE framework "
             "with five meta-learners, SHAP-based customer archetype discovery, and automated "
             "dual-reporting (technical and stakeholder)."
         ),
@@ -521,26 +521,26 @@ SITE_CONFIGS = [
     },
     {
         "key": "hero_subtitle",
-        "value": "Where neural networks meet creative intuition. Building systems that reason, collaborate, and act.",
+        "value": "Where neural networks meet creative intuition – building systems that reason, collaborate, and act.",
         "label": "Subtitle",
         "group": "hero",
     },
     # ── About Section ──
     {
         "key": "about_bio1",
-        "value": "Data Scientist with <strong>4+ years of experience</strong> building and deploying machine learning and generative AI solutions in the <strong>aviation sector</strong>.",
+        "value": "Accomplished Data Scientist with over <strong>4 years of experience</strong> specializing in the development and deployment of machine learning and generative AI solutions within the <strong>aviation sector</strong>.",
         "label": "Bio Paragraph 1",
         "group": "about",
     },
     {
         "key": "about_bio2",
-        "value": "I build <strong>recommendation systems</strong> that move the needle (3-15% purchase lift), optimize ML pipelines for up to <strong>20x</strong> faster response, and design <strong>AB testing frameworks</strong> from scratch.",
+        "value": "Proven track record of driving significant business value by architecting <strong>recommendation systems</strong>, optimizing model performance by up to <strong>20x</strong>, and pioneering <strong>AB testing frameworks</strong> from the ground up.",
         "label": "Bio Paragraph 2",
         "group": "about",
     },
     {
         "key": "about_bio3",
-        "value": "Go-to person for <strong>LLM orchestration</strong> and <strong>autonomous agent design</strong> at zeroG, turning cutting-edge AI research into systems that actually ship.",
+        "value": "Recognized as a subject matter expert in <strong>LLM orchestration</strong> and <strong>autonomous agent design</strong>, adept at translating complex AI capabilities into strategic, impactful business outcomes.",
         "label": "Bio Paragraph 3",
         "group": "about",
     },
@@ -552,7 +552,7 @@ SITE_CONFIGS = [
     },
     {
         "key": "about_projects_count",
-        "value": "10",
+        "value": "50+",
         "label": "Projects Delivered",
         "group": "about",
     },
