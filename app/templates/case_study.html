@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Case Study: {{ project.title }} — Mohamed Maa Albared{% endblock %}
-{% block meta_description %}Case Study: {{ project.short_description or project.description[:160] }}{% endblock %}
+{% block title %}Case Study: {{ project.get_field('title', current_locale) }} — Mohamed Maa Albared{% endblock %}
+{% block meta_description %}Case Study: {{ project.get_field('short_description', current_locale) or
+project.get_field('description', current_locale)[:160] }}{% endblock %}
 {% block canonical_url %}{{ url_for('main.case_study', project_id=project.id, _external=True) }}{% endblock %}
-{% block og_title %}Case Study: {{ project.title }}{% endblock %}
-{% block og_description %}{{ project.short_description }}{% endblock %}
+{% block og_title %}Case Study: {{ project.get_field('title', current_locale) }}{% endblock %}
+{% block og_description %}{{ project.get_field('short_description', current_locale) }}{% endblock %}
 {% block og_type %}article{% endblock %}
 {% block og_url %}{{ url_for('main.case_study', project_id=project.id, _external=True) }}{% endblock %}
 
@@ -23,8 +24,8 @@
             {% if project.category %}
             <span class="detail-category">{{ project.category }}</span>
             {% endif %}
-            <h1 class="case-study-title">{{ project.title }}</h1>
-            <p class="case-study-subtitle">{{ project.short_description }}</p>
+            <h1 class="case-study-title">{{ project.get_field('title', current_locale) }}</h1>
+            <p class="case-study-subtitle">{{ project.get_field('short_description', current_locale) }}</p>
 
             <div class="case-study-info-bar">
                 {% if project.year %}<div class="info-item"><span class="info-label">Year</span><span
@@ -50,30 +51,30 @@
         </div>
         {% endif %}
 
-        {% if project.challenge %}
+        {% if project.challenge or project.challenge_ar %}
         <div class="case-study-block reveal-up">
             <h2 class="cs-section-title"><span class="cs-number">01</span> The Challenge</h2>
-            <div class="cs-content">{{ project.challenge|safe }}</div>
+            <div class="cs-content">{{ project.get_field('challenge', current_locale)|safe }}</div>
         </div>
         {% endif %}
 
-        {% if project.approach %}
+        {% if project.approach or project.approach_ar %}
         <div class="case-study-block reveal-up">
             <h2 class="cs-section-title"><span class="cs-number">02</span> The Approach</h2>
-            <div class="cs-content">{{ project.approach|safe }}</div>
+            <div class="cs-content">{{ project.get_field('approach', current_locale)|safe }}</div>
         </div>
         {% endif %}
 
-        {% if project.results %}
+        {% if project.results or project.results_ar %}
         <div class="case-study-block reveal-up">
             <h2 class="cs-section-title"><span class="cs-number">03</span> Results & Impact</h2>
-            <div class="cs-content">{{ project.results|safe }}</div>
+            <div class="cs-content">{{ project.get_field('results', current_locale)|safe }}</div>
         </div>
         {% endif %}
 
-        {% if project.case_study %}
+        {% if project.case_study or project.case_study_ar %}
         <div class="case-study-block reveal-up">
-            <div class="cs-content">{{ project.case_study|safe }}</div>
+            <div class="cs-content">{{ project.get_field('case_study', current_locale)|safe }}</div>
         </div>
         {% endif %}
 

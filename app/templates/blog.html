@@ -58,9 +58,10 @@ endblock %}
                         <span class="blog-card-date">{{ post.created_at.strftime('%b %d, %Y') }}</span>
                     </div>
                     <h2 class="blog-card-title">
-                        <a href="{{ url_for('main.blog_detail', slug=post.slug) }}">{{ post.title }}</a>
+                        <a href="{{ url_for('main.blog_detail', slug=post.slug) }}">{{ post.get_field('title',
+                            current_locale) }}</a>
                     </h2>
-                    <p class="blog-card-excerpt">{{ post.excerpt }}</p>
+                    <p class="blog-card-excerpt">{{ post.get_field('excerpt', current_locale) }}</p>
                     <div class="blog-card-footer">
                         <span class="blog-read-time">{{ post.read_time }} min read</span>
                         <a href="{{ url_for('main.blog_detail', slug=post.slug) }}" class="blog-read-more">Read Article

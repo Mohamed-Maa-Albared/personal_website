@@ -18,37 +18,68 @@
             </label>
         </div>
 
-        <div class="form-group">
-            <label for="challenge">The Challenge</label>
-            <textarea id="challenge" name="challenge" rows="6"
-                data-wysiwyg>{{ project.challenge if project.challenge else '' }}</textarea>
-            <div class="form-hint">Describe the problem or challenge.</div>
+        <!-- Language tabs -->
+        <div class="lang-tabs">
+            <button type="button" class="lang-tab active" data-lang="en">🇬🇧 English</button>
+            <button type="button" class="lang-tab" data-lang="ar">🇸🇦 العربية</button>
         </div>
 
-        <div class="form-group">
-            <label for="approach">The Approach</label>
-            <textarea id="approach" name="approach" rows="6"
-                data-wysiwyg>{{ project.approach if project.approach else '' }}</textarea>
-            <div class="form-hint">Describe the technical approach and methodology.</div>
+        <!-- English panel -->
+        <div class="lang-panel" data-lang="en">
+            <div class="form-group">
+                <label for="challenge">The Challenge</label>
+                <textarea id="challenge" name="challenge" rows="6"
+                    data-wysiwyg>{{ project.challenge if project.challenge else '' }}</textarea>
+                <div class="form-hint">Describe the problem or challenge.</div>
+            </div>
+            <div class="form-group">
+                <label for="approach">The Approach</label>
+                <textarea id="approach" name="approach" rows="6"
+                    data-wysiwyg>{{ project.approach if project.approach else '' }}</textarea>
+                <div class="form-hint">Describe the technical approach and methodology.</div>
+            </div>
+            <div class="form-group">
+                <label for="results">Results &amp; Impact</label>
+                <textarea id="results" name="results" rows="6"
+                    data-wysiwyg>{{ project.results if project.results else '' }}</textarea>
+                <div class="form-hint">Describe the outcomes and business impact.</div>
+            </div>
+            <div class="form-group">
+                <label for="case_study">Additional Content</label>
+                <textarea id="case_study" name="case_study" rows="10"
+                    data-wysiwyg>{{ project.case_study if project.case_study else '' }}</textarea>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="results">Results & Impact</label>
-            <textarea id="results" name="results" rows="6"
-                data-wysiwyg>{{ project.results if project.results else '' }}</textarea>
-            <div class="form-hint">Describe the outcomes and business impact.</div>
+        <!-- Arabic panel -->
+        <div class="lang-panel lang-panel--hidden" data-lang="ar" dir="rtl">
+            <div class="form-group">
+                <label for="challenge_ar">التحدي (Arabic Challenge)</label>
+                <textarea id="challenge_ar" name="challenge_ar" rows="6"
+                    data-wysiwyg>{{ project.challenge_ar if project.challenge_ar else '' }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="approach_ar">النهج (Arabic Approach)</label>
+                <textarea id="approach_ar" name="approach_ar" rows="6"
+                    data-wysiwyg>{{ project.approach_ar if project.approach_ar else '' }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="results_ar">النتائج والأثر (Arabic Results &amp; Impact)</label>
+                <textarea id="results_ar" name="results_ar" rows="6"
+                    data-wysiwyg>{{ project.results_ar if project.results_ar else '' }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="case_study_ar">محتوى إضافي (Additional Arabic Content)</label>
+                <textarea id="case_study_ar" name="case_study_ar" rows="10"
+                    data-wysiwyg>{{ project.case_study_ar if project.case_study_ar else '' }}</textarea>
+            </div>
         </div>
 
+        <!-- Non-translatable: metrics stay language-neutral -->
         <div class="form-group">
             <label for="metrics">Key Metrics (JSON)</label>
             <textarea id="metrics" name="metrics" rows="4">{{ project.metrics if project.metrics else '[]' }}</textarea>
             <div class="form-hint">JSON array of objects: [{"value": "20x", "label": "Performance Gain"}, ...]</div>
-        </div>
-
-        <div class="form-group">
-            <label for="case_study">Additional Content</label>
-            <textarea id="case_study" name="case_study" rows="10"
-                data-wysiwyg>{{ project.case_study if project.case_study else '' }}</textarea>
         </div>
 
         <div class="form-actions">

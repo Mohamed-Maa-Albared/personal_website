@@ -10,11 +10,64 @@
 <div class="form-card">
     <form method="POST">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <div class="form-group">
-            <label for="role">Role / Title *</label>
-            <input type="text" id="role" name="role" required value="{{ experience.role if experience else '' }}">
+
+        <!-- Language tabs -->
+        <div class="lang-tabs">
+            <button type="button" class="lang-tab active" data-lang="en">🇬🇧 English</button>
+            <button type="button" class="lang-tab" data-lang="ar">🇸🇦 العربية</button>
         </div>
 
+        <!-- English panel -->
+        <div class="lang-panel" data-lang="en">
+            <div class="form-group">
+                <label for="role">Role / Title *</label>
+                <input type="text" id="role" name="role" required value="{{ experience.role if experience else '' }}">
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description"
+                    rows="3">{{ experience.description if experience else '' }}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Key Highlights</label>
+                <div class="highlight-list-editor" id="highlightListEditor">
+                    {% if experience and experience.highlights %}
+                    {% for h in experience.highlights|from_json %}
+                    <div class="hl-item">
+                        <textarea class="hl-source" data-wysiwyg="mini" rows="2">{{ h }}</textarea>
+                        <button type="button" class="hl-remove" title="Remove this highlight">&times;</button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <button type="button" id="addHighlightBtn" class="btn-add-highlight">+ Add Highlight</button>
+                <textarea id="highlights" name="highlights" rows="1" style="display:none;"></textarea>
+                <div class="form-hint">Each highlight gets its own rich-text editor. Use <strong>Bold</strong> /
+                    <em>Italic</em> to emphasise key phrases.
+                </div>
+            </div>
+        </div>
+
+        <!-- Arabic panel -->
+        <div class="lang-panel lang-panel--hidden" data-lang="ar" dir="rtl">
+            <div class="form-group">
+                <label for="role_ar">المسمى الوظيفي (Arabic Role)</label>
+                <input type="text" id="role_ar" name="role_ar" value="{{ experience.role_ar if experience else '' }}">
+            </div>
+            <div class="form-group">
+                <label for="description_ar">الوصف (Arabic Description)</label>
+                <textarea id="description_ar" name="description_ar"
+                    rows="3">{{ experience.description_ar if experience else '' }}</textarea>
+            </div>
+            <div class="form-group">
+                <label>النقاط البارزة (Arabic Highlights — one per line)</label>
+                <textarea id="highlights_ar" name="highlights_ar" rows="6"
+                    placeholder="One highlight per line...">{% if experience and experience.highlights_ar %}{{ experience.highlights_ar|from_json|join('\n') }}{% endif %}</textarea>
+                <div class="form-hint">One bullet point per line. Plain text or basic HTML.</div>
+            </div>
+        </div>
+
+        <!-- Non-translatable fields -->
         <div class="form-row">
             <div class="form-group">
                 <label for="company">Company / Institution *</label>
@@ -40,30 +93,6 @@
                     value="{{ experience.sort_order if experience else 0 }}">
                 <div class="form-hint">Lower number = appears first.</div>
             </div>
-        </div>
-
-        <div class="form-group">
-            <label for="description">Description</label>
-            <textarea id="description" name="description"
-                rows="3">{{ experience.description if experience else '' }}</textarea>
-        </div>
-
-        <div class="form-group">
-            <label>Key Highlights</label>
-            <div class="highlight-list-editor" id="highlightListEditor">
-                {% if experience and experience.highlights %}
-                {% for h in experience.highlights|from_json %}
-                <div class="hl-item">
-                    <textarea class="hl-source" data-wysiwyg="mini" rows="2">{{ h }}</textarea>
-                    <button type="button" class="hl-remove" title="Remove this highlight">&times;</button>
-                </div>
-                {% endfor %}
-                {% endif %}
-            </div>
-            <button type="button" id="addHighlightBtn" class="btn-add-highlight">+ Add Highlight</button>
-            <textarea id="highlights" name="highlights" rows="1" style="display:none;"></textarea>
-            <div class="form-hint">Each highlight gets its own rich-text editor. Use <strong>Bold</strong> /
-                <em>Italic</em> to emphasise key phrases &mdash; just like the bio text.</div>
         </div>
 
         <div class="form-actions">

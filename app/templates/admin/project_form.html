@@ -10,24 +10,51 @@
 <div class="form-card">
     <form method="POST">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <div class="form-group">
-            <label for="title">Title *</label>
-            <input type="text" id="title" name="title" required value="{{ project.title if project else '' }}">
+
+        <!-- Language tabs -->
+        <div class="lang-tabs">
+            <button type="button" class="lang-tab active" data-lang="en">🇬🇧 English</button>
+            <button type="button" class="lang-tab" data-lang="ar">🇸🇦 العربية</button>
         </div>
 
-        <div class="form-group">
-            <label for="short_description">Short Description</label>
-            <input type="text" id="short_description" name="short_description" maxlength="300"
-                value="{{ project.short_description if project else '' }}">
-            <div class="form-hint">Displayed on the project card (max 300 chars).</div>
+        <!-- English panel -->
+        <div class="lang-panel" data-lang="en">
+            <div class="form-group">
+                <label for="title">Title *</label>
+                <input type="text" id="title" name="title" required value="{{ project.title if project else '' }}">
+            </div>
+            <div class="form-group">
+                <label for="short_description">Short Description</label>
+                <input type="text" id="short_description" name="short_description" maxlength="300"
+                    value="{{ project.short_description if project else '' }}">
+                <div class="form-hint">Displayed on the project card (max 300 chars).</div>
+            </div>
+            <div class="form-group">
+                <label for="description">Full Description *</label>
+                <textarea id="description" name="description" rows="6"
+                    required>{{ project.description if project else '' }}</textarea>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="description">Full Description *</label>
-            <textarea id="description" name="description" rows="6"
-                required>{{ project.description if project else '' }}</textarea>
+        <!-- Arabic panel -->
+        <div class="lang-panel lang-panel--hidden" data-lang="ar" dir="rtl">
+            <div class="form-group">
+                <label for="title_ar">العنوان (Arabic Title)</label>
+                <input type="text" id="title_ar" name="title_ar" value="{{ project.title_ar if project else '' }}">
+            </div>
+            <div class="form-group">
+                <label for="short_description_ar">الوصف المختصر (Short Description)</label>
+                <input type="text" id="short_description_ar" name="short_description_ar" maxlength="300"
+                    value="{{ project.short_description_ar if project else '' }}">
+            </div>
+            <div class="form-group">
+                <label for="description_ar">الوصف الكامل (Full Description)</label>
+                <textarea id="description_ar" name="description_ar"
+                    rows="6">{{ project.description_ar if project else '' }}</textarea>
+            </div>
         </div>
 
+        <!-- Non-translatable fields -->
         <div class="form-row">
             <div class="form-group">
                 <label for="category">Category</label>

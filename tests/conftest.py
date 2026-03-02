@@ -70,6 +70,9 @@ def sample_project(app, db):
             title="Test Project",
             description="A test project description",
             short_description="Short desc",
+            title_ar="مشروع تجريبي",
+            description_ar="وصف مشروع تجريبي",
+            short_description_ar="وصف مختصر",
             technologies="Python, Flask",
             category="NLP",
             year="2024",
@@ -91,6 +94,9 @@ def sample_blog_post(app, db):
             slug="test-blog-post",
             excerpt="A test excerpt",
             content="<p>Test blog content that is long enough.</p>",
+            title_ar="مقال تجريبي",
+            excerpt_ar="ملخص تجريبي",
+            content_ar="<p>محتوى تجريبي بالعربية.</p>",
             category="AI",
             tags="test, ai",
             read_time=3,
@@ -113,6 +119,8 @@ def sample_experience(app, db):
             location="Berlin",
             date_range="Jan 2024 – Present",
             description="Test role",
+            role_ar="عالم بيانات",
+            description_ar="دور تجريبي",
             sort_order=1,
         )
         db.session.add(exp)

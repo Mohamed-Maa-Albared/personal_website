@@ -296,14 +296,21 @@ def contact(locale=None):
 @main_bp.route("/api/projects")
 @main_bp.route("/<locale>/api/projects")
 def api_projects(locale=None):
-    """JSON API returning all projects ordered by sort_order."""
+    """JSON API returning all projects ordered by sort_order.
+
+    Use the ``?locale=ar`` query parameter (or the ``/<locale>/`` URL prefix)
+    to receive Arabic-translated fields where available.  Untranslated fields
+    fall back to English transparently.
+    """
+    # Prefer locale from URL segment; fall back to query-string; then default
+    effective_locale = locale or request.args.get("locale", "en")
     projects = Project.query.order_by(Project.sort_order).all()
     return jsonify(
         [
             {
                 "id": p.id,
-                "title": p.title,
-                "short_description": p.short_description,
+                "title": p.get_field("title", effective_locale),
+                "short_description": p.get_field("short_description", effective_locale),
                 "category": p.category,
                 "technologies": (
                     [t.strip() for t in p.technologies.split(",")]

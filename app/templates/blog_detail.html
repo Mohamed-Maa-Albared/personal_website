@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 
-{% block title %}{{ post.title }} — Mohamed Maa Albared{% endblock %}
-{% block meta_description %}{{ post.excerpt[:160] }}{% endblock %}
+{% block title %}{{ post.get_field('title', current_locale) }} — Mohamed Maa Albared{% endblock %}
+{% block meta_description %}{{ post.get_field('excerpt', current_locale)[:160] }}{% endblock %}
 {% block meta_keywords %}{{ post.tags }}, Mohamed Maa Albared, Data Science, AI{% endblock %}
 {% block canonical_url %}{{ url_for('main.blog_detail', slug=post.slug, _external=True) }}{% endblock %}
-{% block og_title %}{{ post.title }}{% endblock %}
-{% block og_description %}{{ post.excerpt }}{% endblock %}
+{% block og_title %}{{ post.get_field('title', current_locale) }}{% endblock %}
+{% block og_description %}{{ post.get_field('excerpt', current_locale) }}{% endblock %}
 {% block og_type %}article{% endblock %}
 {% block og_url %}{{ url_for('main.blog_detail', slug=post.slug, _external=True) }}{% endblock %}
 {% if post.cover_image %}{% block og_image %}{{ post.cover_image }}{% endblock %}{% endif %}
-{% block twitter_title %}{{ post.title }}{% endblock %}
-{% block twitter_description %}{{ post.excerpt }}{% endblock %}
+{% block twitter_title %}{{ post.get_field('title', current_locale) }}{% endblock %}
+{% block twitter_description %}{{ post.get_field('excerpt', current_locale) }}{% endblock %}
 {% if post.cover_image %}{% block twitter_image %}{{ post.cover_image }}{% endblock %}{% endif %}
 
 {% block structured_data %}
@@ -18,8 +18,8 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "{{ post.title }}",
-  "description": "{{ post.excerpt[:200] }}",
+  "headline": "{{ post.get_field('title', current_locale) }}",
+  "description": "{{ post.get_field('excerpt', current_locale)[:200] }}",
   "author": {
     "@type": "Person",
     "name": "Mohamed Maa Albared",
@@ -41,7 +41,7 @@
   },
   {% if post.cover_image %}"image": "{{ post.cover_image }}",{% endif %}
   "articleSection": "{{ post.category }}",
-  "inLanguage": "en-US",
+  "inLanguage": "{{ 'ar' if current_locale == 'ar' else 'en-US' }}",
   "url": "{{ url_for('main.blog_detail', slug=post.slug, _external=True) }}"
 }
 </script>
@@ -66,9 +66,9 @@
                 <span class="blog-detail-date">{{ post.created_at.strftime('%B %d, %Y') }}</span>
                 <span class="blog-detail-readtime">{{ post.read_time }} min read</span>
             </div>
-            <h1 class="blog-detail-title">{{ post.title }}</h1>
-            {% if post.excerpt %}
-            <p class="blog-detail-excerpt">{{ post.excerpt }}</p>
+            <h1 class="blog-detail-title">{{ post.get_field('title', current_locale) }}</h1>
+            {% if post.excerpt or post.excerpt_ar %}
+            <p class="blog-detail-excerpt">{{ post.get_field('excerpt', current_locale) }}</p>
             {% endif %}
             {% if post.tags %}
             <div class="blog-detail-tags">
@@ -89,7 +89,7 @@
         <div class="scroll-progress" id="scrollProgress"></div>
 
         <div class="blog-detail-content reveal-up">
-            {{ post.content|safe }}
+            {{ post.get_field('content', current_locale)|safe }}
         </div>
 
         <!-- Author card -->
@@ -110,7 +110,7 @@
                 {% for r in related %}
                 <a href="{{ url_for('main.blog_detail', slug=r.slug) }}" class="related-card">
                     <span class="related-category">{{ r.category }}</span>
-                    <h4>{{ r.title }}</h4>
+                    <h4>{{ r.get_field('title', current_locale) }}</h4>
                     <span class="related-date">{{ r.created_at.strftime('%b %d, %Y') }}</span>
                 </a>
                 {% endfor %}

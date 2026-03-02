@@ -336,7 +336,14 @@ def dashboard():
 @login_required
 def site_config_update():
     # Keys that contain rich HTML content — use sanitize_html to preserve formatting
-    HTML_CONFIG_KEYS = {"about_bio1", "about_bio2", "about_bio3"}
+    HTML_CONFIG_KEYS = {
+        "about_bio1",
+        "about_bio2",
+        "about_bio3",
+        "about_bio1_ar",
+        "about_bio2_ar",
+        "about_bio3_ar",
+    }
     count = 0
     for key, value in request.form.items():
         if key.startswith("cfg_"):
@@ -384,6 +391,12 @@ def project_new():
                 request.form.get("short_description", ""), 300
             ),
             description=sanitize_input(request.form["description"], 5000),
+            # Arabic translations (optional)
+            title_ar=sanitize_input(request.form.get("title_ar", ""), 200),
+            short_description_ar=sanitize_input(
+                request.form.get("short_description_ar", ""), 300
+            ),
+            description_ar=sanitize_input(request.form.get("description_ar", ""), 5000),
             technologies=sanitize_input(request.form.get("technologies", ""), 500),
             category=sanitize_input(request.form.get("category", ""), 100),
             year=sanitize_input(request.form.get("year", ""), 20),
@@ -412,6 +425,14 @@ def project_edit(project_id):
             request.form.get("short_description", ""), 300
         )
         project.description = sanitize_input(request.form["description"], 5000)
+        # Arabic translations
+        project.title_ar = sanitize_input(request.form.get("title_ar", ""), 200)
+        project.short_description_ar = sanitize_input(
+            request.form.get("short_description_ar", ""), 300
+        )
+        project.description_ar = sanitize_input(
+            request.form.get("description_ar", ""), 5000
+        )
         project.technologies = sanitize_input(request.form.get("technologies", ""), 500)
         project.category = sanitize_input(request.form.get("category", ""), 100)
         project.year = sanitize_input(request.form.get("year", ""), 20)
@@ -449,6 +470,10 @@ def experience_new():
         highlights = json.dumps(
             [sanitize_html(h, 500) for h in highlights_raw.split("\n") if h.strip()]
         )
+        highlights_raw_ar = request.form.get("highlights_ar", "")
+        highlights_ar = json.dumps(
+            [sanitize_html(h, 500) for h in highlights_raw_ar.split("\n") if h.strip()]
+        )
         experience = Experience(
             role=sanitize_input(request.form["role"], 200),
             company=sanitize_input(request.form["company"], 200),
@@ -456,6 +481,10 @@ def experience_new():
             date_range=sanitize_input(request.form["date_range"], 100),
             description=sanitize_input(request.form.get("description", ""), 2000),
             highlights=highlights,
+            # Arabic translations (optional)
+            role_ar=sanitize_input(request.form.get("role_ar", ""), 200),
+            description_ar=sanitize_input(request.form.get("description_ar", ""), 2000),
+            highlights_ar=highlights_ar,
             sort_order=safe_int(request.form.get("sort_order", 0)),
         )
         db.session.add(experience)
@@ -474,6 +503,10 @@ def experience_edit(exp_id):
         highlights = json.dumps(
             [sanitize_html(h, 500) for h in highlights_raw.split("\n") if h.strip()]
         )
+        highlights_raw_ar = request.form.get("highlights_ar", "")
+        highlights_ar = json.dumps(
+            [sanitize_html(h, 500) for h in highlights_raw_ar.split("\n") if h.strip()]
+        )
         experience.role = sanitize_input(request.form["role"], 200)
         experience.company = sanitize_input(request.form["company"], 200)
         experience.location = sanitize_input(request.form.get("location", ""), 200)
@@ -482,6 +515,12 @@ def experience_edit(exp_id):
             request.form.get("description", ""), 2000
         )
         experience.highlights = highlights
+        # Arabic translations
+        experience.role_ar = sanitize_input(request.form.get("role_ar", ""), 200)
+        experience.description_ar = sanitize_input(
+            request.form.get("description_ar", ""), 2000
+        )
+        experience.highlights_ar = highlights_ar
         experience.sort_order = safe_int(request.form.get("sort_order", 0))
         db.session.commit()
         logger.info("Experience updated: %s at %s", experience.role, experience.company)
@@ -538,6 +577,10 @@ def blog_new():
             slug=sanitize_input(slug, 300),
             excerpt=sanitize_input(request.form.get("excerpt", ""), 500),
             content=sanitize_html(request.form.get("content", "")),
+            # Arabic translations (optional)
+            title_ar=sanitize_input(request.form.get("title_ar", ""), 300),
+            excerpt_ar=sanitize_input(request.form.get("excerpt_ar", ""), 500),
+            content_ar=sanitize_html(request.form.get("content_ar", "")),
             cover_image=sanitize_input(request.form.get("cover_image", ""), 500),
             category=sanitize_input(request.form.get("category", ""), 100),
             tags=sanitize_input(request.form.get("tags", ""), 500),
@@ -566,6 +609,10 @@ def blog_edit(post_id):
         post.slug = sanitize_input(slug, 300)
         post.excerpt = sanitize_input(request.form.get("excerpt", ""), 500)
         post.content = sanitize_html(request.form.get("content", ""))
+        # Arabic translations
+        post.title_ar = sanitize_input(request.form.get("title_ar", ""), 300)
+        post.excerpt_ar = sanitize_input(request.form.get("excerpt_ar", ""), 500)
+        post.content_ar = sanitize_html(request.form.get("content_ar", ""))
         post.cover_image = sanitize_input(request.form.get("cover_image", ""), 500)
         post.category = sanitize_input(request.form.get("category", ""), 100)
         post.tags = sanitize_input(request.form.get("tags", ""), 500)
@@ -603,6 +650,11 @@ def case_study_edit(project_id):
         project.results = sanitize_html(request.form.get("results", ""))
         project.metrics = sanitize_input(request.form.get("metrics", ""), 5000)
         project.case_study = sanitize_html(request.form.get("case_study", ""))
+        # Arabic translations
+        project.challenge_ar = sanitize_html(request.form.get("challenge_ar", ""))
+        project.approach_ar = sanitize_html(request.form.get("approach_ar", ""))
+        project.results_ar = sanitize_html(request.form.get("results_ar", ""))
+        project.case_study_ar = sanitize_html(request.form.get("case_study_ar", ""))
         project.has_case_study = "has_case_study" in request.form
         db.session.commit()
         flash(f'Case study for "{project.title}" updated!', "success")
@@ -620,6 +672,7 @@ def impact_card_new():
         prefix=sanitize_input(request.form.get("prefix", ""), 20),
         suffix=sanitize_input(request.form.get("suffix", ""), 20),
         description=sanitize_input(request.form.get("description", ""), 300),
+        description_ar=sanitize_input(request.form.get("description_ar", ""), 300),
         sort_order=safe_int(request.form.get("sort_order", 0)),
     )
     db.session.add(card)
@@ -638,6 +691,7 @@ def impact_card_edit(card_id):
     card.prefix = sanitize_input(request.form.get("prefix", ""), 20)
     card.suffix = sanitize_input(request.form.get("suffix", ""), 20)
     card.description = sanitize_input(request.form.get("description", ""), 300)
+    card.description_ar = sanitize_input(request.form.get("description_ar", ""), 300)
     card.sort_order = safe_int(request.form.get("sort_order", 0))
     db.session.commit()
     logger.info("Impact card updated: id=%d", card_id)
@@ -664,6 +718,8 @@ def skill_cluster_new():
         icon=sanitize_input(request.form.get("icon", "&#9881;"), 50),
         title=sanitize_input(request.form.get("title", ""), 200),
         tags=sanitize_input(request.form.get("tags", ""), 2000),
+        title_ar=sanitize_input(request.form.get("title_ar", ""), 200),
+        tags_ar=sanitize_input(request.form.get("tags_ar", ""), 2000),
         sort_order=safe_int(request.form.get("sort_order", 0)),
     )
     db.session.add(cluster)
@@ -680,6 +736,8 @@ def skill_cluster_edit(cluster_id):
     cluster.icon = sanitize_input(request.form.get("icon", "&#9881;"), 50)
     cluster.title = sanitize_input(request.form.get("title", ""), 200)
     cluster.tags = sanitize_input(request.form.get("tags", ""), 2000)
+    cluster.title_ar = sanitize_input(request.form.get("title_ar", ""), 200)
+    cluster.tags_ar = sanitize_input(request.form.get("tags_ar", ""), 2000)
     cluster.sort_order = safe_int(request.form.get("sort_order", 0))
     db.session.commit()
     logger.info("Skill cluster updated: %s (id=%d)", cluster.title, cluster_id)

@@ -31,16 +31,37 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    /* ── 2. WYSIWYG Editors ──────────────────────────────────── */
+    /* ── 2. Language Tabs (EN / AR form panels) ─────────────── */
+    var langTabs = document.querySelectorAll('.lang-tab');
+    if (langTabs.length) {
+        langTabs.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var targetLang = btn.getAttribute('data-lang');
+                // Toggle active state on buttons
+                langTabs.forEach(function (b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                // Show the matching panel, hide the rest
+                document.querySelectorAll('.lang-panel').forEach(function (panel) {
+                    if (panel.getAttribute('data-lang') === targetLang) {
+                        panel.classList.remove('lang-panel--hidden');
+                    } else {
+                        panel.classList.add('lang-panel--hidden');
+                    }
+                });
+            });
+        });
+    }
+
+    /* ── 3. WYSIWYG Editors ──────────────────────────────────── */
     initWysiwygEditors();
 
-    /* ── 2b. Highlight List Editor ───────────────────────────── */
+    /* ── 3b. Highlight List Editor ───────────────────────────── */
     initHighlightEditor();
 
-    /* ── 3. Image Upload ─────────────────────────────────────── */
+    /* ── 4. Image Upload ─────────────────────────────────────── */
     initImageUpload();
 
-    /* ── 4. Inline Edit Toggles (Impact / Skills / Languages) ─ */
+    /* ── 5. Inline Edit Toggles (Impact / Skills / Languages) ─ */
     document.querySelectorAll('.inline-edit-toggle').forEach(function (btn) {
         btn.addEventListener('click', function () {
             var formId = btn.getAttribute('data-form');
@@ -53,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    /* ── 5. Delete Confirmations (replaces inline onsubmit) ─── */
+    /* ── 6. Delete Confirmations (replaces inline onsubmit) ─── */
     document.addEventListener('submit', function (e) {
         var form = e.target;
         if (form.tagName === 'FORM' && form.hasAttribute('data-confirm')) {
@@ -63,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    /* ── 6. Charts (Analytics) ───────────────────────────────── */
+    /* ── 7. Charts (Analytics) ───────────────────────────────── */
     initCharts();
 });
 

@@ -73,18 +73,21 @@
     <canvas id="neuralCanvas"></canvas>
     <div class="hero-content">
         <img src="{{ url_for('static', filename='images/logo.png') }}" alt="" class="logo-hero reveal-up">
-        <div class="hero-label reveal-up">{{ cfg.get('hero_label', 'DATA SCIENTIST &bull; AI ENGINEER') | safe }}</div>
+        <div class="hero-label reveal-up">{{ cfg.get('hero_label_ar' if current_locale == 'ar' else 'hero_label', 'DATA
+            SCIENTIST &bull; AI ENGINEER') | safe }}</div>
         <h1 class="hero-title">
             <span class="line reveal-up" style="--delay:.1s">{{ cfg.get('hero_name_line1', 'MOHAMED') }}</span>
             <span class="line reveal-up" style="--delay:.25s">{{ cfg.get('hero_name_line2', 'MAA ALBARED') }}</span>
         </h1>
         <div class="hero-tagline reveal-up" style="--delay:.45s">
-            <span class="tagline-word">{{ cfg.get('hero_tagline_word1', 'Architecting') }}</span>
-            <span class="tagline-word accent">{{ cfg.get('hero_tagline_word2', 'Intelligence') }}</span>
+            <span class="tagline-word">{{ cfg.get('hero_tagline_word1_ar' if current_locale == 'ar' else
+                'hero_tagline_word1', 'Architecting') }}</span>
+            <span class="tagline-word accent">{{ cfg.get('hero_tagline_word2_ar' if current_locale == 'ar' else
+                'hero_tagline_word2', 'Intelligence') }}</span>
         </div>
         <p class="hero-sub reveal-up" style="--delay:.6s">
-            {{ cfg.get('hero_subtitle', 'Where neural networks meet creative intuition. Building systems that reason,
-            collaborate, and act.') }}
+            {{ cfg.get('hero_subtitle_ar' if current_locale == 'ar' else 'hero_subtitle', 'Where neural networks meet
+            creative intuition. Building systems that reason, collaborate, and act.') }}
         </p>
         <div class="hero-cta reveal-up" style="--delay:.75s">
             <a href="#projects" class="btn-glow">{{ t('hero.cta1') }}</a>
@@ -108,18 +111,19 @@
                     <span class="accent">{{ t('about.heading2') }}</span>
                 </h2>
                 <p class="about-bio reveal-up">
-                    {{ cfg.get('about_bio1', 'Data Scientist with <strong>4+ years of
-                        experience</strong> building and deploying machine learning and
-                    generative AI solutions in the <strong>aviation sector</strong>.') | safe }}
+                    {{ cfg.get('about_bio1_ar' if current_locale == 'ar' else 'about_bio1', 'Data Scientist with
+                    <strong>4+ years of experience</strong> building and deploying machine learning and generative AI
+                    solutions in the <strong>aviation sector</strong>.') | safe }}
                 </p>
                 <p class="about-bio reveal-up">
-                    {{ cfg.get('about_bio2', 'I build <strong>recommendation systems</strong> that move the needle
-                    (3-15% purchase lift), optimize ML pipelines for up to <strong>20x</strong> faster response,
-                    and design <strong>AB testing frameworks</strong> from scratch.') | safe }}
+                    {{ cfg.get('about_bio2_ar' if current_locale == 'ar' else 'about_bio2', 'I build
+                    <strong>recommendation systems</strong> that move the needle (3-15% purchase lift), optimize ML
+                    pipelines for up to <strong>20x</strong> faster response, and design <strong>AB testing
+                        frameworks</strong> from scratch.') | safe }}
                 </p>
                 <p class="about-bio reveal-up">
-                    {{ cfg.get('about_bio3', 'Go-to person for <strong>LLM
-                        orchestration</strong> and <strong>autonomous agent design</strong> at zeroG, turning
+                    {{ cfg.get('about_bio3_ar' if current_locale == 'ar' else 'about_bio3', 'Go-to person for
+                    <strong>LLM orchestration</strong> and <strong>autonomous agent design</strong> at zeroG, turning
                     cutting-edge AI research into systems that actually ship.') | safe }}
                 </p>
             </div>
@@ -164,7 +168,7 @@
                 <div class="impact-icon">{{ card.icon | safe }}</div>
                 <div class="impact-value">{{ card.prefix | safe }}<span data-count="{{ card.value }}">0</span>{{
                     card.suffix | safe }}</div>
-                <div class="impact-desc">{{ card.description }}</div>
+                <div class="impact-desc">{{ card.get_field('description', current_locale) }}</div>
             </div>
             {% endfor %}
         </div>
@@ -187,13 +191,13 @@
                 </div>
                 <div class="timeline-content">
                     <span class="timeline-date">{{ exp.date_range }}</span>
-                    <h3 class="timeline-role">{{ exp.role }}</h3>
+                    <h3 class="timeline-role">{{ exp.get_field('role', current_locale) }}</h3>
                     <h4 class="timeline-company">{{ exp.company }}{% if exp.location %} <span class="timeline-loc">{{
                             exp.location }}</span>{% endif %}</h4>
                     {% if exp.description %}
-                    <p class="timeline-desc">{{ exp.description }}</p>
+                    <p class="timeline-desc">{{ exp.get_field('description', current_locale) }}</p>
                     {% endif %}
-                    {% set highlights = exp.highlights | from_json %}
+                    {% set highlights = exp.get_highlights(current_locale) | from_json %}
                     {% if highlights %}
                     <ul class="timeline-highlights">
                         {% for h in highlights %}
@@ -233,8 +237,9 @@
                 <div class="card-number">{{ '%02d' % loop.index }}</div>
                 <div class="card-content">
                     <span class="card-category">{{ project.category | upper }}</span>
-                    <h3 class="card-title">{{ project.title }}</h3>
-                    <p class="card-desc">{{ project.short_description or project.description[:200] }}</p>
+                    <h3 class="card-title">{{ project.get_field('title', current_locale) }}</h3>
+                    <p class="card-desc">{{ project.get_field('short_description', current_locale) or
+                        project.get_field('description', current_locale)[:200] }}</p>
                     {% if project.technologies %}
                     <div class="card-tech">
                         {% for tech in project.technologies.split(',')[:4] %}
@@ -265,9 +270,9 @@
             <div class="skill-cluster reveal-up" {% if not loop.first %}style="--delay:{{ loop.index0 * 0.1 }}s" {%
                 endif %}>
                 <div class="cluster-icon">{{ cluster.icon | safe }}</div>
-                <h3 class="cluster-title">{{ cluster.title }}</h3>
+                <h3 class="cluster-title">{{ cluster.get_field('title', current_locale) }}</h3>
                 <div class="cluster-tags">
-                    {% for tag in cluster.tags.split(',') %}
+                    {% for tag in cluster.get_field('tags', current_locale).split(',') %}
                     <span>{{ tag.strip() }}</span>
                     {% endfor %}
                 </div>
@@ -321,9 +326,10 @@
                         <span class="blog-card-date">{{ post.created_at.strftime('%b %d, %Y') }}</span>
                     </div>
                     <h3 class="blog-card-title">
-                        <a href="{{ url_for('main.blog_detail', slug=post.slug) }}">{{ post.title }}</a>
+                        <a href="{{ url_for('main.blog_detail', slug=post.slug) }}">{{ post.get_field('title',
+                            current_locale) }}</a>
                     </h3>
-                    <p class="blog-card-excerpt">{{ post.excerpt[:150] }}...</p>
+                    <p class="blog-card-excerpt">{{ post.get_field('excerpt', current_locale)[:150] }}...</p>
                     <div class="blog-card-footer">
                         <span class="blog-read-time">{{ post.read_time }} {{ t('blog.minread') }}</span>
                         <a href="{{ url_for('main.blog_detail', slug=post.slug) }}" class="blog-read-more">{{

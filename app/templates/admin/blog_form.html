@@ -11,49 +11,92 @@
     <form method="POST" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-        <div class="form-group">
-            <label for="title">Title *</label>
-            <input type="text" id="title" name="title" required value="{{ post.title if post else '' }}">
+        <!-- Language tabs -->
+        <div class="lang-tabs">
+            <button type="button" class="lang-tab active" data-lang="en">🇬🇧 English</button>
+            <button type="button" class="lang-tab" data-lang="ar">🇸🇦 العربية</button>
         </div>
 
+        <!-- English panel -->
+        <div class="lang-panel" data-lang="en">
+            <div class="form-group">
+                <label for="title">Title *</label>
+                <input type="text" id="title" name="title" required value="{{ post.title if post else '' }}">
+            </div>
+            <div class="form-group">
+                <label for="excerpt">Excerpt</label>
+                <textarea id="excerpt" name="excerpt" rows="2">{{ post.excerpt if post else '' }}</textarea>
+                <div class="form-hint">Short preview text shown on the blog listing (max 500 chars).</div>
+            </div>
+            <div class="form-group">
+                <label for="content">Content *</label>
+                <!-- Rich text toolbar (EN) -->
+                <div class="editor-toolbar">
+                    <button type="button" class="toolbar-btn" data-cmd="bold" title="Bold"><strong>B</strong></button>
+                    <button type="button" class="toolbar-btn" data-cmd="italic" title="Italic"><em>I</em></button>
+                    <button type="button" class="toolbar-btn" data-cmd="h2" title="Heading 2">H2</button>
+                    <button type="button" class="toolbar-btn" data-cmd="h3" title="Heading 3">H3</button>
+                    <span class="toolbar-sep"></span>
+                    <button type="button" class="toolbar-btn" data-cmd="link" title="Insert Link">&#128279;</button>
+                    <button type="button" class="toolbar-btn" data-cmd="image" title="Insert Image">&#128247;</button>
+                    <button type="button" class="toolbar-btn" data-cmd="ul" title="Bulleted List">&#8226; List</button>
+                    <button type="button" class="toolbar-btn" data-cmd="ol" title="Numbered List">1. List</button>
+                    <span class="toolbar-sep"></span>
+                    <button type="button" class="toolbar-btn" data-cmd="blockquote" title="Blockquote">&#10077;</button>
+                    <button type="button" class="toolbar-btn" data-cmd="code" title="Code Block">&lt;/&gt;</button>
+                    <button type="button" class="toolbar-btn" data-cmd="hr" title="Horizontal Rule">&#8213;</button>
+                    <button type="button" class="toolbar-btn" data-cmd="p" title="Paragraph">&#182;</button>
+                    <button type="button" class="toolbar-btn" data-cmd="removeFormat"
+                        title="Clear Formatting">&#10005;</button>
+                </div>
+                <textarea id="content" name="content" rows="20" required
+                    data-wysiwyg>{{ post.content if post else '' }}</textarea>
+                <div class="form-hint">Use the toolbar to insert formatting without writing HTML manually.</div>
+            </div>
+        </div>
+
+        <!-- Arabic panel -->
+        <div class="lang-panel lang-panel--hidden" data-lang="ar" dir="rtl">
+            <div class="form-group">
+                <label for="title_ar">العنوان (Arabic Title)</label>
+                <input type="text" id="title_ar" name="title_ar" value="{{ post.title_ar if post else '' }}">
+            </div>
+            <div class="form-group">
+                <label for="excerpt_ar">الملخص (Arabic Excerpt)</label>
+                <textarea id="excerpt_ar" name="excerpt_ar" rows="2">{{ post.excerpt_ar if post else '' }}</textarea>
+                <div class="form-hint">ملخص المقال بالعربية (max 500 chars).</div>
+            </div>
+            <div class="form-group">
+                <label for="content_ar">المحتوى (Arabic Content)</label>
+                <!-- Rich text toolbar (AR) -->
+                <div class="editor-toolbar">
+                    <button type="button" class="toolbar-btn" data-cmd="bold" title="Bold"><strong>B</strong></button>
+                    <button type="button" class="toolbar-btn" data-cmd="italic" title="Italic"><em>I</em></button>
+                    <button type="button" class="toolbar-btn" data-cmd="h2" title="Heading 2">H2</button>
+                    <button type="button" class="toolbar-btn" data-cmd="h3" title="Heading 3">H3</button>
+                    <span class="toolbar-sep"></span>
+                    <button type="button" class="toolbar-btn" data-cmd="link" title="Insert Link">&#128279;</button>
+                    <button type="button" class="toolbar-btn" data-cmd="image" title="Insert Image">&#128247;</button>
+                    <button type="button" class="toolbar-btn" data-cmd="ul" title="Bulleted List">&#8226; List</button>
+                    <button type="button" class="toolbar-btn" data-cmd="ol" title="Numbered List">1. List</button>
+                    <span class="toolbar-sep"></span>
+                    <button type="button" class="toolbar-btn" data-cmd="blockquote" title="Blockquote">&#10077;</button>
+                    <button type="button" class="toolbar-btn" data-cmd="code" title="Code Block">&lt;/&gt;</button>
+                    <button type="button" class="toolbar-btn" data-cmd="hr" title="Horizontal Rule">&#8213;</button>
+                    <button type="button" class="toolbar-btn" data-cmd="p" title="Paragraph">&#182;</button>
+                    <button type="button" class="toolbar-btn" data-cmd="removeFormat"
+                        title="Clear Formatting">&#10005;</button>
+                </div>
+                <textarea id="content_ar" name="content_ar" rows="20"
+                    data-wysiwyg>{{ post.content_ar if post else '' }}</textarea>
+            </div>
+        </div>
+
+        <!-- Non-translatable fields -->
         <div class="form-group">
             <label for="slug">Slug</label>
             <input type="text" id="slug" name="slug" value="{{ post.slug if post else '' }}">
             <div class="form-hint">URL-friendly name. Auto-generated from title if left empty.</div>
-        </div>
-
-        <div class="form-group">
-            <label for="excerpt">Excerpt</label>
-            <textarea id="excerpt" name="excerpt" rows="2">{{ post.excerpt if post else '' }}</textarea>
-            <div class="form-hint">Short preview text shown on the blog listing (max 500 chars).</div>
-        </div>
-
-        <div class="form-group">
-            <label for="content">Content *</label>
-            <!-- Rich text toolbar -->
-            <div class="editor-toolbar">
-                <button type="button" class="toolbar-btn" data-cmd="bold" title="Bold"><strong>B</strong></button>
-                <button type="button" class="toolbar-btn" data-cmd="italic" title="Italic"><em>I</em></button>
-                <button type="button" class="toolbar-btn" data-cmd="h2" title="Heading 2">H2</button>
-                <button type="button" class="toolbar-btn" data-cmd="h3" title="Heading 3">H3</button>
-                <span class="toolbar-sep"></span>
-                <button type="button" class="toolbar-btn" data-cmd="link" title="Insert Link">&#128279;</button>
-                <button type="button" class="toolbar-btn" data-cmd="image" title="Insert Image">&#128247;</button>
-                <button type="button" class="toolbar-btn" data-cmd="ul" title="Bulleted List">&#8226; List</button>
-                <button type="button" class="toolbar-btn" data-cmd="ol" title="Numbered List">1. List</button>
-                <span class="toolbar-sep"></span>
-                <button type="button" class="toolbar-btn" data-cmd="blockquote" title="Blockquote">&#10077;</button>
-                <button type="button" class="toolbar-btn" data-cmd="code" title="Code Block">&lt;/&gt;</button>
-                <button type="button" class="toolbar-btn" data-cmd="hr" title="Horizontal Rule">&#8213;</button>
-                <button type="button" class="toolbar-btn" data-cmd="p" title="Paragraph">&#182;</button>
-                <button type="button" class="toolbar-btn" data-cmd="removeFormat"
-                    title="Clear Formatting">&#10005;</button>
-            </div>
-            <textarea id="content" name="content" rows="20" required
-                data-wysiwyg>{{ post.content if post else '' }}</textarea>
-            <div class="form-hint">
-                Use the toolbar to insert formatting without writing HTML manually.
-            </div>
         </div>
 
         <div class="form-row">
@@ -87,13 +130,11 @@
             <label>Or Upload Cover Image</label>
             <div class="upload-area" id="uploadArea">
                 <input type="file" id="imageUpload" accept="image/*" style="display:none;">
-                <button type="button" class="btn-upload" id="uploadBtn">
-                    Choose File
-                </button>
+                <button type="button" class="btn-upload" id="uploadBtn">Choose File</button>
                 <span id="uploadStatus" class="form-hint" style="margin-left:.8rem;">No file chosen</span>
             </div>
-            <div class="form-hint">Max 5 MB. PNG, JPG, GIF, WebP. URL will be placed in the Cover Image field
-                above.</div>
+            <div class="form-hint">Max 5 MB. PNG, JPG, GIF, WebP. URL will be placed in the Cover Image field above.
+            </div>
             {% if post and post.cover_image %}
             <div style="margin-top:.8rem;">
                 <img src="{{ post.cover_image }}" alt="Current cover"
