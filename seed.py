@@ -1033,9 +1033,8 @@ def upgrade_schema():
     """
     from sqlalchemy import text
 
-    dialect = db.engine.dialect.name  # 'sqlite' or 'postgresql'
-
     with app.app_context():
+        dialect = db.engine.dialect.name  # 'sqlite' or 'postgresql'
         with db.engine.connect() as conn:
             for table, column, sql_type in _AR_SCHEMA_MIGRATIONS:
                 try:
