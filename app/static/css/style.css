@@ -2593,6 +2593,13 @@ html[dir="rtl"] .scroll-progress-bar {
     text-transform: none;
 }
 
+/* Project card number: move from right to left so it doesn't overlap
+   the right-aligned card content in RTL mode */
+[dir="rtl"] .card-number {
+    right: auto;
+    left: 20px;
+}
+
 /* ── Nav ───────────────────────────────────────────── */
 [dir="rtl"] .nav-links a::after {
     left: auto;
