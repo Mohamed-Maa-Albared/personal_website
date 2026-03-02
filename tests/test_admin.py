@@ -295,6 +295,123 @@ class TestTabPersistence:
         assert "#tab-projects" in resp.headers["Location"]
 
 
+class TestBilingualAdminForms:
+    """Tests that both EN and AR panels in admin forms have the correct editor UX."""
+
+    def test_experience_form_has_ar_highlight_editor(self, auth_client):
+        """AR panel in experience form should have the hl-item editor, not a plain textarea."""
+        resp = auth_client.get("/admin/experience/new")
+        html = resp.data.decode()
+        assert "highlightListEditorAr" in html
+        assert "addHighlightBtnAr" in html
+        # hidden textarea that receives the serialised JSON
+        assert 'name="highlights_ar"' in html
+
+    def test_experience_edit_ar_highlights_rendered_as_items(
+        self, auth_client, app, db
+    ):
+        """Edit form for an experience with AR highlights renders one hl-item per bullet."""
+        import json
+
+        from app.models import Experience
+
+        with app.app_context():
+            exp = Experience(
+                role="ML Lead AR",
+                company="Corp AR",
+                date_range="2024 – Present",
+                highlights_ar=json.dumps(
+                    [
+                        "<strong>قاد</strong> الفريق",
+                        "<em>نشر</em> خط أنابيب",
+                    ]
+                ),
+                sort_order=98,
+            )
+            db.session.add(exp)
+            db.session.commit()
+            exp_id = exp.id
+
+        resp = auth_client.get(f"/admin/experience/{exp_id}/edit")
+        html = resp.data.decode()
+        assert "highlightListEditorAr" in html
+        # AR highlights rendered inside hl-item textareas
+        assert "قاد" in html
+        assert "نشر" in html
+
+    def test_experience_create_saves_ar_fields(self, auth_client, app, db):
+        """Creating an experience with AR fields persists them to the DB."""
+        import json
+
+        from app.models import Experience
+
+        resp = auth_client.post(
+            "/admin/experience/new",
+            data={
+                "role": "AR Engineer",
+                "role_ar": "مهندس تجريبي",
+                "company": "AR Co",
+                "date_range": "2025",
+                "description": "Test desc",
+                "description_ar": "وصف تجريبي",
+                "highlights_ar": "<strong>نقطة أولى</strong>\n<em>نقطة ثانية</em>",
+                "sort_order": "0",
+            },
+            follow_redirects=True,
+        )
+        assert resp.status_code == 200
+        with app.app_context():
+            exp = Experience.query.filter_by(role="AR Engineer").first()
+            assert exp is not None
+            assert exp.role_ar == "مهندس تجريبي"
+            assert exp.description_ar == "وصف تجريبي"
+            bullets = json.loads(exp.highlights_ar)
+            assert len(bullets) == 2
+            assert "<strong>" in bullets[0]
+
+    def test_blog_form_ar_panel_has_wysiwyg(self, auth_client):
+        """AR panel in blog form should have its own data-wysiwyg toolbar."""
+        resp = auth_client.get("/admin/blog/new")
+        html = resp.data.decode()
+        assert "content_ar" in html
+        assert html.count("data-wysiwyg") >= 2  # at least EN content + AR content
+
+    def test_blog_create_saves_ar_fields(self, auth_client, app, db):
+        """Creating a blog post with AR fields persists them."""
+        from app.models import BlogPost
+
+        resp = auth_client.post(
+            "/admin/blog/new",
+            data={
+                "title": "EN Title Test",
+                "title_ar": "عنوان تجريبي",
+                "excerpt": "EN excerpt",
+                "excerpt_ar": "ملخص تجريبي",
+                "content": "<p>English content.</p>",
+                "content_ar": "<p>محتوى عربي.</p>",
+                "category": "AI",
+                "read_time": "4",
+            },
+            follow_redirects=True,
+        )
+        assert resp.status_code == 200
+        with app.app_context():
+            post = BlogPost.query.filter_by(title="EN Title Test").first()
+            assert post is not None
+            assert post.title_ar == "عنوان تجريبي"
+            assert post.excerpt_ar == "ملخص تجريبي"
+            assert "محتوى" in post.content_ar
+
+    def test_case_study_ar_panel_has_wysiwyg(self, auth_client, sample_project):
+        """AR panel in case study form should have data-wysiwyg on all AR textareas."""
+        resp = auth_client.get(f"/admin/project/{sample_project.id}/case-study")
+        html = resp.data.decode()
+        assert "challenge_ar" in html
+        assert "approach_ar" in html
+        # Both EN and AR sections should carry the wysiwyg attribute
+        assert html.count("data-wysiwyg") >= 2
+
+
 class TestCaseStudyForm:
     """Tests for the case study editor."""
 

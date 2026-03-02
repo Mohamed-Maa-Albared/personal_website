@@ -1249,6 +1249,91 @@ def seed():
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Arabic translation backfill
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+def update_ar_translations():
+    """Back-fill _ar columns on existing DB rows using seed data.
+
+    Only sets a field when the current DB value is NULL or empty —
+    never overwrites content that was set via the admin panel.
+    Safe to run on every deploy (idempotent).
+    """
+    with app.app_context():
+        updated = 0
+
+        # ── Experiences: match by role + company ─────────────────────────────
+        for data in EXPERIENCES:
+            exp = Experience.query.filter_by(
+                role=data["role"], company=data["company"]
+            ).first()
+            if exp is None:
+                continue
+            for field in ("role_ar", "description_ar", "highlights_ar"):
+                if data.get(field) and not getattr(exp, field, None):
+                    setattr(exp, field, data[field])
+                    updated += 1
+
+        # ── Projects: match by English title ─────────────────────────────────
+        for data in PROJECTS:
+            proj = Project.query.filter_by(title=data["title"]).first()
+            if proj is None:
+                continue
+            for field in (
+                "title_ar",
+                "short_description_ar",
+                "description_ar",
+                "challenge_ar",
+                "approach_ar",
+                "results_ar",
+                "case_study_ar",
+            ):
+                if data.get(field) and not getattr(proj, field, None):
+                    setattr(proj, field, data[field])
+                    updated += 1
+
+        # ── Blog posts: match by slug ─────────────────────────────────────────
+        for data in BLOG_POSTS:
+            post = BlogPost.query.filter_by(slug=data["slug"]).first()
+            if post is None:
+                continue
+            for field in ("title_ar", "excerpt_ar", "content_ar"):
+                if data.get(field) and not getattr(post, field, None):
+                    setattr(post, field, data[field])
+                    updated += 1
+
+        # ── Impact cards: match by sort_order ────────────────────────────────
+        for data in IMPACT_CARDS:
+            card = ImpactCard.query.filter_by(sort_order=data["sort_order"]).first()
+            if card is None:
+                continue
+            if data.get("description_ar") and not getattr(card, "description_ar", None):
+                card.description_ar = data["description_ar"]
+                updated += 1
+
+        # ── Skill clusters: match by English title ────────────────────────────
+        for data in SKILL_CLUSTERS:
+            cluster = SkillCluster.query.filter_by(title=data["title"]).first()
+            if cluster is None:
+                continue
+            for field in ("title_ar", "tags_ar"):
+                if data.get(field) and not getattr(cluster, field, None):
+                    setattr(cluster, field, data[field])
+                    updated += 1
+
+        # ── SiteConfig _ar keys ───────────────────────────────────────────────
+        for data in SITE_CONFIGS:
+            key = data["key"]
+            if key.endswith("_ar") and not SiteConfig.get(key, ""):
+                SiteConfig.set(key, data["value"])
+                updated += 1
+
+        db.session.commit()
+        print(f"update_ar_translations: {updated} field(s) updated.")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Entry point
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -1298,6 +1383,9 @@ if __name__ == "__main__":
     # safe on every deploy whether or not the columns already exist.
     upgrade_schema()
     seed()
+    # Back-fill _ar columns on existing rows (no-op if already populated).
+    update_ar_translations()
+    sys.exit(0)
 
 
 EXPERIENCES = [

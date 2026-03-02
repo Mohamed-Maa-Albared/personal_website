@@ -520,6 +520,24 @@
             font-size: 1rem;
         }
 
+        /* Keep toolbars LTR even inside RTL panels so buttons always
+           read left-to-right regardless of content language. */
+        .lang-panel[data-lang="ar"] .editor-toolbar {
+            direction: ltr;
+        }
+
+        /* The contentEditable WYSIWYG area should be RTL for Arabic text. */
+        .lang-panel[data-lang="ar"] .wysiwyg-editor {
+            direction: rtl;
+            text-align: right;
+        }
+
+        /* hl-item mini editors inside the AR panel */
+        .lang-panel[data-lang="ar"] .hl-item .wysiwyg-editor {
+            direction: rtl;
+            text-align: right;
+        }
+
         .btn-save {
             padding: .7rem 2rem;
             background: linear-gradient(135deg, var(--accent), #6341e0);

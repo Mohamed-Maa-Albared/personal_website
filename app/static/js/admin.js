@@ -55,8 +55,9 @@ document.addEventListener('DOMContentLoaded', function () {
     /* ── 3. WYSIWYG Editors ──────────────────────────────────── */
     initWysiwygEditors();
 
-    /* ── 3b. Highlight List Editor ───────────────────────────── */
-    initHighlightEditor();
+    /* ── 3b. Highlight List Editor (EN + AR) ──────────────────── */
+    initHighlightEditor('highlightListEditor', 'addHighlightBtn', 'highlights');
+    initHighlightEditor('highlightListEditorAr', 'addHighlightBtnAr', 'highlights_ar');
 
     /* ── 4. Image Upload ─────────────────────────────────────── */
     initImageUpload();
@@ -555,10 +556,10 @@ function initCharts() {
 
 
 /* ── Highlight List Editor ────────────────────────────────────── */
-function initHighlightEditor() {
-    var list = document.getElementById('highlightListEditor');
-    var addBtn = document.getElementById('addHighlightBtn');
-    var hidden = document.getElementById('highlights');
+function initHighlightEditor(listId, addBtnId, hiddenId) {
+    var list = document.getElementById(listId);
+    var addBtn = document.getElementById(addBtnId);
+    var hidden = document.getElementById(hiddenId);
     if (!list || !addBtn || !hidden) return;
 
     /** Collect all highlight editors' HTML into the hidden textarea (one per line). */

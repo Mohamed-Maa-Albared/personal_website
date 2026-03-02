@@ -321,7 +321,7 @@ flask shell
 
 ## Testing
 
-134 pytest tests covering routes, i18n, admin CRUD, security, utility functions, RTL rendering, and SEO localization.
+142 pytest tests covering routes, i18n, admin CRUD, bilingual form parity, security, utility functions, RTL rendering, and SEO localization.
 
 ```bash
 # Install dev dependencies
