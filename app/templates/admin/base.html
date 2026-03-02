@@ -904,7 +904,7 @@
         </div>
         <div class="admin-nav-links">
             <a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
-            <a href="/" class="btn-view-site" target="_blank">View Site &#8599;</a>
+            <a href="{{ url_for('main.index') }}" class="btn-view-site" target="_blank">View Site &#8599;</a>
             <a href="{{ url_for('admin.logout') }}" class="btn-logout">Log out</a>
         </div>
     </nav>

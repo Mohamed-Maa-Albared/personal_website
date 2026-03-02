@@ -9,22 +9,42 @@ class TestIndex:
     """Tests for the homepage."""
 
     def test_index_returns_200(self, client):
-        resp = client.get("/")
+        resp = client.get("/en/")
         assert resp.status_code == 200
 
+    def test_legacy_index_redirects_to_en(self, client):
+        resp = client.get("/", follow_redirects=False)
+        assert resp.status_code == 301
+        assert resp.headers["Location"].endswith("/en/")
+
     def test_index_contains_meta(self, client):
-        resp = client.get("/")
+        resp = client.get("/en/")
         assert b"Mohamed Maa Albared" in resp.data
 
+    def test_arabic_index_sets_lang_and_dir(self, client):
+        resp = client.get("/ar/")
+        assert resp.status_code == 200
+        assert b'<html lang="ar" dir="rtl">' in resp.data
+
+    def test_arabic_index_renders_translated_nav(self, client):
+        resp = client.get("/ar/")
+        assert resp.status_code == 200
+        assert "المدونة" in resp.data.decode("utf-8")
+
+    def test_switch_url_preserves_query(self, client):
+        resp = client.get("/en/blog?category=AI")
+        assert resp.status_code == 200
+        assert b'data-switch-url="/ar/blog?category=AI"' in resp.data
+
     def test_index_has_security_headers(self, client):
-        resp = client.get("/")
+        resp = client.get("/en/")
         assert "Content-Security-Policy" in resp.headers
         assert resp.headers["X-Content-Type-Options"] == "nosniff"
         assert resp.headers["X-Frame-Options"] == "SAMEORIGIN"
         assert "Permissions-Policy" in resp.headers
 
     def test_csp_contains_required_directives(self, client):
-        resp = client.get("/")
+        resp = client.get("/en/")
         csp = resp.headers["Content-Security-Policy"]
         assert "default-src 'self'" in csp
         assert "script-src" in csp
@@ -38,19 +58,19 @@ class TestDynamicIndex:
 
     def test_index_renders_experience(self, client, sample_experience):
         """Experience entries from the DB should appear on the homepage."""
-        resp = client.get("/")
+        resp = client.get("/en/")
         assert b"Data Scientist" in resp.data
         assert b"Test Corp" in resp.data
 
     def test_index_renders_project(self, client, sample_project):
         """Project entries from the DB should appear on the homepage."""
-        resp = client.get("/")
+        resp = client.get("/en/")
         assert b"Test Project" in resp.data
         assert b"Short desc" in resp.data
 
     def test_index_renders_experience_description(self, client, sample_experience):
         """Experience description field should be visible on the homepage."""
-        resp = client.get("/")
+        resp = client.get("/en/")
         assert b"Test role" in resp.data
 
     def test_index_renders_highlights_with_rich_text(self, client, app, db):
@@ -74,7 +94,7 @@ class TestDynamicIndex:
             )
             db.session.add(exp)
             db.session.commit()
-        resp = client.get("/")
+        resp = client.get("/en/")
         assert b"timeline-highlights" in resp.data
         assert b"<strong>Built ML pipeline</strong>" in resp.data
         assert b"<em>prod</em>" in resp.data
@@ -95,7 +115,7 @@ class TestDynamicIndex:
             )
             db.session.add(exp)
             db.session.commit()
-        resp = client.get("/")
+        resp = client.get("/en/")
         html = resp.data.decode()
         # Must use <ul>/<li>, not span pills
         assert '<ul class="timeline-highlights">' in html
@@ -107,11 +127,16 @@ class TestProjectDetail:
     """Tests for the project detail page."""
 
     def test_project_detail_200(self, client, sample_project):
-        resp = client.get(f"/project/{sample_project.id}")
+        resp = client.get(f"/en/project/{sample_project.id}")
         assert resp.status_code == 200
 
+    def test_legacy_project_detail_redirects(self, client, sample_project):
+        resp = client.get(f"/project/{sample_project.id}", follow_redirects=False)
+        assert resp.status_code == 301
+        assert resp.headers["Location"].endswith(f"/en/project/{sample_project.id}")
+
     def test_project_detail_404(self, client):
-        resp = client.get("/project/9999")
+        resp = client.get("/en/project/9999")
         assert resp.status_code == 404
 
 
@@ -119,7 +144,7 @@ class TestCaseStudy:
     """Tests for the case study page."""
 
     def test_case_study_404_when_no_case_study(self, client, sample_project):
-        resp = client.get(f"/case-study/{sample_project.id}")
+        resp = client.get(f"/en/case-study/{sample_project.id}")
         assert resp.status_code == 404
 
     def test_case_study_200_when_has_case_study(self, client, sample_project, db, app):
@@ -132,7 +157,7 @@ class TestCaseStudy:
             project.approach = "Test approach"
             project.results = "Test results"
             db.session.commit()
-        resp = client.get(f"/case-study/{sample_project.id}")
+        resp = client.get(f"/en/case-study/{sample_project.id}")
         assert resp.status_code == 200
 
 
@@ -140,11 +165,16 @@ class TestBlog:
     """Tests for blog pages."""
 
     def test_blog_listing_200(self, client):
-        resp = client.get("/blog")
+        resp = client.get("/en/blog")
         assert resp.status_code == 200
 
+    def test_legacy_blog_redirects(self, client):
+        resp = client.get("/blog", follow_redirects=False)
+        assert resp.status_code == 301
+        assert resp.headers["Location"].endswith("/en/blog")
+
     def test_blog_detail_200(self, client, sample_blog_post):
-        resp = client.get(f"/blog/{sample_blog_post.slug}")
+        resp = client.get(f"/en/blog/{sample_blog_post.slug}")
         assert resp.status_code == 200
 
     def test_blog_detail_404_unpublished(self, client, sample_blog_post, db, app):
@@ -152,12 +182,16 @@ class TestBlog:
             post = BlogPost.query.get(sample_blog_post.id)
             post.published = False
             db.session.commit()
-        resp = client.get(f"/blog/{sample_blog_post.slug}")
+        resp = client.get(f"/en/blog/{sample_blog_post.slug}")
         assert resp.status_code == 404
 
     def test_blog_category_filter(self, client, sample_blog_post):
-        resp = client.get("/blog?category=AI")
+        resp = client.get("/en/blog?category=AI")
         assert resp.status_code == 200
+
+    def test_invalid_locale_returns_404(self, client):
+        resp = client.get("/xx/blog")
+        assert resp.status_code == 404
 
 
 from app.models import BlogPost
@@ -179,6 +213,18 @@ class TestContact:
         assert resp.status_code == 200
         data = resp.get_json()
         assert data["success"] is True
+
+    def test_contact_success_localized_route(self, client):
+        resp = client.post(
+            "/ar/contact",
+            json={
+                "name": "Test User",
+                "email": "test@example.com",
+                "subject": "Test Subject",
+                "message": "This is a valid test message that is long enough.",
+            },
+        )
+        assert resp.status_code == 200
 
     def test_contact_missing_fields(self, client):
         resp = client.post(
@@ -241,6 +287,10 @@ class TestAPI:
         assert isinstance(data, list)
         assert len(data) >= 1
         assert data[0]["title"] == "Test Project"
+
+    def test_api_projects_localized_route(self, client, sample_project):
+        resp = client.get("/ar/api/projects")
+        assert resp.status_code == 200
 
 
 class TestSEO:

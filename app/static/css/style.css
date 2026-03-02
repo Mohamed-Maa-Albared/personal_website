@@ -230,6 +230,7 @@ strong {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: clamp(.5rem, 1.4vw, 1.5rem);
 }
 
 .nav-logo {
@@ -291,7 +292,12 @@ strong {
     list-style: none;
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: clamp(.9rem, 1.8vw, 1.7rem);
+    min-width: 0;
+}
+
+.nav-links li {
+    min-width: 0;
 }
 
 .nav-links a {
@@ -303,6 +309,7 @@ strong {
     color: var(--text-secondary);
     position: relative;
     transition: color var(--transition);
+    white-space: nowrap;
 }
 
 .nav-links a::after {
@@ -617,6 +624,11 @@ strong {
     font-weight: 700;
     line-height: 1.15;
     margin-bottom: 1rem;
+    text-wrap: balance;
+}
+
+.contact-heading {
+    max-width: 16ch;
 }
 
 .section-sub {
@@ -1555,6 +1567,177 @@ strong {
     transform: rotate(15deg);
 }
 
+/* ====================================================
+   LANGUAGE TOGGLE BUTTON
+   ==================================================== */
+.lang-switcher {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.lang-toggle {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    height: 34px;
+    min-width: 50px;
+    padding: 0 .8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .25rem;
+    cursor: pointer;
+    transition: all var(--transition);
+    color: var(--text-secondary);
+    margin-right: .5rem;
+    flex-shrink: 0;
+}
+
+.lang-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.lang-btn-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .68rem;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    line-height: 1;
+}
+
+/* Dropdown (3+ languages) */
+.lang-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 160px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    list-style: none;
+    padding: .4rem 0;
+    z-index: 1100;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, .4);
+}
+
+.lang-open .lang-dropdown {
+    display: block;
+    animation: fade-up .18s ease;
+}
+
+@keyframes fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.lang-option {
+    display: block;
+    width: 100%;
+    padding: .5rem 1rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .76rem;
+    letter-spacing: .5px;
+    text-align: left;
+    cursor: pointer;
+    transition: color var(--transition), background var(--transition);
+}
+
+.lang-option:hover,
+.lang-option[aria-selected="true"] {
+    color: var(--accent);
+    background: var(--bg-card);
+}
+
+/* ====================================================
+   LANGUAGE SWITCH PAGE TRANSITION
+   ==================================================== */
+
+/* Neuro scan overlay — synaptic sweep on language change */
+.neuro-scan-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9997;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(105deg,
+            transparent 0%,
+            rgba(124, 92, 252, .05) 20%,
+            rgba(0, 229, 255, .10) 50%,
+            rgba(124, 92, 252, .05) 80%,
+            transparent 100%);
+    transform: translateX(-110%);
+    will-change: transform, opacity;
+}
+
+.neuro-scan-overlay.active {
+    animation: neuro-scan-sweep .42s cubic-bezier(.4, 0, .2, 1) forwards;
+}
+
+@keyframes neuro-scan-sweep {
+    0% {
+        opacity: 0;
+        transform: translateX(-110%);
+    }
+
+    12% {
+        opacity: 1;
+    }
+
+    88% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(110%);
+    }
+}
+
+/* Page-enter re-animation after navigation */
+@keyframes page-enter {
+    from {
+        opacity: 0;
+        transform: translateY(6px) scale(.996);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+main {
+    animation: page-enter .35s cubic-bezier(.4, 0, .2, 1) both;
+    will-change: opacity, transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    main {
+        animation: none;
+    }
+}
+
+main.lang-switching {
+    animation: none;
+    opacity: 0;
+    transform: translateY(-6px) scale(.996);
+    transition: opacity .28s ease, transform .28s ease;
+}
+
 .theme-icon.moon {
     display: none;
 }
@@ -2346,5 +2529,325 @@ strong {
 @media (max-width: 480px) {
     .metrics-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+/* ====================================================
+   RTL LAYOUT OVERRIDES (Arabic and other RTL languages)
+   Applied via [dir="rtl"] on <html> set by Flask/i18n
+   ==================================================== */
+
+/*
+ * CRITICAL FIX: Keep scrollbar on the right in RTL mode.
+ * Setting direction: ltr on <html> prevents the browser from moving
+ * the native scrollbar to the left (which also clips position:fixed
+ * elements including the custom cursor and the nav).
+ * Content direction is restored on <body> so all layout is still RTL.
+ */
+html[dir="rtl"] {
+    direction: ltr;
+}
+
+html[dir="rtl"] body {
+    direction: rtl;
+    font-family: 'Cairo', 'Space Grotesk', sans-serif;
+}
+
+/* RTL scroll progress bar grows from right */
+html[dir="rtl"] .scroll-progress-bar {
+    left: auto;
+    right: 0;
+    background: linear-gradient(to left, var(--accent), var(--accent-cyan));
+}
+
+/* ── Global letter-spacing reset for Arabic script ─── */
+/*
+ * Arabic is a cursive script — letter-spacing breaks ligatures and
+ * makes text look like isolated letters. Zero it out on all elements
+ * that carry Latin letter-spacing by default.
+ */
+[dir="rtl"] .section-label,
+[dir="rtl"] .hero-label,
+[dir="rtl"] .loader-text,
+[dir="rtl"] .filter-btn,
+[dir="rtl"] .card-category,
+[dir="rtl"] .blog-card-category,
+[dir="rtl"] .timeline-date,
+[dir="rtl"] .lang-level,
+[dir="rtl"] .stat-label,
+[dir="rtl"] .detail-category,
+[dir="rtl"] .blog-detail-category,
+[dir="rtl"] .related-category,
+[dir="rtl"] .info-label,
+[dir="rtl"] .case-study-label,
+[dir="rtl"] .blog-read-time {
+    letter-spacing: 0;
+    font-family: 'Cairo', sans-serif;
+}
+
+/* Section labels: also switch off uppercase transform for Arabic */
+[dir="rtl"] .section-label,
+[dir="rtl"] .filter-btn,
+[dir="rtl"] .card-category,
+[dir="rtl"] .blog-card-category {
+    text-transform: none;
+}
+
+/* ── Nav ───────────────────────────────────────────── */
+[dir="rtl"] .nav-links a::after {
+    left: auto;
+    right: 0;
+}
+
+[dir="rtl"] .lang-toggle {
+    margin-right: 0;
+    margin-left: .5rem;
+}
+
+/* Slightly tighter gap so Arabic nav items fit comfortably */
+[dir="rtl"] .nav-links {
+    gap: clamp(.6rem, 1.4vw, 1.2rem);
+}
+
+[dir="rtl"] .nav-links a {
+    font-family: 'Cairo', 'Inter', sans-serif;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: .9rem;
+}
+
+[dir="rtl"] .nav-cta {
+    font-size: .82rem !important;
+    padding: .48rem 1rem;
+}
+
+[dir="rtl"] .lang-option {
+    text-align: right;
+}
+
+[dir="rtl"] .lang-dropdown {
+    right: auto;
+    left: 0;
+}
+
+/* Mobile drawer flips to left side in RTL */
+@media (max-width: 768px) {
+    [dir="rtl"] .nav-links {
+        right: auto;
+        left: -100%;
+        border-left: none;
+        border-right: 1px solid var(--border);
+        transition: left var(--transition);
+    }
+
+    [dir="rtl"] .nav-links.open {
+        left: 0;
+        right: auto;
+    }
+
+    [dir="rtl"] .lang-toggle {
+        margin-left: 0;
+    }
+}
+
+/* ── Hero ──────────────────────────────────────────── */
+[dir="rtl"] .hero-content {
+    direction: rtl;
+}
+
+/* ── Sections ──────────────────────────────────────── */
+[dir="rtl"] .section-label {
+    text-align: right;
+}
+
+[dir="rtl"] .section-heading,
+[dir="rtl"] .section-sub {
+    text-align: right;
+}
+
+[dir="rtl"] .section-sub {
+    max-width: 620px;
+}
+
+[dir="rtl"] .contact-heading {
+    font-size: clamp(1.75rem, 4.2vw, 2.9rem);
+    line-height: 1.28;
+    max-width: 20ch;
+}
+
+[dir="rtl"] .contact-heading br {
+    display: none;
+}
+
+/* ── About ─────────────────────────────────────────── */
+[dir="rtl"] .about-grid {
+    direction: rtl;
+}
+
+[dir="rtl"] .about-bio {
+    text-align: right;
+}
+
+[dir="rtl"] .about-stats {
+    text-align: right;
+}
+
+/* ── Timeline ──────────────────────────────────────── */
+/*
+ * The timeline has a left padding for the vertical line in LTR.
+ * In RTL the line should be on the right, so swap padding sides.
+ */
+[dir="rtl"] .timeline {
+    padding-left: 0;
+    padding-right: 40px;
+}
+
+[dir="rtl"] .timeline-item {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .timeline-content {
+    text-align: right;
+}
+
+[dir="rtl"] .timeline-highlights {
+    padding-left: 0;
+    padding-right: 0;
+    direction: rtl;
+}
+
+/* Bullet arrow points left (toward text) in RTL */
+[dir="rtl"] .timeline-highlights li {
+    padding-left: 0;
+    padding-right: 1.4rem;
+}
+
+[dir="rtl"] .timeline-highlights li::before {
+    content: '\25C2';
+    /* ◂ left-pointing triangle */
+    left: auto;
+    right: 0;
+}
+
+/* ── Projects grid ─────────────────────────────────── */
+[dir="rtl"] .card-content {
+    text-align: right;
+}
+
+[dir="rtl"] .card-tech {
+    direction: rtl;
+    justify-content: flex-end;
+}
+
+[dir="rtl"] .project-filters {
+    direction: rtl;
+}
+
+/* Case study link arrow points left in RTL */
+[dir="rtl"] .card-case-study-link:hover {
+    transform: translateX(-4px);
+}
+
+/* ── Skills ────────────────────────────────────────── */
+[dir="rtl"] .cluster-tags {
+    direction: rtl;
+    justify-content: flex-end;
+}
+
+[dir="rtl"] .cluster-title,
+[dir="rtl"] .languages-bar h3 {
+    text-align: right;
+}
+
+[dir="rtl"] .lang-items {
+    direction: rtl;
+}
+
+/* ── Blog ──────────────────────────────────────────── */
+[dir="rtl"] .blog-card-body {
+    text-align: right;
+}
+
+[dir="rtl"] .blog-card-footer {
+    flex-direction: row-reverse;
+}
+
+/* Read-more arrow points left in RTL */
+[dir="rtl"] .blog-read-more:hover {
+    transform: translateX(-4px);
+}
+
+[dir="rtl"] .blog-detail-content blockquote {
+    border-left: none;
+    border-right: 3px solid var(--accent);
+    border-radius: var(--radius) 0 0 var(--radius);
+    text-align: right;
+}
+
+[dir="rtl"] .blog-detail-content ul,
+[dir="rtl"] .blog-detail-content ol,
+[dir="rtl"] .cs-content ul,
+[dir="rtl"] .cs-content ol {
+    padding-left: 0;
+    padding-right: 1.5rem;
+    text-align: right;
+}
+
+/* ── Back links ────────────────────────────────────── */
+[dir="rtl"] .back-link:hover {
+    transform: none;
+}
+
+/* ── Contact form ──────────────────────────────────── */
+[dir="rtl"] .form-group label {
+    left: auto;
+    right: 0;
+    transform-origin: right top;
+}
+
+[dir="rtl"] .form-group input:focus~label,
+[dir="rtl"] .form-group input:not(:placeholder-shown)~label,
+[dir="rtl"] .form-group textarea:focus~label,
+[dir="rtl"] .form-group textarea:not(:placeholder-shown)~label {
+    right: 0;
+    left: auto;
+}
+
+[dir="rtl"] .form-group input,
+[dir="rtl"] .form-group textarea {
+    text-align: right;
+    direction: rtl;
+}
+
+[dir="rtl"] .input-line {
+    left: auto;
+    right: 0;
+    background: linear-gradient(to left, var(--accent), var(--accent-cyan));
+}
+
+/* ── Footer ────────────────────────────────────────── */
+[dir="rtl"] .footer-top {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .footer-links {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .footer-bottom {
+    text-align: right;
+}
+
+/* ── Loader ────────────────────────────────────────── */
+[dir="rtl"] .loader-text {
+    letter-spacing: 0;
+    font-family: 'Cairo', monospace;
+}
+
+/* ── Responsive RTL adjustments ───────────────────── */
+@media (max-width: 768px) {
+    [dir="rtl"] .timeline {
+        padding-right: 20px;
+        padding-left: 0;
     }
 }

@@ -1,233 +1,217 @@
 # Personal Portfolio Website
 
-Modern, immersive portfolio for **Mohamed Maa Albared** — Data Scientist at zeroG (Lufthansa Group). Built with Flask, styled with a dark neural/neuroscience aesthetic (deep navy + electric purple/cyan).
+Production Flask portfolio for Mohamed Maa Albared (Data Scientist at zeroG / Lufthansa Group), with localized public routes, admin content management, analytics, blog/case studies, and a security-hardened stack.
 
-**Live:** <https://mohamed-maa-albared-portfolio.onrender.com/>
+Live URL: https://mohamed-maa-albared-portfolio.onrender.com/
 
----
+## Documentation map
 
-## Features
+Read in this order for fastest onboarding:
 
-- **Single-page layout** — Hero, About, Impact, Timeline, Projects, Skills, Blog Preview, Contact — all on one page with smooth anchor navigation
-- **Dynamic timeline** — Experience section rendered from database (description + highlights), fully editable from admin
-- **Dynamic projects grid** — Projects rendered from database with category filters, tech tags, and case study links
-- **Blog** — Full blog system with category filtering, RSS feed, and related posts
-- **Case studies** — Deep-dive project pages with challenge/approach/results/metrics
-- **Admin dashboard** — Tabbed interface with six panels: Analytics, Site Content, Projects, Experience, Blog Posts, Messages
-- **Visitor analytics** — Lightweight page-view tracking with top pages, referrers, locales, and unique visitor counts
-- **Editable site content** — Hero text, about bio, impact numbers, and more — all editable from the admin dashboard without code changes
-- **Rich text editing** — WYSIWYG toolbar with HTML toggle for blog posts and case studies
-- **Admin tab persistence** — Cancel/back links and post-save redirects return to the correct tab
-- **Dark / light mode** — Toggle with `localStorage` persistence, CSS variable theming
-- **Neural canvas** — Animated particle network in the hero section (80 nodes, mouse-reactive)
-- **GSAP animations** — Hero parallax fade, timeline marker dot scaling via ScrollTrigger
-- **Custom cursor** — Dot + ring, visible in both themes (purple / dark navy)
-- **SEO** — Sitemap, robots.txt, Open Graph tags, RSS feed
-- **Security hardened** — CSP, CSRF, rate limiting, input sanitisation, session expiry, custom error pages
-- **Automated backups** — GitHub Actions workflow for daily DB backup
+1. README.md (this file) — full project overview and contributor workflow
+2. MAINTAINER_GUIDE.md — operational deep-dive and exact change playbooks
+3. AGENTS.md — AI-agent guardrails and security non-negotiables
+4. AGENT_MEMORY.md — latest implementation delta from previous session
+5. RTL_VISUAL_SMOKE_CHECKLIST.md — manual QA checklist for Arabic/RTL UX
+6. ROADMAP.md — forward-looking backlog only
 
-## Tech Stack
+## What this project includes
 
-| Layer      | Technology                                                |
-| ---------- | --------------------------------------------------------- |
-| Backend    | Flask 3.0.0, Flask-SQLAlchemy 3.1.1                       |
-| Security   | Flask-WTF 1.2.1 (CSRF), Flask-Limiter 3.5.0, bleach 6.1.0 |
-| WSGI       | gunicorn 21.2.0                                           |
-| Database   | SQLite (dev), PostgreSQL (prod)                           |
-| Frontend   | Vanilla HTML / CSS / JS (no frameworks)                   |
-| Animation  | GSAP 3.12.2 + ScrollTrigger (CDN)                         |
-| Fonts      | Google Fonts — Space Grotesk, Inter, JetBrains Mono       |
-| Deployment | Render (free tier)                                        |
-| Python     | 3.11.x                                                    |
+- Locale-aware public site with canonical routes under /en/* and /ar/*
+- Legacy URL redirects to canonical English routes for consistency
+- Single-page public homepage (hero, about, impact, timeline, projects, skills, blog preview, contact)
+- Blog system with listing, detail pages, category filters, RSS feed
+- Case-study pages per project
+- Session-protected admin dashboard with CRUD for key content entities
+- Privacy-safe visitor analytics (HMAC-hashed IP, no raw IP storage)
+- Contact endpoint with honeypot + validation + rate-limiting
+- Security headers, CSP, CSRF protection, upload hardening
+- Daily automated PostgreSQL backup to repository backups folder
 
-## Project Structure
+## Technology stack
 
-```
-personal_website/
-├── app/
-│   ├── __init__.py              # App factory, extensions, security headers, error handlers, visitor tracking
-│   ├── models.py                # SQLAlchemy models: Project, Experience, Message, BlogPost, SiteConfig, PageVisit, ImpactCard, SkillCluster, LanguageItem
-│   ├── routes.py                # Public routes: index, blog, case_study, sitemap, robots, rss, contact, api
-│   ├── admin.py                 # Admin blueprint: CRUD, analytics dashboard, email diagnostics, site config editor
-│   ├── utils.py                 # Shared helpers: sanitize_input, sanitize_html, validate_email, safe_int, generate_slug
-│   ├── templates/
-│   │   ├── base.html            # Base layout (CDN libs, theme toggle, nav, scroll bar)
-│   │   ├── index.html           # Dynamic single-page: Jinja2 loops for experiences & projects + blog preview
-│   │   ├── project_detail.html  # Individual project page
-│   │   ├── blog.html            # Blog listing with category filtering
-│   │   ├── blog_detail.html     # Individual blog post (OG tags, author card, related posts)
-│   │   ├── case_study.html      # Deep-dive case study (challenge / approach / results / metrics)
-│   │   ├── sitemap.xml          # SEO sitemap template
-│   │   ├── feed.xml             # RSS feed template
-│   │   ├── errors/              # Custom error pages (400, 404, 429, 500)
-│   │   └── admin/
-│   │       ├── base.html        # Admin layout
-│   │       ├── login.html       # Admin login
-│   │       ├── dashboard.html   # Admin dashboard (6 tabs: Analytics, Site Content, Projects, Experience, Blog, Messages)
-│   │       ├── project_form.html
-│   │       ├── experience_form.html
-│   │       ├── blog_form.html
-│   │       ├── case_study_form.html
-│   │       └── message_detail.html
-│   └── static/
-│       ├── css/style.css        # All styles (~2319 lines, dark + light themes)
-│       ├── js/main.js           # Neural canvas, GSAP, cursor, reveals, contact AJAX (~403 lines)
-│       ├── js/admin.js          # Rich text + HTML toggle, image upload, Chart.js (~480 lines)
-│       └── images/              # logo.png, profile.png
-├── .github/workflows/backup.yml # Daily automated DB backup to GitHub
-├── config.py                    # Dev / Prod / Test configs with production enforcement
-├── run.py                       # Entry point (default port 5001)
-├── seed.py                      # Seeds DB with experiences, projects, blog posts, site config, impact cards, skill clusters, languages
-├── render.yaml                  # Render deployment config
-├── requirements.txt             # Python dependencies
-├── requirements-dev.txt         # Dev/test dependencies (pytest, black, flake8)
-├── .env.example                 # Environment variable template
-├── AGENTS.md                    # AI agent instructions
-└── ROADMAP.md                   # Roadmap with status tracking
-```
+- Backend: Flask 3.0.0
+- ORM: Flask-SQLAlchemy 3.1.1
+- Security: Flask-WTF, Flask-Limiter, bleach
+- Frontend: Jinja2 templates + vanilla JS + custom CSS
+- Animation: GSAP + ScrollTrigger
+- WSGI: gunicorn
+- Image validation: Pillow
+- Database:
+  - Development: SQLite
+  - Production: PostgreSQL on Render
 
-## Setup
+## Project structure
 
-```bash
-# Clone & enter
-cd personal_website
+- app/__init__.py: app factory, headers/CSP, error handlers, analytics tracking, Jinja globals
+- app/routes.py: public routes, locale-aware routing, SEO endpoints, contact/API endpoints
+- app/admin.py: admin auth + dashboard + CRUD + diagnostics + upload endpoints
+- app/i18n.py: locale resolution, translation loading/caching, fallback, switch URL generation
+- app/models.py: SQLAlchemy models
+- app/utils.py: shared sanitization/validation/email helpers
+- app/templates/: Jinja templates for public/admin pages
+- app/static/css/style.css: global styles and RTL behavior
+- app/static/js/main.js: public interactions
+- app/static/js/i18n.js: route-based locale switch transition
+- app/static/js/translations/: locale dictionaries
+- tests/: route, admin, utility, and i18n tests
+- .github/workflows/backup.yml: automated DB backup workflow
+- backups/: committed SQL backup artifacts generated by workflow
 
-# Virtual environment
-python -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
+## Routing model
 
-# Dependencies
-pip install -r requirements.txt
+Public canonical routes:
 
-# Environment
-cp .env.example .env            # Edit with your values
+- /en/
+- /ar/
+- /<locale>/blog
+- /<locale>/blog/<slug>
+- /<locale>/project/<id>
+- /<locale>/case-study/<id>
+- /<locale>/privacy
+- /contact and /<locale>/contact (POST)
+- /api/projects and /<locale>/api/projects (GET)
+- /sitemap.xml, /robots.txt, /feed.xml
 
-# Seed database
-python seed.py
+Legacy routes such as /, /blog, /project/<id> redirect to /en/* equivalents.
 
-# Run
-python run.py                   # → http://localhost:5001
-```
+## Local development
 
-## Environment Variables
+### Prerequisites
 
-| Variable         | Required   | Description                                 |
-| ---------------- | ---------- | ------------------------------------------- |
-| `FLASK_ENV`      | Yes        | `development` or `production`               |
-| `SECRET_KEY`     | Yes (prod) | Random 32+ char string for session signing  |
-| `DATABASE_URL`   | No         | Defaults to `sqlite:///personal_website.db` |
-| `ADMIN_PASSWORD` | Yes        | Password for `/admin` login                 |
+- Python 3.11+
+- Virtual environment tooling
+- Optional: PostgreSQL client (for manual pg_dump usage)
 
-> **Production enforcement:** The app refuses to start in production if `SECRET_KEY` or `ADMIN_PASSWORD` are missing or set to defaults.
+### Setup
 
-## Routes
+1. Create and activate virtualenv:
+   - python -m venv venv
+   - source venv/bin/activate
+2. Install dependencies:
+   - pip install -r requirements.txt
+3. Configure environment:
+   - cp .env.example .env
+   - set SECRET_KEY and ADMIN_PASSWORD
+4. Seed local data:
+   - python seed.py
+5. Run app:
+   - python run.py
+6. Open:
+   - http://localhost:5001/en/
 
-### Public
+### Running tests
 
-| Route              | Method | Description                             |
-| ------------------ | ------ | --------------------------------------- |
-| `/`                | GET    | Single-page index                       |
-| `/project/<id>`    | GET    | Project detail page                     |
-| `/case-study/<id>` | GET    | Deep-dive case study                    |
-| `/blog`            | GET    | Blog listing (`?category=` filter)      |
-| `/blog/<slug>`     | GET    | Individual blog post                    |
-| `/contact`         | POST   | Contact form (JSON, rate-limited 3/min) |
-| `/api/projects`    | GET    | JSON API for projects                   |
-| `/sitemap.xml`     | GET    | Auto-generated XML sitemap              |
-| `/robots.txt`      | GET    | SEO robots file                         |
-| `/feed.xml`        | GET    | RSS feed for blog posts                 |
+- Full suite: python -m pytest tests/ -q
+- Current baseline: 105 passing tests
 
-### Admin (session-authenticated)
+## Environment variables
 
-| Route                              | Method   | Description                 |
-| ---------------------------------- | -------- | --------------------------- |
-| `/admin/login`                     | GET/POST | Login (rate-limited 5/min)  |
-| `/admin/`                          | GET      | Dashboard (tabbed)          |
-| `/admin/site-config`               | POST     | Update site content         |
-| `/admin/project/new\|<id>/edit`    | GET/POST | Project CRUD                |
-| `/admin/experience/new\|<id>/edit` | GET/POST | Experience CRUD             |
-| `/admin/blog/new\|<id>/edit`       | GET/POST | Blog post CRUD              |
-| `/admin/project/<id>/case-study`   | GET/POST | Case study editor (WYSIWYG) |
-| `/admin/message/<id>`              | GET      | View contact message        |
+Minimum required:
 
-## Database Models
+- FLASK_ENV
+- SECRET_KEY
+- ADMIN_PASSWORD
 
-### Project
-`title`, `description`, `short_description`, `image_url`, `demo_url`, `github_url`, `technologies` (comma-sep), `category`, `year`, `client`, `featured`, `sort_order`, `case_study`, `metrics` (JSON), `challenge`, `approach`, `results`, `has_case_study`
+Optional but important in production:
 
-### Experience
-`role`, `company`, `location`, `date_range`, `description`, `highlights` (JSON), `sort_order`
+- DATABASE_URL
+- RESEND_API_KEY
+- RESEND_FROM
+- NOTIFICATION_EMAIL
+- MAIL_SERVER / MAIL_PORT / MAIL_USERNAME / MAIL_PASSWORD
 
-### Message
-`name`, `email`, `subject`, `message`, `is_read`, `created_at`
+See .env.example for complete template.
 
-### BlogPost
-`title`, `slug` (unique), `excerpt`, `content` (HTML), `cover_image`, `category`, `tags` (comma-sep), `read_time`, `published`, `featured`, `created_at`, `updated_at`, `sort_order`
+## Security model (must preserve)
 
-### SiteConfig
-`key` (unique, indexed), `value`, `label`, `group` — Key-value store for editable homepage content (hero, about, impact). Static helpers: `get(key)`, `set(key, value)`, `get_group(group)`
+When changing features, do not weaken these controls:
 
-### PageVisit
-`path`, `referrer`, `user_agent`, `ip_hash` (SHA-256, no raw IPs), `country` (from Accept-Language), `visited_at` (indexed) — Lightweight visitor analytics
+- CSP and security headers in app/__init__.py
+- CSRF behavior for forms/endpoints
+- Rate-limits for abuse-prone endpoints
+- Input sanitization using sanitize_input / sanitize_html
+- Timing-safe password checks in admin authentication
+- Upload hardening rules (extension + MIME + content checks)
+- Session hardening and production enforcement in config.py
 
-### ImpactCard
-`icon`, `value`, `prefix`, `suffix`, `description`, `sort_order` — Dynamic impact metrics on homepage
+## Where to change what (quick map)
 
-### SkillCluster
-`icon`, `title`, `tags` (comma-sep), `sort_order` — Skill categories on homepage
+### Add a public UI section or content block
 
-### LanguageItem
-`name`, `level`, `sort_order` — Spoken languages on homepage
+- Template: app/templates/index.html
+- Styles: app/static/css/style.css
+- Interactions: app/static/js/main.js
+- Translation keys: app/static/js/translations/en.json and ar.json
+- Tests: tests/test_routes.py and tests/test_i18n.py if localization involved
 
-## Security
+### Add a new public endpoint
 
-| Measure                | Detail                                                                          |
-| ---------------------- | ------------------------------------------------------------------------------- |
-| CSRF Protection        | `CSRFProtect()` on all forms; `/contact` exempt (JSON + honeypot)               |
-| Rate Limiting          | Global 200/min; login 5/min; contact 3/min                                      |
-| Input Sanitisation     | `sanitize_input()` strips all HTML; `sanitize_html()` allowlists safe tags      |
-| Password Comparison    | `hmac.compare_digest()` (timing-safe)                                           |
-| CSP                    | Strict Content-Security-Policy header                                           |
-| Security Headers       | X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy    |
-| HSTS                   | Enabled in production (`max-age=31536000; includeSubDomains`)                   |
-| Session Hardening      | HttpOnly, SameSite=Lax, Secure (prod), 2-hour expiry                            |
-| Custom Error Pages     | 400, 404, 429, 500 — no Flask internals leaked                                  |
-| Production Enforcement | App refuses to start with default `SECRET_KEY` or `ADMIN_PASSWORD`              |
-| Structured Logging     | Security events (login attempts, contact submissions) logged with context       |
-| Privacy-safe Analytics | Visitor IPs are HMAC-SHA256 hashed with SECRET_KEY — no raw IP addresses stored |
+- Route/controller: app/routes.py
+- Template: app/templates/* as needed
+- Security review: CSRF, rate-limit, sanitize, validate
+- Tests: tests/test_routes.py
+
+### Add or modify admin CRUD flow
+
+- Endpoint/controller: app/admin.py
+- Template: app/templates/admin/*
+- Validation/sanitization: app/utils.py
+- Tests: tests/test_admin.py
+
+### Add a new translatable label
+
+- Use server-side t(key) in templates
+- Add key in en.json and ar.json (same key set)
+- Run i18n tests to verify parity
+
+### Add model fields or entities
+
+- Update app/models.py
+- Update seed.py and relevant admin forms/routes
+- Add migration strategy if needed (manual for current setup)
+- Update tests touching model behavior
+
+## Backup and export operations
+
+Automated export is in .github/workflows/backup.yml:
+
+- Schedule: daily at 02:00 UTC
+- Uses: pg_dump (PostgreSQL client 18)
+- Requires secret: DATABASE_URL
+- Output files: backups/portfolio_<timestamp>.sql
+- Retention: keeps latest 7 backups
+
+Manual local export example:
+
+- mkdir -p backups
+- pg_dump "$DATABASE_URL" --no-owner --no-acl -f "backups/portfolio_$(date -u +%Y%m%d_%H%M%S).sql"
 
 ## Deployment
 
-Deployed on [Render](https://render.com) — see `render.yaml`:
+Configured for Render via render.yaml:
 
-- **Build:** `pip install -r requirements.txt && python seed.py`
-- **Start:** `gunicorn run:app --bind 0.0.0.0:$PORT --workers 2`
-- Auto-deploys on `git push origin main`
+- Build: pip install -r requirements.txt && python seed.py
+- Start: gunicorn run:app --bind 0.0.0.0:$PORT --workers 2
+- Database URL wired from Render managed PostgreSQL
 
+## Contribution and maintenance workflow
 
-## Testing
+For each change:
 
-```bash
-python -c "
-from app import create_app
-app = create_app('development')
-with app.test_client() as c:
-    routes = [
-        ('Index', '/'),
-        ('Admin login', '/admin/login'),
-        ('Blog', '/blog'),
-        ('Sitemap', '/sitemap.xml'),
-        ('Robots', '/robots.txt'),
-        ('RSS', '/feed.xml'),
-        ('404 page', '/nonexistent'),
-    ]
-    for name, path in routes:
-        r = c.get(path)
-        status = '✓' if r.status_code in (200, 302, 404) else '✗'
-        print(f'  {status} {name}: {r.status_code}')
-"
-```
+1. Identify affected layers (route/template/js/css/model/tests/docs)
+2. Implement minimal focused changes
+3. Preserve security guardrails
+4. Update tests near changed behavior
+5. Run python -m pytest tests/ -q
+6. Update documentation if behavior, routes, env, or ops changed:
+   - README.md (high-level)
+   - MAINTAINER_GUIDE.md (operational details)
+   - AGENT_MEMORY.md (short handoff delta)
 
-## License
+## Additional references
 
-MIT License — feel free to use this as a starting point for your own portfolio.
+- MAINTAINER_GUIDE.md for deep maintenance and docs ownership policy
+- AGENTS.md for strict implementation constraints
+- RTL_VISUAL_SMOKE_CHECKLIST.md for Arabic visual verification
+- ROADMAP.md for future milestones

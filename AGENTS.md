@@ -1,6 +1,6 @@
 # AGENTS.md — AI Agent Instructions for personal_website
 
-> Last updated: 2026-02-24
+> Last updated: 2026-03-02
 
 ## Project Overview
 
@@ -8,6 +8,18 @@ Personal portfolio website for **Mohamed Maa Albared**, Data Scientist at zeroG 
 
 **Live URL:** `https://mohamed-maa-albared-portfolio.onrender.com/`
 **Repo:** `https://github.com/Mohamed-Maa-Albared/personal_website`
+
+Primary maintenance reference: `MAINTAINER_GUIDE.md`
+
+## Documentation sync rule
+
+For any substantial feature/security/routing change, update docs in this order:
+
+1. `README.md` (high-level behavior/setup if impacted)
+2. `MAINTAINER_GUIDE.md` (file-map/process/ops details)
+3. `AGENT_MEMORY.md` (short latest-session delta)
+
+Keep `ROADMAP.md` forward-looking only.
 
 ---
 
@@ -40,10 +52,11 @@ personal_website/
 │   ├── __init__.py              # App factory, extensions, security headers, CSP, error handlers, visitor tracking
 │   ├── models.py                # SQLAlchemy models: Project, Experience, Message, BlogPost, SiteConfig, PageVisit, ImpactCard, SkillCluster, LanguageItem
 │   ├── routes.py                # Public routes: index, blog, case_study, sitemap, robots, rss, contact, api
+│   ├── i18n.py                  # Locale registry/resolution, cached translations, fallback, locale switch URL helper
 │   ├── admin.py                 # Admin blueprint: CRUD, analytics dashboard, email diagnostics, site config, login lockout
 │   ├── utils.py                 # Shared helpers: sanitize, validate, email notifications (with diagnostics), locale/UA parsing, generate_slug
 │   ├── templates/
-│   │   ├── base.html            # Base layout (CDN libs, dark/light toggle, scroll progress bar, nav)
+│   ├── base.html            # Base layout (CDN libs, dark/light toggle, scroll progress bar, neuro-scan overlay, hreflang, nav)
 │   │   ├── index.html           # Single-page: Hero, About, Impact, Timeline (dynamic), Projects (dynamic), Skills, Blog Preview, Contact
 │   │   ├── project_detail.html  # Individual project detail page
 │   │   ├── blog.html            # Blog listing with category filtering
@@ -66,7 +79,9 @@ personal_website/
 │       ├── css/style.css        # ~2319 lines, dark/light themes, blog, case study, skeleton screens
 │       ├── js/
 │       │   ├── main.js          # ~403 lines: neural canvas, GSAP parallax, dark mode, ripples
-│       │   └── admin.js         # ~480 lines: rich text toolbar + HTML toggle, image upload, Chart.js init
+│       │   ├── i18n.js          # Route-based language switch transition
+│       │   ├── admin.js         # ~480 lines: rich text toolbar + HTML toggle, image upload, Chart.js init
+│       │   └── translations/    # en/ar locale dictionaries
 │       ├── images/
 │       │   ├── logo.png         # Site logo
 │       │   └── profile.png      # Profile photo
@@ -87,7 +102,9 @@ personal_website/
 ├── render.yaml                  # Render deployment config
 ├── .env.example                 # Environment variable template
 ├── .gitignore                   # Ignores .env, *.db, venv/, Achievements.md, etc.
-├── ROADMAP.md                   # Roadmap with status tracking
+├── MAINTAINER_GUIDE.md          # Canonical maintenance and architecture guide
+├── AGENT_MEMORY.md              # Short-lived handoff notes for next agent
+├── ROADMAP.md                   # Product roadmap (forward-looking only)
 └── AGENTS.md                    # This file
 ```
 
@@ -115,14 +132,16 @@ personal_website/
 - **LanguageItem**: name, level, sort_order — Spoken languages on homepage
 
 ### Routing
-- `/` — Single-page index (loads projects, experiences, latest 3 blog posts from DB)
-- `/project/<int:id>` — Project detail page
-- `/blog` — Blog listing with optional `?category=` filter
-- `/blog/<slug>` — Individual blog post with related articles
-- `/case-study/<int:id>` — Deep-dive case study page (404 if project has no case study)
-- `/contact` (POST, JSON) — Contact form submission (CSRF-exempt, rate-limited 3/min)
-- `/privacy` — Privacy policy page
-- `/api/projects` (GET) — JSON API for projects
+- Canonical public routes are locale-prefixed: `/en/...`, `/ar/...`
+- Legacy unprefixed public routes (e.g. `/`, `/blog`, `/project/<id>`) redirect to `/en/...`
+- `/<locale>/` — Single-page index (loads projects, experiences, latest 3 blog posts)
+- `/<locale>/project/<int:id>` — Project detail page
+- `/<locale>/blog` — Blog listing with optional `?category=` filter
+- `/<locale>/blog/<slug>` — Individual blog post with related articles
+- `/<locale>/case-study/<int:id>` — Deep-dive case study page (404 if project has no case study)
+- `/contact` and `/<locale>/contact` (POST, JSON) — Contact form submission (CSRF-exempt, rate-limited 3/min)
+- `/<locale>/privacy` — Privacy policy page
+- `/api/projects` and `/<locale>/api/projects` (GET) — JSON API for projects
 - `/sitemap.xml` — Auto-generated XML sitemap
 - `/robots.txt` — SEO robots file (disallows `/admin/`)
 - `/feed.xml` — RSS feed for blog posts
@@ -302,7 +321,7 @@ flask shell
 
 ## Testing
 
-85 pytest tests covering routes, admin CRUD, security, and utility functions.
+134 pytest tests covering routes, i18n, admin CRUD, security, utility functions, RTL rendering, and SEO localization.
 
 ```bash
 # Install dev dependencies

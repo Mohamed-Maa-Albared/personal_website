@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ current_locale }}" dir="{{ locale_dir }}">
 
 <head>
     <meta charset="UTF-8">
@@ -15,15 +15,15 @@
     <link rel="canonical" href="{% block canonical_url %}{{ request.url }}{% endblock %}">
     <!-- Open Graph -->
     <meta property="og:title"
-        content="{% block og_title %}Mohamed Maa Albared — Data Scientist & AI Engineer{% endblock %}">
+        content="{% block og_title %}{% if current_locale == 'ar' %}محمد ماء البارد — عالم بيانات ومهندس ذكاء اصطناعي{% else %}Mohamed Maa Albared — Data Scientist & AI Engineer{% endif %}{% endblock %}">
     <meta property="og:description"
-        content="{% block og_description %}Data Scientist & AI Engineer specializing in Generative AI, Recommendation Systems, and Autonomous Agents at zeroG (Lufthansa Group).{% endblock %}">
+        content="{% block og_description %}{% if current_locale == 'ar' %}عالم بيانات ومهندس ذكاء اصطناعي متخصص في الذكاء التوليدي وأنظمة التوصية والوكلاء المستقلين لدى zeroG مجموعة لوفتهانزا.{% else %}Data Scientist & AI Engineer specializing in Generative AI, Recommendation Systems, and Autonomous Agents at zeroG (Lufthansa Group).{% endif %}{% endblock %}">
     <meta property="og:type" content="{% block og_type %}website{% endblock %}">
     <meta property="og:url" content="{% block og_url %}{{ request.url }}{% endblock %}">
     <meta property="og:image"
         content="{% block og_image %}{{ url_for('static', filename='images/profile.png', _external=True) }}{% endblock %}">
     <meta property="og:site_name" content="Mohamed Maa Albared">
-    <meta property="og:locale" content="en_US">
+    <meta property="og:locale" content="{{ og_locale }}">
     <!-- Twitter Card -->
     <meta name="twitter:card" content="{% block twitter_card %}summary_large_image{% endblock %}">
     <meta name="twitter:title"
@@ -33,24 +33,33 @@
     <meta name="twitter:image"
         content="{% block twitter_image %}{{ url_for('static', filename='images/profile.png', _external=True) }}{% endblock %}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
-    <link rel="alternate" type="application/rss+xml" title="Blog RSS" href="{{ url_for('main.rss_feed') }}">
-    <title>{% block title %}Mohamed Maa Albared — Data Scientist & AI Engineer | Portfolio{% endblock %}</title>
+    <link rel="alternate" type="application/rss+xml" title="Blog RSS"
+        href="{{ url_for('main.rss_feed', _external=True) }}">
+    <!-- hreflang: helps search engines serve the right language version (must be absolute per Google spec) -->
+    <link rel="alternate" hreflang="en"
+        href="{{ (request.host_url.rstrip('/') + switch_locale_url) if current_locale == 'ar' else request.url }}">
+    <link rel="alternate" hreflang="ar"
+        href="{{ (request.host_url.rstrip('/') + switch_locale_url) if current_locale == 'en' else request.url }}">
+    <link rel="alternate" hreflang="x-default"
+        href="{{ (request.host_url.rstrip('/') + switch_locale_url) if current_locale == 'ar' else request.url }}">
+    <title>{% block title %}{% if current_locale == 'ar' %}محمد ماء البارد — عالم بيانات ومهندس ذكاء اصطناعي | موقع
+        شخصي{% else %}Mohamed Maa Albared — Data Scientist & AI Engineer | Portfolio{% endif %}{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='20260302') }}">
     {% block extra_css %}{% endblock %}
 </head>
 
-<body>
+<body data-current-locale="{{ current_locale }}">
     <!-- Loading Screen -->
     <div id="loader" class="loader">
         <div class="loader-inner">
             <img src="{{ url_for('static', filename='images/logo.png') }}" alt="" class="logo-loader">
             <div class="neural-pulse"></div>
-            <span class="loader-text">INITIALIZING</span>
+            <span class="loader-text">{{ t('loader.text') }}</span>
         </div>
     </div>
 
@@ -61,18 +70,30 @@
     <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <a href="/" class="nav-logo">
+            <a href="{{ url_for('main.index') }}" class="nav-logo">
                 <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Mohamed Maa Albared"
                     class="logo-img">
             </a>
             <ul class="nav-links" id="navLinks">
-                <li><a href="/#about" data-section="about">About</a></li>
-                <li><a href="/#experience" data-section="experience">Experience</a></li>
-                <li><a href="/#projects" data-section="projects">Projects</a></li>
-                <li><a href="/blog">Blog</a></li>
-                <li><a href="/#skills" data-section="skills">Skills</a></li>
-                <li><a href="/#contact" data-section="contact" class="nav-cta">Get in Touch</a></li>
+                <li><a href="{{ url_for('main.index') }}#about" data-section="about">{{ t('nav.about') }}</a>
+                </li>
+                <li><a href="{{ url_for('main.index') }}#experience" data-section="experience">{{ t('nav.experience')
+                        }}</a></li>
+                <li><a href="{{ url_for('main.index') }}#projects" data-section="projects">{{ t('nav.projects') }}</a>
+                </li>
+                <li><a href="{{ url_for('main.blog') }}">{{ t('nav.blog') }}</a></li>
+                <li><a href="{{ url_for('main.index') }}#skills" data-section="skills">{{ t('nav.skills') }}</a>
+                </li>
+                <li><a href="{{ url_for('main.index') }}#contact" data-section="contact" class="nav-cta">{{ t('nav.cta')
+                        }}</a></li>
             </ul>
+            <!-- Language toggle -->
+            <div class="lang-switcher" id="langSwitcher">
+                <button class="lang-toggle" id="langToggle" data-switch-url="{{ switch_locale_url }}"
+                    aria-label="{{ t('lang.aria') }}" title="{{ t('lang.aria') }}">
+                    <span class="lang-btn-label">{{ alternate_locale_label }}</span>
+                </button>
+            </div>
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode" title="Toggle theme">
                 <svg class="theme-icon sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2">
@@ -102,6 +123,9 @@
     <!-- Scroll progress bar -->
     <div class="scroll-progress-bar" id="scrollProgressBar"></div>
 
+    <!-- Neuro scan overlay for language-switch transition -->
+    <div class="neuro-scan-overlay" id="neuroScanOverlay" aria-hidden="true"></div>
+
     <main>
         {% block content %}{% endblock %}
     </main>
@@ -113,7 +137,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"
         integrity="sha384-poC0r6usQOX2Ayt/VGA+t81H6V3iN9L+Irz9iO8o+s0X20tLpzc9DOOtnKxhaQSE"
         crossorigin="anonymous"></script>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!-- ARIA live region for language change announcements -->
+    <div id="lang-announcer" aria-live="polite" aria-atomic="true"
+        style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap"></div>
+    <script src="{{ url_for('static', filename='js/main.js', v='20260302') }}"></script>
+    <script src="{{ url_for('static', filename='js/i18n.js', v='20260302') }}"></script>
     {% block extra_js %}{% endblock %}
     {% block structured_data %}{% endblock %}
 </body>

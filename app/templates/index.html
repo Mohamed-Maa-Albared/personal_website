@@ -13,11 +13,16 @@
       "@id": "{{ url_for('main.index', _external=True) }}#website",
       "url": "{{ url_for('main.index', _external=True) }}",
       "name": "Mohamed Maa Albared",
-      "description": "Personal portfolio of Mohamed Maa Albared — Data Scientist & AI Engineer at zeroG (Lufthansa Group)",
+      "description": "{% if current_locale == 'ar' %}الموقع الشخصي لمحمد ماء البارد — عالم بيانات ومهندس ذكاء اصطناعي لدى zeroG (مجموعة لوفتهانزا){% else %}Personal portfolio of Mohamed Maa Albared — Data Scientist & AI Engineer at zeroG (Lufthansa Group){% endif %}",
       "publisher": {
         "@id": "{{ url_for('main.index', _external=True) }}#person"
       },
-      "inLanguage": "en-US"
+      "inLanguage": "{{ og_locale }}",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ url_for('main.blog', _external=True) }}?category={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
     },
     {
       "@type": "Person",
@@ -25,7 +30,7 @@
       "name": "Mohamed Maa Albared",
       "url": "{{ url_for('main.index', _external=True) }}",
       "image": "{{ url_for('static', filename='images/profile.png', _external=True) }}",
-      "jobTitle": "Data Scientist",
+      "jobTitle": "{% if current_locale == 'ar' %}عالم بيانات{% else %}Data Scientist{% endif %}",
       "worksFor": {
         "@type": "Organization",
         "name": "zeroG",
@@ -34,7 +39,7 @@
           "name": "Lufthansa Group"
         }
       },
-      "description": "Data Scientist & AI Engineer specializing in Generative AI, Recommendation Systems, LLM Orchestration, and Autonomous Agents.",
+      "description": "{% if current_locale == 'ar' %}عالم بيانات ومهندس ذكاء اصطناعي متخصص في الذكاء التوليدي وأنظمة التوصية وتنسيق نماذج اللغة الكبيرة والوكلاء المستقلين.{% else %}Data Scientist & AI Engineer specializing in Generative AI, Recommendation Systems, LLM Orchestration, and Autonomous Agents.{% endif %}",
       "knowsAbout": ["Machine Learning", "Generative AI", "Large Language Models", "Recommendation Systems", "Natural Language Processing", "Computer Vision", "Deep Learning", "Reinforcement Learning", "Autonomous Agents", "Data Science"],
       "sameAs": [
         "https://de.linkedin.com/in/mohamed-maa-albared-4763981b2",
@@ -45,17 +50,17 @@
     },
     {
       "@type": "WebPage",
-      "@id": "{{ url_for('main.index', _external=True) }}",
-      "url": "{{ url_for('main.index', _external=True) }}",
-      "name": "Mohamed Maa Albared — Data Scientist & AI Engineer | Portfolio",
+      "@id": "{{ request.url }}",
+      "url": "{{ request.url }}",
+      "name": "{% if current_locale == 'ar' %}محمد ماء البارد — عالم بيانات ومهندس ذكاء اصطناعي | موقع شخصي{% else %}Mohamed Maa Albared — Data Scientist & AI Engineer | Portfolio{% endif %}",
       "isPartOf": {
         "@id": "{{ url_for('main.index', _external=True) }}#website"
       },
       "about": {
         "@id": "{{ url_for('main.index', _external=True) }}#person"
       },
-      "description": "Personal portfolio of Mohamed Maa Albared — Data Scientist & AI Engineer at zeroG (Lufthansa Group). Specializing in Generative AI, Recommendation Systems, and Autonomous Agents.",
-      "inLanguage": "en-US"
+      "description": "{% if current_locale == 'ar' %}الموقع الشخصي لمحمد ماء البارد — عالم بيانات ومهندس ذكاء اصطناعي لدى zeroG (مجموعة لوفتهانزا).{% else %}Personal portfolio of Mohamed Maa Albared — Data Scientist & AI Engineer at zeroG (Lufthansa Group). Specializing in Generative AI, Recommendation Systems, and Autonomous Agents.{% endif %}",
+      "inLanguage": "{{ og_locale }}"
     }
   ]
 }
@@ -82,25 +87,25 @@
             collaborate, and act.') }}
         </p>
         <div class="hero-cta reveal-up" style="--delay:.75s">
-            <a href="#projects" class="btn-glow">Explore My Work</a>
-            <a href="#contact" class="btn-ghost">Say Hello</a>
+            <a href="#projects" class="btn-glow">{{ t('hero.cta1') }}</a>
+            <a href="#contact" class="btn-ghost">{{ t('hero.cta2') }}</a>
         </div>
     </div>
     <div class="scroll-indicator">
         <div class="scroll-line"></div>
-        <span>SCROLL</span>
+        <span>{{ t('hero.scroll') }}</span>
     </div>
 </section>
 
 <!-- ============ ABOUT ============ -->
 <section class="section about-section" id="about">
     <div class="container">
-        <div class="section-label reveal-up">01 — ABOUT</div>
+        <div class="section-label reveal-up">{{ t('section.about') }}</div>
         <div class="about-grid">
             <div class="about-text">
                 <h2 class="section-heading reveal-up">
-                    The mind behind<br>
-                    <span class="accent">the machine</span>
+                    <span>{{ t('about.heading1') }}</span><br>
+                    <span class="accent">{{ t('about.heading2') }}</span>
                 </h2>
                 <p class="about-bio reveal-up">
                     {{ cfg.get('about_bio1', 'Data Scientist with <strong>4+ years of
@@ -131,17 +136,17 @@
                     <div class="stat-item reveal-up">
                         <span class="stat-number" data-count="{{ cfg.get('about_years', '4') }}">0</span><span
                             class="stat-suffix">+</span>
-                        <span class="stat-label">Years Experience</span>
+                        <span class="stat-label">{{ t('about.stat.years') }}</span>
                     </div>
                     <div class="stat-item reveal-up">
                         <span class="stat-number" data-count="{{ cfg.get('about_projects_count', '10') }}">0</span><span
                             class="stat-suffix">+</span>
-                        <span class="stat-label">AI Projects Delivered</span>
+                        <span class="stat-label">{{ t('about.stat.projects') }}</span>
                     </div>
                     <div class="stat-item reveal-up">
                         <span class="stat-number" data-count="{{ cfg.get('about_perf_gains', '20') }}">0</span><span
                             class="stat-suffix">x</span>
-                        <span class="stat-label">Performance Gains</span>
+                        <span class="stat-label">{{ t('about.stat.perf') }}</span>
                     </div>
                 </div>
             </div>
@@ -169,8 +174,9 @@
 <!-- ============ EXPERIENCE ============ -->
 <section class="section experience-section" id="experience">
     <div class="container">
-        <div class="section-label reveal-up">02 — EXPERIENCE</div>
-        <h2 class="section-heading reveal-up">The Journey<span class="accent">.</span></h2>
+        <div class="section-label reveal-up">{{ t('section.experience') }}</div>
+        <h2 class="section-heading reveal-up"><span>{{ t('experience.heading') }}</span><span class="accent">.</span>
+        </h2>
 
         <div class="timeline">
             {% for exp in experiences %}
@@ -205,18 +211,19 @@
 <!-- ============ PROJECTS ============ -->
 <section class="section projects-section" id="projects">
     <div class="container">
-        <div class="section-label reveal-up">03 — PROJECTS</div>
-        <h2 class="section-heading reveal-up">Selected Work<span class="accent">.</span></h2>
-        <p class="section-sub reveal-up">Research, systems, and models that push boundaries.</p>
+        <div class="section-label reveal-up">{{ t('section.projects') }}</div>
+        <h2 class="section-heading reveal-up"><span>{{ t('projects.heading') }}</span><span class="accent">.</span></h2>
+        <p class="section-sub reveal-up">{{ t('projects.sub') }}
+        </p>
 
         <!-- Filter -->
         <div class="project-filters reveal-up">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="genai">Generative AI</button>
-            <button class="filter-btn" data-filter="recsys">Recommendation</button>
-            <button class="filter-btn" data-filter="nlp">NLP</button>
-            <button class="filter-btn" data-filter="cv">Computer Vision</button>
-            <button class="filter-btn" data-filter="rl">Reinforcement Learning</button>
+            <button class="filter-btn active" data-filter="all">{{ t('filter.all') }}</button>
+            <button class="filter-btn" data-filter="genai">{{ t('filter.genai') }}</button>
+            <button class="filter-btn" data-filter="recsys">{{ t('filter.recsys') }}</button>
+            <button class="filter-btn" data-filter="nlp">{{ t('filter.nlp') }}</button>
+            <button class="filter-btn" data-filter="cv">{{ t('filter.cv') }}</button>
+            <button class="filter-btn" data-filter="rl">{{ t('filter.rl') }}</button>
         </div>
 
         <div class="projects-grid">
@@ -236,8 +243,8 @@
                     </div>
                     {% endif %}
                     {% if project.has_case_study %}
-                    <a href="{{ url_for('main.case_study', project_id=project.id) }}" class="card-case-study-link">View
-                        Case Study →</a>
+                    <a href="{{ url_for('main.case_study', project_id=project.id) }}" class="card-case-study-link">{{
+                        t('project.case_study') }}</a>
                     {% endif %}
                 </div>
                 <div class="card-glow"></div>
@@ -250,8 +257,8 @@
 <!-- ============ SKILLS ============ -->
 <section class="section skills-section" id="skills">
     <div class="container">
-        <div class="section-label reveal-up">04 — CAPABILITIES</div>
-        <h2 class="section-heading reveal-up">Neural Stack<span class="accent">.</span></h2>
+        <div class="section-label reveal-up">{{ t('section.skills') }}</div>
+        <h2 class="section-heading reveal-up"><span>{{ t('skills.heading') }}</span><span class="accent">.</span></h2>
 
         <div class="skills-grid">
             {% for cluster in skill_clusters %}
@@ -270,7 +277,7 @@
 
         {% if language_items %}
         <div class="languages-bar reveal-up">
-            <h3>Languages</h3>
+            <h3>{{ t('skills.languages') }}</h3>
             <div class="lang-items">
                 {% for lang in language_items %}
                 <div class="lang-item">
@@ -287,10 +294,10 @@
 <!-- ============ BLOG PREVIEW ============ -->
 <section class="section blog-preview-section" id="blog">
     <div class="container">
-        <div class="section-label reveal-up">05 — INSIGHTS</div>
-        <h2 class="section-heading reveal-up">Neural<br><span class="accent">Transmissions</span><span
-                class="accent">.</span></h2>
-        <p class="section-sub reveal-up">Explorations at the intersection of AI, neuroscience, and art.</p>
+        <div class="section-label reveal-up">{{ t('section.blog') }}</div>
+        <h2 class="section-heading reveal-up"><span>{{ t('blog.heading1') }}</span><br><span class="accent">{{
+                t('blog.heading2') }}</span><span class="accent">.</span></h2>
+        <p class="section-sub reveal-up">{{ t('blog.sub') }}</p>
 
         <div class="blog-preview-grid">
             {% for post in latest_posts %}
@@ -318,9 +325,9 @@
                     </h3>
                     <p class="blog-card-excerpt">{{ post.excerpt[:150] }}...</p>
                     <div class="blog-card-footer">
-                        <span class="blog-read-time">{{ post.read_time }} min read</span>
-                        <a href="{{ url_for('main.blog_detail', slug=post.slug) }}" class="blog-read-more">Read Article
-                            →</a>
+                        <span class="blog-read-time">{{ post.read_time }} {{ t('blog.minread') }}</span>
+                        <a href="{{ url_for('main.blog_detail', slug=post.slug) }}" class="blog-read-more">{{
+                            t('blog.read_more') }}</a>
                     </div>
                 </div>
             </article>
@@ -328,7 +335,7 @@
         </div>
 
         <div class="blog-preview-cta reveal-up">
-            <a href="{{ url_for('main.blog') }}" class="btn-ghost">View All Articles →</a>
+            <a href="{{ url_for('main.blog') }}" class="btn-ghost">{{ t('blog.view_all') }}</a>
         </div>
     </div>
 </section>
@@ -336,33 +343,32 @@
 <!-- ============ CONTACT ============ -->
 <section class="section contact-section" id="contact">
     <div class="container">
-        <div class="section-label reveal-up">06 — CONTACT</div>
-        <h2 class="section-heading reveal-up">Let's Build<br><span class="accent">Something Together</span><span
-                class="accent">.</span></h2>
-        <p class="section-sub reveal-up">Have an idea, a question, or just want to say hi? I'd love to hear from you.
-        </p>
+        <div class="section-label reveal-up">{{ t('section.contact') }}</div>
+        <h2 class="section-heading contact-heading reveal-up"><span>{{ t('contact.heading1') }}
+            </span><br><span class="accent">{{ t('contact.heading2') }}</span><span class="accent">.</span></h2>
+        <p class="section-sub reveal-up">{{ t('contact.sub') }}</p>
 
-        <form id="contactForm" class="contact-form reveal-up" novalidate>
+        <form id="contactForm" class="contact-form reveal-up" data-endpoint="{{ url_for('main.contact') }}" novalidate>
             <div class="form-row">
                 <div class="form-group">
                     <input type="text" id="name" name="name" required placeholder=" ">
-                    <label for="name">Your Name</label>
+                    <label for="name">{{ t('form.name') }}</label>
                     <div class="input-line"></div>
                 </div>
                 <div class="form-group">
                     <input type="email" id="email" name="email" required placeholder=" ">
-                    <label for="email">Your Email</label>
+                    <label for="email">{{ t('form.email') }}</label>
                     <div class="input-line"></div>
                 </div>
             </div>
             <div class="form-group">
                 <input type="text" id="subject" name="subject" required placeholder=" ">
-                <label for="subject">Subject</label>
+                <label for="subject">{{ t('form.subject') }}</label>
                 <div class="input-line"></div>
             </div>
             <div class="form-group">
                 <textarea id="message" name="message" rows="5" required placeholder=" "></textarea>
-                <label for="message">Your Message</label>
+                <label for="message">{{ t('form.message') }}</label>
                 <div class="input-line"></div>
             </div>
             <!-- Honeypot -->
@@ -370,8 +376,8 @@
                 <input type="text" name="website" tabindex="-1" autocomplete="off">
             </div>
             <button type="submit" class="btn-glow submit-btn">
-                <span class="btn-text">Send Message</span>
-                <span class="btn-loading" style="display:none;">Sending...</span>
+                <span class="btn-text">{{ t('form.send') }}</span>
+                <span class="btn-loading" style="display:none;">{{ t('form.sending') }}</span>
             </button>
             <div id="formMessage" class="form-message"></div>
         </form>
@@ -383,8 +389,8 @@
     <div class="container">
         <div class="footer-top">
             <div class="footer-brand">
-                <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Mohamed Maa Albared"
-                        class="logo-footer"></a>
+                <a href="{{ url_for('main.index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}"
+                        alt="Mohamed Maa Albared" class="logo-footer"></a>
                 <p>Mohamed Maa Albared</p>
             </div>
             <div class="footer-links">
@@ -414,9 +420,10 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 Mohamed Maa Albared. Built with curiosity and neural fire.</p>
-            <p style="margin-top: .5rem; font-size: .75rem;"><a href="/privacy"
-                    style="color: var(--text-secondary); text-decoration: none; opacity: .7;">Privacy Policy</a></p>
+            <p>&copy; 2026 Mohamed Maa Albared. <span>{{ t('footer.tagline') }}</span></p>
+            <p style="margin-top: .5rem; font-size: .75rem;"><a href="{{ url_for('main.privacy') }}"
+                    style="color: var(--text-secondary); text-decoration: none; opacity: .7;">{{ t('footer.privacy')
+                    }}</a></p>
         </div>
     </div>
 </footer>

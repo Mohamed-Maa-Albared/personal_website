@@ -3,13 +3,23 @@ import hmac as _hmac
 import json
 import logging
 
-from flask import Flask, render_template
+from flask import Flask, g, render_template
 from flask import request as flask_request
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 
+from app.i18n import (
+    DEFAULT_LOCALE,
+    build_switch_locale_url,
+    get_alternate_locale,
+    get_locale_meta,
+    get_supported_locale_codes,
+    load_translations,
+    resolve_locale,
+    translate,
+)
 from config import config
 
 db = SQLAlchemy()
@@ -55,6 +65,32 @@ def create_app(config_name="development"):
             return json.loads(value) if value else []
         except (json.JSONDecodeError, TypeError):
             return []
+
+    @app.before_request
+    def set_request_locale_defaults():
+        raw_locale = (
+            flask_request.view_args.get("locale") if flask_request.view_args else None
+        )
+        g.locale = resolve_locale(raw_locale)
+
+    @app.context_processor
+    def inject_i18n_context():
+        locale = resolve_locale(getattr(g, "locale", DEFAULT_LOCALE))
+        meta = get_locale_meta(locale)
+        alternate_locale = get_alternate_locale(locale)
+        return {
+            "current_locale": locale,
+            "locale_dir": meta["dir"],
+            "locale_label": meta["label"],
+            "og_locale": meta["og_locale"],
+            "alternate_locale": alternate_locale,
+            "alternate_locale_label": get_locale_meta(alternate_locale)["label"],
+            "switch_locale_url": build_switch_locale_url(alternate_locale),
+            "supported_locales": get_supported_locale_codes(),
+        }
+
+    app.jinja_env.globals["t"] = translate
+    app.jinja_env.globals["load_locale_translations"] = load_translations
 
     # ── Security headers ─────────────────────────────────────────────
     @app.after_request
@@ -106,10 +142,18 @@ def create_app(config_name="development"):
     @app.before_request
     def track_page_visit():
         """Record page visits for analytics (public GET pages only)."""
+        path = flask_request.path
+        normalized_path = path
+        segments = [segment for segment in path.split("/") if segment]
+        if segments and segments[0] in get_supported_locale_codes():
+            normalized_path = "/" + "/".join(segments[1:])
+            if normalized_path == "/":
+                normalized_path = "/"
+
         if (
             flask_request.method != "GET"
-            or flask_request.path.startswith(("/static", "/admin", "/api"))
-            or flask_request.path in ("/robots.txt", "/sitemap.xml", "/feed.xml")
+            or path.startswith(("/static", "/admin", "/api"))
+            or normalized_path in ("/robots.txt", "/sitemap.xml", "/feed.xml")
         ):
             return
         try:
@@ -125,7 +169,7 @@ def create_app(config_name="development"):
                 accept_lang.split(",")[0].split(";")[0].strip() if accept_lang else ""
             )
             visit = PageVisit(
-                path=flask_request.path[:500],
+                path=normalized_path[:500],
                 referrer=(flask_request.referrer or "")[:500],
                 user_agent=(flask_request.user_agent.string or "")[:500],
                 ip_hash=ip_hash,

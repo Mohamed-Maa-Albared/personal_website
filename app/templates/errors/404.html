@@ -10,7 +10,7 @@
             404</h1>
         <p style="font-size:1.25rem;color:var(--text-secondary);margin-bottom:2rem;">This page doesn't exist — or it
             drifted into another dimension.</p>
-        <a href="/" class="btn-glow">Back to Home</a>
+        <a href="{{ url_for('main.index') }}" class="btn-glow">Back to Home</a>
     </div>
 </section>
 {% endblock %}

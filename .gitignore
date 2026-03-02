@@ -36,4 +36,6 @@ instance/
 
 # Private files
 Achievements.md
+AGENT_MEMORY.md
+MAINTAINER_GUIDE.md
 backups/

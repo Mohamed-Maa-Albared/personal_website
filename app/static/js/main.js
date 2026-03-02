@@ -277,7 +277,8 @@
             if (btnLoading) btnLoading.style.display = 'inline';
 
             try {
-                const response = await fetch('/contact', {
+                const endpoint = contactForm.dataset.endpoint || '/contact';
+                const response = await fetch(endpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
