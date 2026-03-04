@@ -2,8 +2,8 @@ name: Automated DB Backup
 
 on:
   schedule:
-    # Run daily at 02:00 UTC
-    - cron: "0 2 * * *"
+    # Run weekly on Sunday at 02:00 UTC
+    - cron: "0 2 * * 0"
   workflow_dispatch: # Allow manual triggers
 
 jobs:
@@ -54,9 +54,9 @@ jobs:
             exit 0
           fi
 
-          # Keep only the last 7 backups
+          # Keep only the last 5 backups (~5 weeks of history)
           cd backups
-          ls -t *.sql 2>/dev/null | tail -n +8 | xargs -r rm -v
+          ls -t *.sql 2>/dev/null | tail -n +6 | xargs -r rm -v
           cd ..
 
       - name: Commit and push backup
