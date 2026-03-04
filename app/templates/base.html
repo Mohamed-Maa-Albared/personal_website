@@ -33,8 +33,10 @@
     <meta name="twitter:image"
         content="{% block twitter_image %}{{ url_for('static', filename='images/profile.png', _external=True) }}{% endblock %}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
-    <link rel="alternate" type="application/rss+xml" title="Blog RSS"
+    <link rel="alternate" type="application/rss+xml" title="Blog RSS (English)"
         href="{{ url_for('main.rss_feed', _external=True) }}">
+    <link rel="alternate" type="application/rss+xml" title="Blog RSS (العربية)"
+        href="{{ url_for('main.rss_feed_localized', locale='ar', _external=True) }}">
     <!-- hreflang: helps search engines serve the right language version (must be absolute per Google spec) -->
     <link rel="alternate" hreflang="en"
         href="{{ (request.host_url.rstrip('/') + switch_locale_url) if current_locale == 'ar' else request.url }}">

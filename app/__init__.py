@@ -96,7 +96,9 @@ def create_app(config_name="development"):
     @app.after_request
     def set_security_headers(response):
         response.headers["X-Content-Type-Options"] = "nosniff"
-        response.headers["X-Frame-Options"] = "SAMEORIGIN"
+        response.headers["X-Frame-Options"] = (
+            "DENY"  # Consistent with frame-ancestors 'none' in CSP
+        )
         response.headers["X-XSS-Protection"] = "0"  # Modern best-practice: rely on CSP
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
         response.headers["Permissions-Policy"] = (

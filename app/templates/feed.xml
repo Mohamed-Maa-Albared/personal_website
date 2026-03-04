@@ -1,18 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
+{% set feed_locale = locale | default('en') %}
+{% set is_ar = (feed_locale == 'ar') %}
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
+        {% if is_ar %}
+        <title>محمد ماء البارد — إرسالات عصبية</title>
+        <description>استكشافات عند تقاطع الذكاء الاصطناعي وعلم الأعصاب والفن بقلم محمد ماء البارد.</description>
+        {% else %}
         <title>Mohamed Maa Albared — Neural Transmissions</title>
-        <link>{{ url_for('main.blog', _external=True) }}</link>
         <description>Explorations at the intersection of AI, neuroscience, and art by Mohamed Maa Albared.</description>
-        <language>en-us</language>
+        {% endif %}
+        <language>{{ rss_language }}</language>
+        <link>{{ url_for('main.blog', locale=feed_locale, _external=True) }}</link>
+        {% if is_ar %}
+        <atom:link href="{{ url_for('main.rss_feed_localized', locale='ar', _external=True) }}" rel="self" type="application/rss+xml"/>
+        {% else %}
         <atom:link href="{{ url_for('main.rss_feed', _external=True) }}" rel="self" type="application/rss+xml"/>
+        {% endif %}
         {% for post in posts %}
         <item>
-            <title>{{ post.title }}</title>
-            <link>{{ url_for('main.blog_detail', slug=post.slug, _external=True) }}</link>
-            <description>{{ post.excerpt }}</description>
+            <title>{{ post.get_field('title', feed_locale) }}</title>
+            <link>{{ url_for('main.blog_detail', locale=feed_locale, slug=post.slug, _external=True) }}</link>
+            <description>{{ post.get_field('excerpt', feed_locale) }}</description>
             <pubDate>{{ post.created_at.strftime('%a, %d %b %Y %H:%M:%S +0000') }}</pubDate>
-            <guid>{{ url_for('main.blog_detail', slug=post.slug, _external=True) }}</guid>
+            <guid>{{ url_for('main.blog_detail', locale='en', slug=post.slug, _external=True) }}</guid>
             {% if post.category %}<category>{{ post.category }}</category>{% endif %}
         </item>
         {% endfor %}

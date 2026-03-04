@@ -17,6 +17,7 @@ from flask import (
 from app import csrf, db, limiter
 from app.i18n import (
     DEFAULT_LOCALE,
+    get_locale_meta,
     get_supported_locale_codes,
     is_supported_locale,
     resolve_locale,
@@ -68,6 +69,7 @@ def add_locale_to_main_urls(endpoint, values):
         "main.sitemap",
         "main.robots",
         "main.rss_feed",
+        "main.rss_feed_localized",
     }:
         return
     if "locale" in values:
@@ -455,14 +457,43 @@ def robots():
 
 @main_bp.route("/feed.xml")
 def rss_feed():
-    """RSS 2.0 feed of the latest 20 published blog posts."""
+    """RSS 2.0 feed of the latest 20 published blog posts (English)."""
     posts = (
         BlogPost.query.filter_by(published=True)
         .order_by(BlogPost.created_at.desc())
         .limit(20)
         .all()
     )
-    xml = render_template("feed.xml", posts=posts)
+    xml = render_template(
+        "feed.xml",
+        posts=posts,
+        locale="en",
+        rss_language=get_locale_meta("en")["rss_language"],
+    )
+    response = make_response(xml)
+    response.headers["Content-Type"] = "application/rss+xml"
+    return response
+
+
+@main_bp.route("/<locale>/feed.xml", endpoint="rss_feed_localized")
+def rss_feed_localized(locale):
+    """Locale-specific RSS 2.0 feed of the latest 20 published blog posts.
+
+    Serves Arabic-translated titles and excerpts when ``locale='ar'``.
+    Falls back to English for any untranslated content.
+    """
+    posts = (
+        BlogPost.query.filter_by(published=True)
+        .order_by(BlogPost.created_at.desc())
+        .limit(20)
+        .all()
+    )
+    xml = render_template(
+        "feed.xml",
+        posts=posts,
+        locale=locale,
+        rss_language=get_locale_meta(locale)["rss_language"],
+    )
     response = make_response(xml)
     response.headers["Content-Type"] = "application/rss+xml"
     return response

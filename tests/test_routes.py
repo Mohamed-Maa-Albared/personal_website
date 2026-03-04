@@ -40,7 +40,7 @@ class TestIndex:
         resp = client.get("/en/")
         assert "Content-Security-Policy" in resp.headers
         assert resp.headers["X-Content-Type-Options"] == "nosniff"
-        assert resp.headers["X-Frame-Options"] == "SAMEORIGIN"
+        assert resp.headers["X-Frame-Options"] == "DENY"
         assert "Permissions-Policy" in resp.headers
 
     def test_csp_contains_required_directives(self, client):

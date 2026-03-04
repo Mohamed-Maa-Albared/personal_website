@@ -1,6 +1,6 @@
 # AGENTS.md — AI Agent Instructions for personal_website
 
-> Last updated: 2026-03-02
+> Last updated: 2026-03-04
 
 ## Project Overview
 
@@ -90,7 +90,9 @@ personal_website/
 │   ├── conftest.py              # Pytest fixtures (app, client, auth_client, sample data)
 │   ├── test_routes.py           # Public route + SEO tests
 │   ├── test_admin.py            # Admin CRUD + security tests
-│   └── test_utils.py            # Utility function tests
+│   ├── test_utils.py            # Sanitization, validation, email helpers, locale/UA parsing
+│   ├── test_i18n.py             # Locale resolution, translation fallback, parity, OG locale
+│   └── test_rtl_smoke.py        # Automated RTL critical-path smoke tests (38 tests)
 ├── .github/
 │   └── workflows/
 │       └── backup.yml           # Automated daily PostgreSQL backup via pg_dump to GitHub
@@ -144,7 +146,8 @@ personal_website/
 - `/api/projects` and `/<locale>/api/projects` (GET) — JSON API for projects
 - `/sitemap.xml` — Auto-generated XML sitemap
 - `/robots.txt` — SEO robots file (disallows `/admin/`)
-- `/feed.xml` — RSS feed for blog posts
+- `/feed.xml` — RSS feed for blog posts (English)
+- `/<locale>/feed.xml` — Locale-specific RSS feed (e.g. `/ar/feed.xml` returns Arabic titles/excerpts with `<language>ar</language>`)
 - `/admin/` — Dashboard with 6 tabs: Analytics, Site Content, Projects, Experience, Blog, Messages
 - `/admin/login` (GET/POST) — Login (rate-limited 5/min, lockout after 5 failures)
 - `/admin/logout` (GET) — Logout and clear session
@@ -191,27 +194,39 @@ personal_website/
 
 All security measures are already implemented. Do not remove or weaken them.
 
-| Measure                 | Location                    | Details                                                                                   |
-| ----------------------- | --------------------------- | ----------------------------------------------------------------------------------------- |
-| CSRF Protection         | `app/__init__.py`           | `CSRFProtect()` on all forms; `/contact` is `@csrf.exempt` (JSON endpoint)                |
-| Rate Limiting           | `app/__init__.py`           | Global 200/min; login 5/min; contact 3/min                                                |
-| Input Sanitization      | `utils.py`, `admin.py`      | `sanitize_input()` strips HTML; `sanitize_html()` allowlists safe tags                    |
-| Password Comparison     | `admin.py`                  | `hmac.compare_digest()` (timing-safe)                                                     |
-| Login Lockout           | `admin.py`                  | Exponential backoff after 5 failed attempts (10-minute cooldown)                          |
-| Content Security Policy | `app/__init__.py`           | Full CSP header with `base-uri`, `form-action` directives                                 |
-| SRI Integrity Hashes    | `base.html`                 | GSAP + ScrollTrigger CDN scripts verified with SHA-384                                    |
-| Security Headers        | `app/__init__.py`           | X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, HSTS (prod) |
-| Session Security        | `config.py`                 | `HTTPONLY=True`, `SAMESITE=Lax`, `SECURE=True` (prod), 2-hour expiry                      |
-| Honeypot                | `index.html`, `routes.py`   | Hidden `website` field to catch bots                                                      |
-| CSRF Tokens             | All admin templates         | `<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">` in every POST form   |
-| Custom Error Pages      | `app/templates/errors/`     | 400, 404, 429, 500 — no Flask internals leaked                                            |
-| Production Enforcement  | `config.py`                 | App refuses to start with default `SECRET_KEY` or `ADMIN_PASSWORD`                        |
-| Structured Logging      | `app/__init__.py`           | Security events (login attempts, contact submissions) logged with context                 |
-| Audit Logging           | `admin.py`                  | All admin CRUD operations logged with user context                                        |
-| Privacy-safe Analytics  | `app/__init__.py`           | Visitor IPs HMAC-SHA256 hashed with SECRET_KEY — not rainbow-tableable                    |
-| Data Retention          | `admin.py`                  | Admin can purge analytics older than 90 days via `/admin/purge-analytics`                 |
-| Hardened File Uploads   | `admin.py`                  | Extension + MIME + Pillow magic-byte validation, SVG blocked, rate-limited                |
-| Privacy Policy          | `routes.py`, `privacy.html` | Transparent data collection disclosure at `/privacy`                                      |
+| Measure                 | Location                    | Details                                                                                           |
+| ----------------------- | --------------------------- | ------------------------------------------------------------------------------------------------- |
+| CSRF Protection         | `app/__init__.py`           | `CSRFProtect()` on all forms; `/contact` is `@csrf.exempt` (JSON endpoint)                        |
+| Rate Limiting           | `app/__init__.py`           | Global 200/min; login 5/min; contact 3/min                                                        |
+| Input Sanitization      | `utils.py`, `admin.py`      | `sanitize_input()` strips HTML; `sanitize_html()` allowlists safe tags                            |
+| Password Comparison     | `admin.py`                  | `hmac.compare_digest()` (timing-safe)                                                             |
+| Login Lockout           | `admin.py`                  | Exponential backoff after 5 failed attempts (10-minute cooldown)                                  |
+| Content Security Policy | `app/__init__.py`           | Full CSP header with `base-uri`, `form-action` directives                                         |
+| SRI Integrity Hashes    | `base.html`                 | GSAP + ScrollTrigger CDN scripts verified with SHA-384                                            |
+| Security Headers        | `app/__init__.py`           | X-Content-Type-Options, `X-Frame-Options: DENY`, Referrer-Policy, Permissions-Policy, HSTS (prod) |
+| Session Security        | `config.py`                 | `HTTPONLY=True`, `SAMESITE=Lax`, `SECURE=True` (prod), 2-hour expiry                              |
+| Honeypot                | `index.html`, `routes.py`   | Hidden `website` field to catch bots                                                              |
+| CSRF Tokens             | All admin templates         | `<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">` in every POST form           |
+| Custom Error Pages      | `app/templates/errors/`     | 400, 404, 429, 500 — no Flask internals leaked                                                    |
+| Production Enforcement  | `config.py`                 | App refuses to start with default `SECRET_KEY` or `ADMIN_PASSWORD`                                |
+| Structured Logging      | `app/__init__.py`           | Security events (login attempts, contact submissions) logged with context                         |
+| Audit Logging           | `admin.py`                  | All admin CRUD operations logged with user context                                                |
+| Privacy-safe Analytics  | `app/__init__.py`           | Visitor IPs HMAC-SHA256 hashed with SECRET_KEY — not rainbow-tableable                            |
+| Data Retention          | `admin.py`                  | Admin can purge analytics older than 90 days via `/admin/purge-analytics`                         |
+| Hardened File Uploads   | `admin.py`                  | Extension + MIME + Pillow magic-byte validation, SVG blocked, rate-limited                        |
+| Privacy Policy          | `routes.py`, `privacy.html` | Transparent data collection disclosure at `/privacy`                                              |
+
+### Known accepted trade-offs
+
+The following are intentional decisions — do not accidentally revert them:
+
+| Trade-off                                                  | Reason                                                                                                               | Owner                   |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| `style-src 'unsafe-inline'` in CSP                         | Required for admin HTML email notifications and ARIA live region inline styles                                       | `app/__init__.py`       |
+| Per-worker login lockout (`_login_failures` dict)          | No Redis on Render free tier; effective threshold doubles to 10 with 2 workers; rate limiting is the primary control | `admin.py`              |
+| `ADMIN_PASSWORD` fallback `"changeme123"`                  | Dev convenience only; `config.py` enforces a real password in production via `sys.exit(1)`                           | `admin.py`, `config.py` |
+| URL fields (`demo_url`, `github_url`) not scheme-validated | Admin-only input; `javascript:` protocol risk is self-inflicted after account compromise                             | `admin.py`              |
+| Static asset cache-busting via manual `v='YYYYMMDD'`       | No build step; bump the date string in `base.html` after every static asset change                                   | `base.html`             |
 
 ---
 
@@ -321,7 +336,7 @@ flask shell
 
 ## Testing
 
-142 pytest tests covering routes, i18n, admin CRUD, bilingual form parity, security, utility functions, RTL rendering, and SEO localization.
+180 pytest tests covering routes, i18n, admin CRUD, bilingual form parity, security, utility functions, RTL rendering, and SEO localization.
 
 ```bash
 # Install dev dependencies
@@ -339,6 +354,8 @@ Test files:
 - `tests/test_routes.py` — Public routes, blog, SEO endpoints, contact form
 - `tests/test_admin.py` — Admin login/lockout, CRUD operations, file upload, security
 - `tests/test_utils.py` — Sanitization, validation, email helpers, locale/UA parsing
+- `tests/test_i18n.py` — Locale resolution, translation fallback, parity, OG locale
+- `tests/test_rtl_smoke.py` — Automated RTL critical-path smoke tests (38 tests: lang/dir attributes, Arabic DB content, hreflang, RSS feeds, OG locale)
 
 ---
 
