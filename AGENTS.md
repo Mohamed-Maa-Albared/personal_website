@@ -35,7 +35,7 @@ Keep `ROADMAP.md` forward-looking only.
 | Image Processing   | Pillow                                              | 10.4.0  |
 | WSGI Server        | gunicorn                                            | 21.2.0  |
 | Database (dev)     | SQLite                                              | —       |
-| Database (prod)    | PostgreSQL (via psycopg2-binary)                    | 18.x    |
+| Database (prod)    | Neon PostgreSQL free tier (via psycopg2-binary)     | 18.x    |
 | Python             | 3.11.x                                              | —       |
 | Frontend           | Vanilla HTML/CSS/JS                                 | —       |
 | CDN: Animation     | GSAP + ScrollTrigger                                | 3.12.2  |
