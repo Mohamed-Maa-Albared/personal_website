@@ -2,9 +2,9 @@
 -- PostgreSQL database dump
 --
 
-\restrict KA8jMyyNh1hPX6Hp4Ru6QPn6qdyu03mbpzA5IYmBAuUuhm0ZyQcmhfsKHTL5OtF
+\restrict hidi4PG3DcblTsF4e859S1UuPPa4IIz1NHsjkbrYagPYf1326vePtAAK3mPHVap
 
--- Dumped from database version 18.1 (Debian 18.1-1.pgdg12+2)
+-- Dumped from database version 17.8 (a284a84)
 -- Dumped by pg_dump version 18.3 (Ubuntu 18.3-1.pgdg24.04+1)
 
 SET statement_timeout = 0;
@@ -24,6 +24,13 @@ SET row_security = off;
 --
 
 -- *not* creating schema, since initdb creates it
+
+
+--
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON SCHEMA public IS '';
 
 
 SET default_tablespace = '';
@@ -559,6 +566,7 @@ COPY public.page_visits (id, path, referrer, user_agent, ip_hash, country, visit
 57	/		Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-02-24 09:01:39.119606
 58	/	https://mohamed-maa-albared-portfolio.onrender.com/admin/experience/1/edit	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-02-24 09:04:55.643151
 59	/		Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-02-24 09:05:33.175244
+292	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-04 12:59:49.457097
 60	/		Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-02-24 09:05:51.531378
 61	/		Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-02-24 09:05:55.297678
 62	/favicon.ico	https://mohamed-maa-albared-portfolio.onrender.com/admin/experience/1/edit	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-02-24 09:06:05.051461
@@ -689,6 +697,7 @@ COPY public.page_visits (id, path, referrer, user_agent, ip_hash, country, visit
 187	/blog/architecture-of-thought-neuroscience-ai-agents	https://mohamed-maa-albared-portfolio.onrender.com/ar/	Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.3 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-02 10:44:39.744278
 188	/	https://mohamed-maa-albared-portfolio.onrender.com/ar/	Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.3 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-02 10:45:13.745875
 189	/	https://mohamed-maa-albared-portfolio.onrender.com/en/	Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.3 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-02 10:47:03.139065
+293	/	https://mohamed-maa-albared-portfolio.onrender.com	Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-04 12:59:49.647069
 190	/	https://mohamed-maa-albared-portfolio.onrender.com/ar/	Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.3 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-02 10:47:33.720113
 191	/blog/agentic-ai-revolution-autonomous-reasoners	https://mohamed-maa-albared-portfolio.onrender.com/en/	Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.3 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-02 10:47:56.776394
 192	/blog/recommendation-systems-aviation-engineering-serendipity		Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.3 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-02 10:48:25.046925
@@ -751,6 +760,160 @@ COPY public.page_visits (id, path, referrer, user_agent, ip_hash, country, visit
 249	/project/12		Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.7559.132 Mobile Safari/537.36 (compatible; GoogleOther)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 02:51:36.116314
 250	/project/8		Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.7559.132 Mobile Safari/537.36 (compatible; GoogleOther)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 03:23:58.801979
 251	/project/4		Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.7559.132 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 03:37:47.205534
+252	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 04:05:25.94458
+253	/	https://mohamed-maa-albared-portfolio.onrender.com	Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 04:05:26.123486
+254	/blog		Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.7559.132 Mobile Safari/537.36 (compatible; GoogleOther)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 04:10:38.014603
+255	/blog/architecture-of-thought-neuroscience-ai-agents		Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.7559.132 Mobile Safari/537.36 (compatible; GoogleOther)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:40:42.400441
+256	/		Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.3; +https://openai.com/searchbot	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:40:59.964215
+257	/	https://mohamed-maa-albared-portfolio.onrender.com/	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.3; +https://openai.com/searchbot	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:00.10204
+258	/	https://mohamed-maa-albared-portfolio.onrender.com/	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.3; +https://openai.com/searchbot	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:05.889338
+259	/blog/architecture-of-thought-neuroscience-ai-agents	https://mohamed-maa-albared-portfolio.onrender.com/ar/	Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.3; +https://openai.com/gptbot)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:06.45231
+260	/privacy	https://mohamed-maa-albared-portfolio.onrender.com/ar/	Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.3; +https://openai.com/gptbot)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:09.617228
+263	/blog	https://mohamed-maa-albared-portfolio.onrender.com/ar/	Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.3; +https://openai.com/gptbot)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:15.165301
+264	/case-study/1	https://mohamed-maa-albared-portfolio.onrender.com/ar/	Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.3; +https://openai.com/gptbot)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:17.513356
+267	/privacy	https://mohamed-maa-albared-portfolio.onrender.com/	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.3; +https://openai.com/searchbot	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:21.281358
+268	/blog/recommendation-systems-aviation-engineering-serendipity	https://mohamed-maa-albared-portfolio.onrender.com/ar/blog/agentic-ai-revolution-autonomous-reasoners	Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.3; +https://openai.com/gptbot)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:21.498593
+272	/blog/neural-canvas-art-neuroscience-ai	https://mohamed-maa-albared-portfolio.onrender.com/	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.3; +https://openai.com/searchbot	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:25.938574
+273	/blog	https://mohamed-maa-albared-portfolio.onrender.com/ar/blog	Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.3; +https://openai.com/gptbot)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:26.196509
+277	/case-study/1	https://mohamed-maa-albared-portfolio.onrender.com/	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.3; +https://openai.com/searchbot	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:27.651899
+278	/blog/architecture-of-thought-neuroscience-ai-agents	https://mohamed-maa-albared-portfolio.onrender.com/	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.3; +https://openai.com/searchbot	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:27.849757
+279	/blog/recommendation-systems-aviation-engineering-serendipity	https://mohamed-maa-albared-portfolio.onrender.com/en/blog	Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.3; +https://openai.com/gptbot)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:28.566249
+280	/blog	https://mohamed-maa-albared-portfolio.onrender.com/en/blog	Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.3; +https://openai.com/gptbot)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:29.543368
+261	/blog/agentic-ai-revolution-autonomous-reasoners	https://mohamed-maa-albared-portfolio.onrender.com/ar/	Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.3; +https://openai.com/gptbot)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:12.491018
+262	/	https://mohamed-maa-albared-portfolio.onrender.com/	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.3; +https://openai.com/searchbot	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:12.577094
+265	/blog	https://mohamed-maa-albared-portfolio.onrender.com/	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.3; +https://openai.com/searchbot	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:19.059687
+266	/blog/neural-canvas-art-neuroscience-ai	https://mohamed-maa-albared-portfolio.onrender.com/ar/	Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.3; +https://openai.com/gptbot)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:19.634143
+269	/blog	https://mohamed-maa-albared-portfolio.onrender.com/ar/blog	Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.3; +https://openai.com/gptbot)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:23.274896
+270	/blog/agentic-ai-revolution-autonomous-reasoners	https://mohamed-maa-albared-portfolio.onrender.com/	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.3; +https://openai.com/searchbot	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:24.681054
+271	/blog	https://mohamed-maa-albared-portfolio.onrender.com/ar/blog	Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.3; +https://openai.com/gptbot)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:24.816905
+274	/	https://mohamed-maa-albared-portfolio.onrender.com/	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.3; +https://openai.com/searchbot	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:26.540536
+275	/	https://mohamed-maa-albared-portfolio.onrender.com/	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.3; +https://openai.com/searchbot	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:27.036093
+276	/blog	https://mohamed-maa-albared-portfolio.onrender.com/en/blog	Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.3; +https://openai.com/gptbot)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:27.474747
+281	/blog	https://mohamed-maa-albared-portfolio.onrender.com/en/blog	Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.3; +https://openai.com/gptbot)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 05:41:30.408996
+282	/blog		Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.7559.132 Mobile Safari/537.36 (compatible; GoogleOther)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 06:45:09.11116
+283	/blog/architecture-of-thought-neuroscience-ai-agents		Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.7559.132 Mobile Safari/537.36 (compatible; GoogleOther)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 06:45:12.032025
+284	/blog/recommendation-systems-aviation-engineering-serendipity		Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.7559.132 Mobile Safari/537.36 (compatible; GoogleOther)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 07:53:02.822548
+285	/		Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.7559.132 Mobile Safari/537.36 (compatible; GoogleOther)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 10:06:18.158678
+286	/blog/recommendation-systems-aviation-engineering-serendipity		Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.7559.132 Mobile Safari/537.36 (compatible; GoogleOther)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 10:33:12.637245
+287	/blog/None		Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/23.0.912.77 Safari/535.7	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 14:39:36.588706
+288	/blog	https://mohamed-maa-albared-portfolio.onrender.com/ar/	Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.3; +https://openai.com/gptbot)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 14:44:45.282532
+289	/blog	https://mohamed-maa-albared-portfolio.onrender.com/ar/blog?category={search_term_string}	Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.3; +https://openai.com/gptbot)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 14:44:51.190362
+290	/blog	https://mohamed-maa-albared-portfolio.onrender.com/en/blog?category={search_term_string}	Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.3; +https://openai.com/gptbot)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-03 14:44:53.787009
+291	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-04 03:59:44.938683
+294	/		Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-04 13:00:00.448382
+295	/	https://mohamed-maa-albared-portfolio.onrender.com/en/	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-04 13:00:15.411667
+296	/case-study/1	https://mohamed-maa-albared-portfolio.onrender.com/en/	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-04 13:01:10.536287
+297	/blog/architecture-of-thought-neuroscience-ai-agents	https://mohamed-maa-albared-portfolio.onrender.com/en/	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-04 13:01:19.30776
+298	/		Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-04 13:02:57.543123
+299	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-04 13:11:06.534169
+300	/	https://mohamed-maa-albared-portfolio.onrender.com	Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-04 13:11:06.717459
+301	/		Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/144.0.7559.95 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-04 13:18:39.163101
+302	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-04 13:36:45.6283
+303	/	https://mohamed-maa-albared-portfolio.onrender.com	Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-04 13:36:45.828477
+304	/	https://mohamed-maa-albared-portfolio.onrender.com/admin/skill-cluster/4/edit	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-04 13:40:49.169379
+305	/	https://mohamed-maa-albared-portfolio.onrender.com/admin/	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-04 13:41:32.124911
+306	/favicon.ico	https://mohamed-maa-albared-portfolio.onrender.com/static/images/profile.png	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-04 13:42:13.016271
+307	/	https://mohamed-maa-albared-portfolio.onrender.com/en/	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-04 13:45:41.465631
+308	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:08.391381
+311	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:08.782599
+313	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:08.875973
+318	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:09.571419
+323	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:09.677571
+324	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:09.68622
+325	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:09.790764
+326	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:09.872629
+327	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:09.877623
+332	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:10.078636
+333	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:10.271751
+335	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:10.375943
+337	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:10.571877
+338	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:10.576068
+340	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:10.686031
+342	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:10.877419
+343	/blog/architecture-of-thought-neuroscience-ai-agents	https://mohamed-maa-albared-portfolio.onrender.com/ar/blog/architecture-of-thought-neuroscience-ai-agents	Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.3 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-05 15:51:00.015355
+344	/favicon.ico	https://mohamed-maa-albared-portfolio.onrender.com/	Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/144.0.7559.95 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-05 16:16:30.547074
+345	/apple-touch-icon-precomposed.png		NetworkingExtension/8623.2.7.10.4 Network/5569.82.5 iOS/26.3	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-06 20:49:49.651127
+346	/favicon.ico		NetworkingExtension/8623.2.7.10.4 Network/5569.82.5 iOS/26.3	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-06 20:49:49.747963
+347	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-08 04:06:31.827952
+348	/	https://mohamed-maa-albared-portfolio.onrender.com/en/	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-08 12:17:14.715668
+349	/	https://mohamed-maa-albared-portfolio.onrender.com/ar/	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-08 12:19:45.564325
+350	/	https://mohamed-maa-albared-portfolio.onrender.com/en/	Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.3 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-08 16:57:29.966143
+351	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-09 02:43:30.054649
+353	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-09 02:43:30.26036
+355	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-09 02:43:30.458025
+357	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-09 02:43:30.659076
+359	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-09 02:43:30.857807
+361	/favicon.ico		NetworkingExtension/8623.2.7.10.4 Network/5569.82.5 iOS/26.3.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-11 20:02:31.011546
+362	/		okhttp/5.3.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-11 20:22:08.109206
+363	/		okhttp/5.3.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-11 20:22:08.305256
+364	/		Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.23 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-11 20:22:57.000904
+365	/		Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.23 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-11 20:22:57.12601
+366	/favicon.ico	https://mohamed-maa-albared-portfolio.onrender.com/en/	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.23 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-11 20:22:58.943812
+309	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:08.672294
+310	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:08.773275
+312	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:08.781812
+314	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:08.882334
+315	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:09.075487
+316	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:09.172915
+317	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:09.471916
+319	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:09.572118
+320	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:09.578797
+321	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:09.584493
+322	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:09.671886
+328	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:09.977628
+329	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:09.983506
+330	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:10.071785
+331	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:10.075757
+334	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:10.275933
+336	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:10.376729
+339	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:10.675743
+341	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-05 09:08:10.782741
+352	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-09 02:43:30.154587
+354	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-09 02:43:30.359428
+356	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-09 02:43:30.560852
+358	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-09 02:43:30.673797
+360	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-09 02:43:30.861529
+367	/		Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/144.0.7559.95 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-11 20:23:21.730603
+368	/		Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/144.0.7559.95 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-11 20:23:22.169787
+369	/favicon.ico	https://mohamed-maa-albared-portfolio.onrender.com/	Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/144.0.7559.95 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-13 13:15:18.820386
+370	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-15 04:29:06.930781
+371	/	https://mohamed-maa-albared-portfolio.onrender.com	Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-15 04:29:07.472618
+372	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-15 17:45:41.263286
+385	/		Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/144.0.7559.95 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-16 09:10:33.970064
+386	/favicon.ico	https://mohamed-maa-albared-portfolio.onrender.com/en/	Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.3 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-17 09:54:14.855789
+387	/	https://mohamed-maa-albared-portfolio.onrender.com/en/	Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.3 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-17 09:54:15.52811
+388	/		Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/144.0.7559.95 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-17 10:29:48.004366
+389	/favicon.ico		NetworkingExtension/8623.2.7.10.4 Network/5569.82.5 iOS/26.3.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-20 17:48:10.353111
+391	/		Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/601.2.4 (KHTML, like Gecko) Version/9.0.1 Safari/601.2.4 facebookexternalhit/1.1 Facebot Twitterbot/1.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-20 17:48:10.401991
+392	/		Mozilla/5.0 (compatible; Google-Site-Verification/1.0)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-22 02:24:34.668055
+393	/		Mozilla/5.0 (compatible; Google-Site-Verification/1.0)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-22 02:24:35.026991
+394	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-22 04:13:42.186333
+396	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-22 21:32:33.65777
+398	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-22 21:32:33.866811
+399	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-22 21:32:34.064377
+401	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-22 21:32:34.164188
+402	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-22 21:32:34.254481
+405	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-22 21:32:34.452155
+407	/apple-touch-icon-precomposed.png		NetworkingExtension/8623.2.7.110.1 Network/5569.82.5 iOS/26.3.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-25 18:33:32.128267
+373	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-15 17:45:41.864966
+375	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-15 17:45:42.563396
+376	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-15 17:45:42.85928
+378	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-15 17:45:42.877546
+381	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-15 17:45:43.062591
+382	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-15 17:45:43.163512
+384	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-15 17:45:43.460249
+390	/apple-touch-icon.png		NetworkingExtension/8623.2.7.10.4 Network/5569.82.5 iOS/26.3.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-20 17:48:10.352269
+395	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-22 21:32:33.656874
+397	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-22 21:32:33.857585
+400	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-22 21:32:34.151363
+403	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-22 21:32:34.262259
+404	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-22 21:32:34.35589
+406	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-22 21:32:34.551162
+374	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-15 17:45:42.06293
+377	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-15 17:45:42.862754
+379	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-15 17:45:42.970547
+380	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-15 17:45:43.059992
+383	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-15 17:45:43.167175
 \.
 
 
@@ -807,7 +970,7 @@ COPY public.skill_clusters (id, icon, title, tags, sort_order, title_ar, tags_ar
 1	&#129302;	Generative & Agentic AI	LLM Orchestration, Multi-Agent Systems, Prompt Engineering, RAG Pipelines, Fine-Tuning, LangChain/LangGraph, Semantic Kernel	1	الذكاء الاصطناعي التوليدي والعملي	تنسيق نماذج اللغة، أنظمة متعددة الوكلاء، هندسة الأوامر، خطوط RAG، الضبط الدقيق، LangChain/LangGraph، Semantic Kernel
 2	&#129504;	ML & Data Science	Recommendation Systems, NLP/NLU, Classification, Regression, Feature Engineering, A/B Testing, XGBoost, Deep Learning	2	التعلم الآلي وعلم البيانات	أنظمة التوصية، معالجة اللغة الطبيعية، التصنيف، الانحدار، هندسة الميزات، اختبار A/B، XGBoost، التعلم العميق
 3	&#128187;	Tech Stack	Python, SQL, Flask, FastAPI, TensorFlow, PyTorch, scikit-learn, Pandas, NumPy, Git, REST APIs	3	المنظومة التقنية	بايثون، SQL، Flask، FastAPI، TensorFlow، PyTorch، scikit-learn، Pandas، NumPy، Git، REST APIs
-4	&#9729;	Cloud & MLOps	Azure ML, AWS (S3, Lambda), Docker, CI/CD, MLflow, Weights & Biases, Databricks, Airflow	4	الحوسبة السحابية وعمليات التعلم الآلي	Azure ML، AWS (S3، Lambda)، Docker، CI/CD، MLflow، Weights & Biases، Databricks، Airflow
+4	&#9729;	Cloud &amp; MLOps	Azure ML,Docker, CI/CD, MLflow, Databricks	4		
 \.
 
 
@@ -850,7 +1013,7 @@ SELECT pg_catalog.setval('public.messages_id_seq', 2, true);
 -- Name: page_visits_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.page_visits_id_seq', 251, true);
+SELECT pg_catalog.setval('public.page_visits_id_seq', 407, true);
 
 
 --
@@ -980,5 +1143,5 @@ CREATE UNIQUE INDEX ix_site_config_key ON public.site_config USING btree (key);
 -- PostgreSQL database dump complete
 --
 
-\unrestrict KA8jMyyNh1hPX6Hp4Ru6QPn6qdyu03mbpzA5IYmBAuUuhm0ZyQcmhfsKHTL5OtF
+\unrestrict hidi4PG3DcblTsF4e859S1UuPPa4IIz1NHsjkbrYagPYf1326vePtAAK3mPHVap
 
