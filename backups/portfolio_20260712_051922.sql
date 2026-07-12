@@ -2,9 +2,9 @@
 -- PostgreSQL database dump
 --
 
-\restrict 8WbPadNVRr9qOienfJilKEjq4hJfGf6nLcLLVdjA2RKnIhINNyVTAsxsQW14WJ9
+\restrict zEgK5xS8YydeoLTEz0g2RKEFYsALFZwXGfveXNkoQM0AFPl1EMyxAlxNNemnHwF
 
--- Dumped from database version 17.10 (6a49db4)
+-- Dumped from database version 17.10 (986efc8)
 -- Dumped by pg_dump version 18.4 (Ubuntu 18.4-1.pgdg24.04+1)
 
 SET statement_timeout = 0;
@@ -816,6 +816,32 @@ COPY public.page_visits (id, path, referrer, user_agent, ip_hash, country, visit
 512	/blog/architecture-of-thought-neuroscience-ai-agents		Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; ClaudeBot/1.0; +claudebot@anthropic.com)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-07 19:13:56.464107
 513	/blog/architecture-of-thought-neuroscience-ai-agents		Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; ClaudeBot/1.0; +claudebot@anthropic.com)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-07 19:14:03.699359
 535	/		Mozilla/5.0 (compatible; Google-Site-Verification/1.0)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-21 13:53:48.600815
+565	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-31 08:14:13.795515
+566	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-31 08:14:13.881402
+569	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-31 08:14:14.780323
+570	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-31 08:14:14.785261
+576	/apple-touch-icon-precomposed.png		NetworkingExtension/8624.2.5.10.4 Network/5812.122.1 iOS/26.5	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-06-06 09:25:56.221643
+581	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-07 06:46:25.396848
+582	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-07 06:46:25.489436
+583	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-07 06:46:25.588082
+584	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-07 06:46:25.595321
+586	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-07 06:46:25.890101
+587	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-07 06:46:25.897676
+588	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-07 06:46:26.687671
+592	/apple-touch-icon-precomposed.png		NetworkingExtension/8624.2.5.10.4 Network/5812.122.1 iOS/26.5	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-06-10 15:10:19.007407
+594	/apple-touch-icon-precomposed.png		NetworkingExtension/8624.2.5.10.4 Network/5812.122.1 iOS/26.5	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-06-12 18:06:28.406408
+606	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-14 06:57:28.725219
+609	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-14 06:57:29.819223
+610	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-14 06:57:29.922699
+614	/apple-touch-icon.png		NetworkingExtension/8624.2.5.10.4 Network/5812.122.1 iOS/26.5	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-06-14 20:41:49.010352
+616	/favicon.ico		NetworkingExtension/8624.2.5.10.4 Network/5812.122.1 iOS/26.5	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-06-17 06:00:01.896769
+619	/		Mozilla/5.0 (compatible; Google-Site-Verification/1.0)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-21 01:21:31.649046
+622	/apple-touch-icon.png		NetworkingExtension/8624.2.5.10.4 Network/5812.122.1 iOS/26.5	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-06-21 12:45:28.779307
+629	/apple-touch-icon-precomposed.png		NetworkingExtension/8624.2.5.10.4 Network/5812.122.1 iOS/26.5	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-06-28 11:04:35.479191
+631	/apple-touch-icon.png		NetworkingExtension/8624.2.5.10.4 Network/5812.122.1 iOS/26.5	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-07-03 19:49:15.951607
+632	/apple-touch-icon-precomposed.png		NetworkingExtension/8624.2.5.10.4 Network/5812.122.1 iOS/26.5	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-07-03 19:49:16.039677
+633	/favicon.ico		NetworkingExtension/8624.2.5.10.4 Network/5812.122.1 iOS/26.5	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-07-03 19:49:16.138123
+634	/	https://mohamed-maa-albared-portfolio.onrender.com/en/	Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-07-03 19:49:16.442764
 301	/		Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/144.0.7559.95 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-03-04 13:18:39.163101
 302	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-04 13:36:45.6283
 303	/	https://mohamed-maa-albared-portfolio.onrender.com	Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-04 13:36:45.828477
@@ -977,6 +1003,19 @@ COPY public.page_visits (id, path, referrer, user_agent, ip_hash, country, visit
 558	/apple-touch-icon.png		NetworkingExtension/8624.2.5.10.4 Network/5812.122.1 iOS/26.5	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-05-28 20:47:20.415391
 559	/apple-touch-icon-precomposed.png		NetworkingExtension/8624.2.5.10.4 Network/5812.122.1 iOS/26.5	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-05-28 20:47:20.420878
 560	/	https://mohamed-maa-albared-portfolio.onrender.com/en/	Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-05-28 20:47:20.605673
+567	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-31 08:14:13.994731
+568	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-31 08:14:14.384617
+571	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-31 08:14:14.980127
+572	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-31 08:14:14.98561
+573	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-31 08:14:14.993446
+574	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-31 08:14:15.079976
+620	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-21 06:45:23.017551
+623	/apple-touch-icon-precomposed.png		NetworkingExtension/8624.2.5.10.4 Network/5812.122.1 iOS/26.5	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-06-23 13:17:34.562409
+624	/apple-touch-icon.png		NetworkingExtension/8624.2.5.10.4 Network/5812.122.1 iOS/26.5	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-06-23 13:17:34.658375
+625	/apple-touch-icon-precomposed.png		NetworkingExtension/8624.2.5.10.4 Network/5812.122.1 iOS/26.5	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-06-25 19:12:41.862271
+626	/favicon.ico		NetworkingExtension/8624.2.5.10.4 Network/5812.122.1 iOS/26.5	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-06-25 19:12:41.962039
+627	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-28 06:10:28.577252
+628	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-28 06:40:43.173096
 374	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-15 17:45:42.06293
 377	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-15 17:45:42.862754
 379	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-03-15 17:45:42.970547
@@ -1030,6 +1069,33 @@ COPY public.page_visits (id, path, referrer, user_agent, ip_hash, country, visit
 546	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-24 06:26:09.74731
 548	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-24 06:26:10.043873
 561	/favicon.ico		NetworkingExtension/8624.2.5.10.4 Network/5812.122.1 iOS/26.5	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-05-30 15:48:13.681055
+563	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-31 06:11:39.249637
+564	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-31 08:14:12.886647
+577	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-07 06:16:58.570724
+578	/	https://mohamed-maa-albared-portfolio.onrender.com	Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-07 06:16:58.790659
+579	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-07 06:46:24.891499
+580	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-07 06:46:25.196382
+585	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-07 06:46:25.696598
+589	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-07 06:46:26.688726
+590	/apple-touch-icon.png		NetworkingExtension/8624.2.5.10.4 Network/5812.122.1 iOS/26.5	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-06-08 14:42:39.226728
+591	/favicon.ico		NetworkingExtension/8624.2.5.10.4 Network/5812.122.1 iOS/26.5	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-06-10 15:10:18.80761
+595	/		okhttp/5.3.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-12 18:14:12.25757
+596	/favicon.ico		okhttp/5.3.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-12 18:14:13.12378
+597	/favicon.png		okhttp/5.3.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-12 18:14:13.357731
+598	/		Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.23 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-12 18:15:09.82377
+599	/		Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.23 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-12 18:15:09.94895
+600	/favicon.ico	https://mohamed-maa-albared-portfolio.onrender.com/en/	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.23 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-12 18:15:11.463303
+601	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-14 06:27:45.076323
+602	/	https://mohamed-maa-albared-portfolio.onrender.com	Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-14 06:27:45.287848
+603	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-14 06:57:28.024644
+604	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-14 06:57:28.428455
+605	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-14 06:57:28.621036
+607	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-14 06:57:29.126849
+608	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-14 06:57:29.221948
+611	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-14 06:57:30.129723
+612	/blog		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-14 06:57:30.221958
+617	/apple-touch-icon.png		NetworkingExtension/8624.2.5.10.4 Network/5812.122.1 iOS/26.5	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-06-19 06:32:53.626161
+618	/		Mozilla/5.0 (compatible; Google-Site-Verification/1.0)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-06-21 01:21:31.383726
 454	/	https://mohamed-maa-albared-portfolio.onrender.com/en/	Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.3 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-04-19 09:57:24.196908
 473	/apple-app-site-association		Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.7727.137 Mobile Safari/537.36 (compatible; AdsBot-Google-Mobile; +http://www.google.com/mobile/adsbot.html)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-02 22:31:35.617772
 474	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-03 05:25:35.350094
@@ -1065,6 +1131,15 @@ COPY public.page_visits (id, path, referrer, user_agent, ip_hash, country, visit
 505	/project/11		Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; ClaudeBot/1.0; +claudebot@anthropic.com)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-07 19:12:10.307315
 506	/blog/recommendation-systems-aviation-engineering-serendipity		Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; ClaudeBot/1.0; +claudebot@anthropic.com)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-07 19:12:25.592518
 507	/blog/recommendation-systems-aviation-engineering-serendipity		Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; ClaudeBot/1.0; +claudebot@anthropic.com)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-05-07 19:12:25.983883
+640	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-07-05 05:58:05.512407
+635	/		Mozilla/5.0 (iPhone; CPU iPhone OS 18_7_8 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-07-03 20:12:45.039991
+636	/favicon.ico		okhttp/5.3.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-07-03 20:12:46.08994
+637	/		Mozilla/5.0 (iPhone; CPU iPhone OS 18_7_8 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-07-03 20:13:38.87793
+638	/		Mozilla/5.0 (iPhone; CPU iPhone OS 18_7_8 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-07-03 20:13:39.000498
+639	/favicon.ico	https://mohamed-maa-albared-portfolio.onrender.com/en/	Mozilla/5.0 (iPhone; CPU iPhone OS 18_7_8 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-07-03 20:13:40.246733
+641	/	https://mohamed-maa-albared-portfolio.onrender.com	Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-07-05 05:58:05.713056
+642	/		Mozilla/5.0 (compatible)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-07-05 06:27:49.718185
+643	/		Mozilla/5.0 (compatible; MixRankBot; crawler@mixrank.com)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-07-11 02:01:16.276984
 \.
 
 
@@ -1164,7 +1239,7 @@ SELECT pg_catalog.setval('public.messages_id_seq', 2, true);
 -- Name: page_visits_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.page_visits_id_seq', 562, true);
+SELECT pg_catalog.setval('public.page_visits_id_seq', 643, true);
 
 
 --
@@ -1294,5 +1369,5 @@ CREATE UNIQUE INDEX ix_site_config_key ON public.site_config USING btree (key);
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 8WbPadNVRr9qOienfJilKEjq4hJfGf6nLcLLVdjA2RKnIhINNyVTAsxsQW14WJ9
+\unrestrict zEgK5xS8YydeoLTEz0g2RKEFYsALFZwXGfveXNkoQM0AFPl1EMyxAlxNNemnHwF
 
