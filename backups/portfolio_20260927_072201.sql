@@ -2,9 +2,9 @@
 -- PostgreSQL database dump
 --
 
-\restrict sEnwiCuUAhExBNElvrVnZVxXL15A6pghIOuYZCa4UcrAskOjLIGKIf0CcnTZNpD
+\restrict uRGdkuO9PbaSCCgTQrWGU4SPoSHiTrsoRJS0idOfeqKssMtrurpP3NCsKxCb4rT
 
--- Dumped from database version 17.11 (df1f1a3)
+-- Dumped from database version 17.11 (8a81ecb)
 -- Dumped by pg_dump version 18.6 (Ubuntu 18.6-1.pgdg24.04+2)
 
 SET statement_timeout = 0;
@@ -1169,6 +1169,21 @@ COPY public.page_visits (id, path, referrer, user_agent, ip_hash, country, visit
 670	/	https://mohamed-maa-albared-portfolio.onrender.com	Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-08-09 03:26:07.092764
 671	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-08-16 02:53:14.180155
 672	/	https://mohamed-maa-albared-portfolio.onrender.com	Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-08-16 02:53:14.368835
+673	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-08-23 02:55:41.223184
+674	/	https://mohamed-maa-albared-portfolio.onrender.com	Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-08-23 02:55:41.419453
+675	/		Mozilla/5.0 (compatible; Google-Site-Verification/1.0)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-08-25 22:02:23.830193
+676	/		Mozilla/5.0 (compatible; Google-Site-Verification/1.0)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-08-25 22:02:24.183054
+677	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-08-30 07:42:20.934217
+678	/	https://mohamed-maa-albared-portfolio.onrender.com	Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-08-30 07:42:21.125855
+679	/blog/architecture-of-thought-neuroscience-ai-agents		Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-09-02 08:17:49.082861
+680	/case-study/1		Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-09-02 08:17:51.925281
+681	/blog/neural-canvas-art-neuroscience-ai		Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-US	2026-09-02 08:17:57.88163
+682	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-09-06 06:42:12.009661
+683	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-09-13 07:01:30.696374
+684	/	https://mohamed-maa-albared-portfolio.onrender.com	Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-09-13 07:01:31.278404
+685	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-09-20 07:18:01.842223
+686	/	https://mohamed-maa-albared-portfolio.onrender.com	Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-09-20 07:18:02.053928
+687	/		Mozilla/5.0 (compatible; Google-Site-Verification/1.0)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-09-21 15:43:45.751854
 \.
 
 
@@ -1268,7 +1283,7 @@ SELECT pg_catalog.setval('public.messages_id_seq', 2, true);
 -- Name: page_visits_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.page_visits_id_seq', 672, true);
+SELECT pg_catalog.setval('public.page_visits_id_seq', 687, true);
 
 
 --
@@ -1398,5 +1413,5 @@ CREATE UNIQUE INDEX ix_site_config_key ON public.site_config USING btree (key);
 -- PostgreSQL database dump complete
 --
 
-\unrestrict sEnwiCuUAhExBNElvrVnZVxXL15A6pghIOuYZCa4UcrAskOjLIGKIf0CcnTZNpD
+\unrestrict uRGdkuO9PbaSCCgTQrWGU4SPoSHiTrsoRJS0idOfeqKssMtrurpP3NCsKxCb4rT
 
