@@ -2,9 +2,9 @@
 -- PostgreSQL database dump
 --
 
-\restrict pMClTcYquv7JrQXVBZXBZvHwZX1XT8R7WpUGmgo7XoiYODplnQjbbDTCwrFU66n
+\restrict y6fCRfeTiyyTxQm6HLJiBaaColEk6Urg41LkApgUHGC3m7W034dcxvhMvlh1Xlr
 
--- Dumped from database version 17.11 (8a81ecb)
+-- Dumped from database version 17.11 (0bfbbeb)
 -- Dumped by pg_dump version 18.6 (Ubuntu 18.6-1.pgdg24.04+2)
 
 SET statement_timeout = 0;
@@ -1181,6 +1181,11 @@ COPY public.page_visits (id, path, referrer, user_agent, ip_hash, country, visit
 682	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-09-06 06:42:12.009661
 683	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-09-13 07:01:30.696374
 684	/	https://mohamed-maa-albared-portfolio.onrender.com	Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-09-13 07:01:31.278404
+685	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-09-20 07:18:01.842223
+686	/	https://mohamed-maa-albared-portfolio.onrender.com	Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-09-20 07:18:02.053928
+687	/		Mozilla/5.0 (compatible; Google-Site-Verification/1.0)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-09-21 15:43:45.751854
+688	/		Mozilla/5.0 (compatible; Google-Site-Verification/1.0)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-10-22 01:06:23.15092
+689	/		Mozilla/5.0 (compatible; Google-Site-Verification/1.0)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-10-22 01:06:23.509088
 \.
 
 
@@ -1280,7 +1285,7 @@ SELECT pg_catalog.setval('public.messages_id_seq', 2, true);
 -- Name: page_visits_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.page_visits_id_seq', 684, true);
+SELECT pg_catalog.setval('public.page_visits_id_seq', 689, true);
 
 
 --
@@ -1410,5 +1415,5 @@ CREATE UNIQUE INDEX ix_site_config_key ON public.site_config USING btree (key);
 -- PostgreSQL database dump complete
 --
 
-\unrestrict pMClTcYquv7JrQXVBZXBZvHwZX1XT8R7WpUGmgo7XoiYODplnQjbbDTCwrFU66n
+\unrestrict y6fCRfeTiyyTxQm6HLJiBaaColEk6Urg41LkApgUHGC3m7W034dcxvhMvlh1Xlr
 
