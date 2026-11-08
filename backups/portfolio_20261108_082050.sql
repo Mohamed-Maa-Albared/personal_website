@@ -2,9 +2,9 @@
 -- PostgreSQL database dump
 --
 
-\restrict uRGdkuO9PbaSCCgTQrWGU4SPoSHiTrsoRJS0idOfeqKssMtrurpP3NCsKxCb4rT
+\restrict OX1eNMQgrcWJgcLeedR8fd5UDgfTbzxg77WRE9Dkdp8YEeRbOJyFo6YPlnmIbs0
 
--- Dumped from database version 17.11 (8a81ecb)
+-- Dumped from database version 17.11 (9045acd)
 -- Dumped by pg_dump version 18.6 (Ubuntu 18.6-1.pgdg24.04+2)
 
 SET statement_timeout = 0;
@@ -1184,6 +1184,11 @@ COPY public.page_visits (id, path, referrer, user_agent, ip_hash, country, visit
 685	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-09-20 07:18:01.842223
 686	/	https://mohamed-maa-albared-portfolio.onrender.com	Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-09-20 07:18:02.053928
 687	/		Mozilla/5.0 (compatible; Google-Site-Verification/1.0)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-09-21 15:43:45.751854
+688	/		Mozilla/5.0 (compatible; Google-Site-Verification/1.0)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-10-22 01:06:23.15092
+689	/		Mozilla/5.0 (compatible; Google-Site-Verification/1.0)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-10-22 01:06:23.509088
+690	/privacy	https://mohamed-maa-albared-portfolio.onrender.com/en/	Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-11-07 16:29:56.658302
+691	/	https://mohamed-maa-albared-portfolio.onrender.com/en/privacy	Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-11-07 16:30:33.66306
+692	/	https://mohamed-maa-albared-portfolio.onrender.com/en/	Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-11-07 16:30:48.709915
 \.
 
 
@@ -1283,7 +1288,7 @@ SELECT pg_catalog.setval('public.messages_id_seq', 2, true);
 -- Name: page_visits_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.page_visits_id_seq', 687, true);
+SELECT pg_catalog.setval('public.page_visits_id_seq', 692, true);
 
 
 --
@@ -1413,5 +1418,5 @@ CREATE UNIQUE INDEX ix_site_config_key ON public.site_config USING btree (key);
 -- PostgreSQL database dump complete
 --
 
-\unrestrict uRGdkuO9PbaSCCgTQrWGU4SPoSHiTrsoRJS0idOfeqKssMtrurpP3NCsKxCb4rT
+\unrestrict OX1eNMQgrcWJgcLeedR8fd5UDgfTbzxg77WRE9Dkdp8YEeRbOJyFo6YPlnmIbs0
 
