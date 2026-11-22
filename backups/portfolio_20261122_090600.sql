@@ -2,10 +2,10 @@
 -- PostgreSQL database dump
 --
 
-\restrict saXNfZGMoJLVRvAjELULQzVUBsPm1ssI0BUTPN5e1QyCtdaxvMUA901QGuPmCr1
+\restrict NKTEid5H12GdpPbbrdG24QcCoURdAJSAXoZNVENS0lx4vjilm42oueiNoXkCjpc
 
--- Dumped from database version 17.11 (59c914d)
--- Dumped by pg_dump version 18.6 (Ubuntu 18.6-1.pgdg24.04+2)
+-- Dumped from database version 17.12 (4d8000a)
+-- Dumped by pg_dump version 18.7 (Ubuntu 18.7-1.pgdg26.04+5)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1184,6 +1184,13 @@ COPY public.page_visits (id, path, referrer, user_agent, ip_hash, country, visit
 685	/		Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-09-20 07:18:01.842223
 686	/	https://mohamed-maa-albared-portfolio.onrender.com	Go-http-client/2.0	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-09-20 07:18:02.053928
 687	/		Mozilla/5.0 (compatible; Google-Site-Verification/1.0)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-09-21 15:43:45.751854
+688	/		Mozilla/5.0 (compatible; Google-Site-Verification/1.0)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-10-22 01:06:23.15092
+689	/		Mozilla/5.0 (compatible; Google-Site-Verification/1.0)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-10-22 01:06:23.509088
+690	/privacy	https://mohamed-maa-albared-portfolio.onrender.com/en/	Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-11-07 16:29:56.658302
+691	/	https://mohamed-maa-albared-portfolio.onrender.com/en/privacy	Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-11-07 16:30:33.66306
+692	/	https://mohamed-maa-albared-portfolio.onrender.com/en/	Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Mobile/15E148 Safari/604.1	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7	en-GB	2026-11-07 16:30:48.709915
+693	/		Mozilla/5.0 (compatible; Google-Site-Verification/1.0)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-11-22 01:13:09.809699
+694	/		Mozilla/5.0 (compatible; Google-Site-Verification/1.0)	3b4c59ff876ab53c12b9c65e5b1bc3bbb0db515e8876687222bd29573d2a8ee7		2026-11-22 01:13:10.094927
 \.
 
 
@@ -1283,7 +1290,7 @@ SELECT pg_catalog.setval('public.messages_id_seq', 2, true);
 -- Name: page_visits_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.page_visits_id_seq', 687, true);
+SELECT pg_catalog.setval('public.page_visits_id_seq', 694, true);
 
 
 --
@@ -1413,5 +1420,5 @@ CREATE UNIQUE INDEX ix_site_config_key ON public.site_config USING btree (key);
 -- PostgreSQL database dump complete
 --
 
-\unrestrict saXNfZGMoJLVRvAjELULQzVUBsPm1ssI0BUTPN5e1QyCtdaxvMUA901QGuPmCr1
+\unrestrict NKTEid5H12GdpPbbrdG24QcCoURdAJSAXoZNVENS0lx4vjilm42oueiNoXkCjpc
 
